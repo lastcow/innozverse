@@ -12,12 +12,23 @@ export interface ApiError {
 
 // ==================== Authentication & User Types ====================
 
+export type UserRole =
+  | 'admin'
+  | 'super_user'
+  | 'guest'
+  | 'subscription_1'
+  | 'subscription_2'
+  | 'subscription_3'
+  | 'subscription_4'
+  | 'subscription_5'
+  | 'freebie';
+
 export interface User {
   id: string;
   email: string;
   name: string;
   avatar_url: string | null;
-  role: 'user' | 'admin';
+  role: UserRole;
   is_active: boolean;
   email_verified: boolean;
   email_verified_at: string | null;
@@ -104,4 +115,67 @@ export interface OAuthCallbackResponse {
 
 export interface UserWithProviders extends User {
   oauth_providers?: OAuthProvider[];
+}
+
+// ==================== User Management Types ====================
+
+export interface ListUsersRequest {
+  page?: number;
+  limit?: number;
+  role?: UserRole;
+  search?: string;
+}
+
+export interface ListUsersResponse {
+  status: 'ok';
+  data: {
+    users: User[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+export interface GetUserResponse {
+  status: 'ok';
+  data: {
+    user: UserWithProviders;
+  };
+}
+
+export interface UpdateUserRequest {
+  name?: string;
+  role?: UserRole;
+  is_active?: boolean;
+}
+
+export interface UpdateUserResponse {
+  status: 'ok';
+  data: {
+    user: User;
+  };
+}
+
+export interface DeleteUserResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+export interface InviteUserRequest {
+  email: string;
+  name: string;
+  role: UserRole;
+}
+
+export interface InviteUserResponse {
+  status: 'ok';
+  data: {
+    user: User;
+    inviteToken: string;
+  };
 }

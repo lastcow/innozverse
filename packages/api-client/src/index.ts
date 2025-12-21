@@ -180,6 +180,56 @@ export class ApiClient {
       return null;
     }
   }
+
+  // ==================== User Management ====================
+
+  async listUsers(params?: {
+    page?: number;
+    limit?: number;
+    role?: string;
+    search?: string;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.role) queryParams.set('role', params.role);
+    if (params?.search) queryParams.set('search', params.search);
+
+    const query = queryParams.toString();
+    return this.request(`/v1/users${query ? `?${query}` : ''}`);
+  }
+
+  async getUser(id: string): Promise<any> {
+    return this.request(`/v1/users/${id}`);
+  }
+
+  async updateUser(id: string, data: {
+    name?: string;
+    role?: string;
+    is_active?: boolean;
+  }): Promise<any> {
+    return this.request(`/v1/users/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteUser(id: string): Promise<any> {
+    return this.request(`/v1/users/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async inviteUser(data: {
+    email: string;
+    name: string;
+    role: string;
+  }): Promise<any> {
+    return this.request('/v1/users/invite', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
 }
 
 export * from '@innozverse/shared';

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
-  Home,
   LayoutDashboard,
   Users,
   Settings,
@@ -37,8 +36,8 @@ const menuItems = [
     icon: Package,
   },
   {
-    title: 'Team',
-    href: '/dashboard/team',
+    title: 'Users',
+    href: '/dashboard/users',
     icon: Users,
   },
   {
