@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // Exchange code for tokens by calling our API
-    const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+    const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://innozverse.fly.dev';
     const response = await fetch(`${apiUrl}/v1/auth/google/exchange`, {
       method: 'POST',
       headers: {
