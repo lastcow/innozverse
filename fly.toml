@@ -3,8 +3,6 @@ primary_region = "sjc"
 
 [build]
   dockerfile = "apps/api/Dockerfile"
-  build-target = "runner"
-  [build.args]
 
 [env]
   NODE_ENV = "production"
