@@ -14,9 +14,9 @@ WORKDIR /app
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
 
 # Copy all packages and apps needed for build
-COPY packages/shared ./packages/shared
-COPY packages/config ./packages/config
-COPY apps/api ./apps/api
+COPY /packages/shared ./packages/shared
+COPY /packages/config ./packages/config
+COPY /apps/api ./apps/api
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
