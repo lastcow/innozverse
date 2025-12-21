@@ -13,6 +13,9 @@ WORKDIR /app
 # Copy workspace config
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
 
+# Ensure correct pnpm version is used (packageManager field in package.json now specifies 9.13.2)
+RUN corepack enable && corepack prepare pnpm@9.13.2 --activate
+
 # Copy all packages and apps needed for build
 COPY packages/shared ./packages/shared
 COPY packages/config ./packages/config
@@ -43,6 +46,9 @@ COPY --from=builder /app/packages/shared/package.json ./node_modules/@innozverse
 
 # Copy lockfile for frozen-lockfile install
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# Ensure correct pnpm version is used (base stage already has it, but ensure it's active)
+RUN corepack enable && corepack prepare pnpm@9.13.2 --activate
 
 # Install production dependencies only
 RUN pnpm install --prod --frozen-lockfile
