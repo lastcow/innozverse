@@ -13,7 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2 } from 'lucide-react';
 
 const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://innozverse.fly.dev'
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
 );
 
 function LoginForm() {

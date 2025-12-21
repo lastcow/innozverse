@@ -6,7 +6,7 @@ import { ApiClient } from '@innozverse/api-client';
 import styles from './callback.module.css';
 
 const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://innozverse.fly.dev'
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
 );
 
 export default function OAuthCallbackPage() {
