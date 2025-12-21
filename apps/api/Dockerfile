@@ -41,17 +41,13 @@ ENV PORT=8080
 # Copy built files and dependencies
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/package.json ./package.json
+
+# Copy node_modules from builder
+COPY --from=builder /app/node_modules ./node_modules
+
+# Copy shared package
 COPY --from=builder /app/packages/shared/dist ./node_modules/@innozverse/shared/dist
 COPY --from=builder /app/packages/shared/package.json ./node_modules/@innozverse/shared/package.json
-
-# Copy lockfile for frozen-lockfile install
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-
-# Ensure correct pnpm version is used (base stage already has it, but ensure it's active)
-RUN corepack enable && corepack prepare pnpm@9.13.2 --activate
-
-# Install production dependencies only
-RUN pnpm install --prod --frozen-lockfile
 
 EXPOSE 8080
 
