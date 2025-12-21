@@ -41,6 +41,9 @@ COPY --from=builder /app/apps/api/package.json ./package.json
 COPY --from=builder /app/packages/shared/dist ./node_modules/@innozverse/shared/dist
 COPY --from=builder /app/packages/shared/package.json ./node_modules/@innozverse/shared/package.json
 
+# Copy lockfile for frozen-lockfile install
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
 # Install production dependencies only
 RUN pnpm install --prod --frozen-lockfile
 
