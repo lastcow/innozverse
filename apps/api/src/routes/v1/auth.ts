@@ -398,7 +398,7 @@ export async function authRoutes(fastify: FastifyInstance) {
    * GET /v1/auth/google
    * Initiate Google OAuth flow
    */
-  fastify.get('/google', async (request, reply) => {
+  fastify.get('/google', async (_request, reply) => {
     if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
       return reply.code(500).send({
         error: 'ConfigurationError',
@@ -510,7 +510,7 @@ export async function authRoutes(fastify: FastifyInstance) {
    * GET /v1/auth/github
    * Initiate GitHub OAuth flow
    */
-  fastify.get('/github', async (request, reply) => {
+  fastify.get('/github', async (_request, reply) => {
     if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
       return reply.code(500).send({
         error: 'ConfigurationError',
