@@ -3,7 +3,7 @@
 FROM node:20-alpine AS base
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
+RUN corepack enable && corepack prepare pnpm@9.13.2 --activate
 
 # Build stage
 FROM base AS builder
