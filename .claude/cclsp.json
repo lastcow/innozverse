@@ -1,0 +1,39 @@
+{
+  "servers": [
+    {
+      "extensions": [
+        "js",
+        "ts",
+        "jsx",
+        "tsx"
+      ],
+      "command": [
+        "npx",
+        "--",
+        "typescript-language-server",
+        "--stdio"
+      ],
+      "rootDir": "."
+    },
+    {
+      "extensions": [
+        "kt",
+        "kts"
+      ],
+      "command": [
+        "kotlin-language-server"
+      ],
+      "rootDir": "."
+    },
+    {
+      "extensions": [
+        "dart"
+      ],
+      "command": [
+        "dart",
+        "language-server"
+      ],
+      "rootDir": "."
+    }
+  ]
+}
