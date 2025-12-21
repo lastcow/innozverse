@@ -38,14 +38,14 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
 
-# Copy built files and dependencies
+# Copy workspace root node_modules (contains all dependencies)
+COPY --from=builder /app/node_modules ./node_modules
+
+# Copy built files
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/package.json ./package.json
 
-# Copy node_modules from builder
-COPY --from=builder /app/node_modules ./node_modules
-
-# Copy shared package
+# Copy shared package built files
 COPY --from=builder /app/packages/shared/dist ./node_modules/@innozverse/shared/dist
 COPY --from=builder /app/packages/shared/package.json ./node_modules/@innozverse/shared/package.json
 

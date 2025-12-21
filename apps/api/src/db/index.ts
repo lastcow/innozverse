@@ -1,8 +1,13 @@
-import dotenv from 'dotenv';
 import { Pool, PoolConfig } from 'pg';
 
-// Load environment variables first
-dotenv.config();
+// Load environment variables from .env file in development
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    require('dotenv').config();
+  } catch (err) {
+    console.log('dotenv not available, using system environment variables');
+  }
+}
 
 // Database configuration from environment variables
 const config: PoolConfig = {

@@ -1,7 +1,11 @@
-import dotenv from 'dotenv';
-
-// Load environment variables from .env file
-dotenv.config();
+// Load environment variables from .env file in development
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    require('dotenv').config();
+  } catch (err) {
+    console.log('dotenv not available, using system environment variables');
+  }
+}
 
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
