@@ -30,6 +30,9 @@ RUN pnpm --filter @innozverse/shared build
 # Build the API
 RUN pnpm --filter @innozverse/api build
 
+# Create a deployable version using pnpm deploy
+RUN pnpm --filter @innozverse/api --prod deploy /prod/api
+
 # Production stage
 FROM base AS runner
 
@@ -38,14 +41,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
 
-# Copy workspace root node_modules (contains all dependencies)
-COPY --from=builder /app/node_modules ./node_modules
+# Copy the deployed application with all dependencies
+COPY --from=builder /prod/api /app
 
-# Copy built files
-COPY --from=builder /app/apps/api/dist ./dist
-COPY --from=builder /app/apps/api/package.json ./package.json
-
-# Copy shared package built files
+# Copy the built shared package
 COPY --from=builder /app/packages/shared/dist ./node_modules/@innozverse/shared/dist
 COPY --from=builder /app/packages/shared/package.json ./node_modules/@innozverse/shared/package.json
 
