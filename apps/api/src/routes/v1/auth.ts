@@ -872,11 +872,11 @@ export async function authRoutes(fastify: FastifyInstance) {
       // Hash the password
       const passwordHash = await hashPassword(password);
 
-      // Update user: set password, verify email, clear invite token
+      // Update user: set password, verify email, activate account, clear invite token
       await pool.query(
         `UPDATE users
          SET password_hash = $1, email_verified = true, email_verified_at = CURRENT_TIMESTAMP,
-             invite_token = NULL, invite_expires_at = NULL, updated_at = CURRENT_TIMESTAMP
+             is_active = true, invite_token = NULL, invite_expires_at = NULL, updated_at = CURRENT_TIMESTAMP
          WHERE id = $2`,
         [passwordHash, user.id]
       );

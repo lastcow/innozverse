@@ -258,9 +258,10 @@ export async function usersRoutes(fastify: FastifyInstance) {
         const inviteExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
         // Create user with invite token (they'll need to set password via invite link)
+        // User is inactive until they accept the invitation
         const result = await pool.query(
           `INSERT INTO users (email, name, role, password_hash, email_verified, is_active, invite_token, invite_expires_at)
-           VALUES ($1, $2, $3, $4, false, true, $5, $6)
+           VALUES ($1, $2, $3, $4, false, false, $5, $6)
            RETURNING id, email, name, avatar_url, role, is_active, email_verified, email_verified_at, last_login_at, created_at, updated_at`,
           [email, name, role, '', inviteToken, inviteExpiresAt] // Empty password hash - user needs to set password via invite link
         );
