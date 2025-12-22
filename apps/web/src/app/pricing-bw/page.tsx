@@ -77,27 +77,29 @@ export default function PricingBWPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {/* Free Tier */}
-            <div className="border-2 border-green-400 p-6 hover:bg-green-950 transition-colors">
-              <pre className="text-xs mb-4">
+            <div className="border-2 border-green-400 p-6 hover:bg-green-950 transition-colors flex flex-col">
+              <div className="flex-grow">
+                <pre className="text-xs mb-4">
 {`┌─────────────────┐
 │     FREE        │
 └─────────────────┘`}
-              </pre>
-              <div className="text-3xl font-bold mb-2 text-white">$0</div>
-              <div className="text-sm text-green-400 mb-6">/month</div>
+                </pre>
+                <div className="text-3xl font-bold mb-2 text-white">$0</div>
+                <div className="text-sm text-green-400 mb-6">/month</div>
 
-              <div className="space-y-2 mb-6 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>1 VM remote access</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Basic tutorials</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Community support</span>
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>1 VM remote access</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Basic tutorials</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Community support</span>
+                  </div>
                 </div>
               </div>
 
@@ -107,31 +109,33 @@ export default function PricingBWPage() {
             </div>
 
             {/* Starter Security */}
-            <div className="border-2 border-green-400 p-6 hover:bg-green-950 transition-colors">
-              <pre className="text-xs mb-4">
+            <div className="border-2 border-green-400 p-6 hover:bg-green-950 transition-colors flex flex-col">
+              <div className="flex-grow">
+                <pre className="text-xs mb-4">
 {`┌─────────────────┐
 │  STARTER SEC    │
 └─────────────────┘`}
-              </pre>
-              <div className="text-3xl font-bold mb-2 text-white">$15</div>
-              <div className="text-sm text-green-400 mb-6">/month or $150/year</div>
+                </pre>
+                <div className="text-3xl font-bold mb-2 text-white">$15</div>
+                <div className="text-sm text-green-400 mb-6">/month or $150/year</div>
 
-              <div className="space-y-2 mb-6 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>2 headless VMs</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Security focused</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Advanced tutorials</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Email support</span>
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>2 headless VMs</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Security focused</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Advanced tutorials</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Email support</span>
+                  </div>
                 </div>
               </div>
 
@@ -141,34 +145,36 @@ export default function PricingBWPage() {
             </div>
 
             {/* Advanced Security */}
-            <div className="border-2 border-white bg-green-950 p-6 relative">
+            <div className="border-2 border-white bg-green-950 p-6 relative flex flex-col">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-black px-3 border border-white text-white text-xs">
                 POPULAR
               </div>
-              <pre className="text-xs mb-4 text-white">
+              <div className="flex-grow">
+                <pre className="text-xs mb-4 text-white">
 {`┌─────────────────┐
 │  ADVANCED SEC   │
 └─────────────────┘`}
-              </pre>
-              <div className="text-3xl font-bold mb-2 text-white">$29</div>
-              <div className="text-sm text-green-400 mb-6">/month or $290/year</div>
+                </pre>
+                <div className="text-3xl font-bold mb-2 text-white">$29</div>
+                <div className="text-sm text-green-400 mb-6">/month or $290/year</div>
 
-              <div className="space-y-2 mb-6 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>3 VMs (GUI available)</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Advanced security labs</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Expert tutorials</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Priority support</span>
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>3 VMs (GUI available)</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Advanced security labs</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Expert tutorials</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Priority support</span>
+                  </div>
                 </div>
               </div>
 
@@ -178,31 +184,33 @@ export default function PricingBWPage() {
             </div>
 
             {/* Programming */}
-            <div className="border-2 border-green-400 p-6 hover:bg-green-950 transition-colors">
-              <pre className="text-xs mb-4">
+            <div className="border-2 border-green-400 p-6 hover:bg-green-950 transition-colors flex flex-col">
+              <div className="flex-grow">
+                <pre className="text-xs mb-4">
 {`┌─────────────────┐
 │  PROGRAMMING    │
 └─────────────────┘`}
-              </pre>
-              <div className="text-3xl font-bold mb-2 text-white">$25</div>
-              <div className="text-sm text-green-400 mb-6">/month or $250/year</div>
+                </pre>
+                <div className="text-3xl font-bold mb-2 text-white">$25</div>
+                <div className="text-sm text-green-400 mb-6">/month or $250/year</div>
 
-              <div className="space-y-2 mb-6 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>2 VMs (headless)</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Programming courses</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Code labs & projects</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Priority support</span>
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>2 VMs (headless)</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Programming courses</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Code labs & projects</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Priority support</span>
+                  </div>
                 </div>
               </div>
 
@@ -221,27 +229,29 @@ export default function PricingBWPage() {
 
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {/* 1-Hour Pass */}
-            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors">
-              <pre className="text-xs mb-4">
+            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors flex flex-col">
+              <div className="flex-grow">
+                <pre className="text-xs mb-4">
 {`┌──────────────┐
 │   1 HOUR     │
 └──────────────┘`}
-              </pre>
-              <div className="text-2xl font-bold mb-2 text-white">$5</div>
-              <div className="text-sm text-green-400 mb-6">one-time</div>
+                </pre>
+                <div className="text-2xl font-bold mb-2 text-white">$5</div>
+                <div className="text-sm text-green-400 mb-6">one-time</div>
 
-              <div className="space-y-2 mb-6 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>1 hour VM access</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Basic features</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Try before subscribe</span>
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>1 hour VM access</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Basic features</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Try before subscribe</span>
+                  </div>
                 </div>
               </div>
 
@@ -251,27 +261,29 @@ export default function PricingBWPage() {
             </div>
 
             {/* 1-Day Pass */}
-            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors">
-              <pre className="text-xs mb-4">
+            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors flex flex-col">
+              <div className="flex-grow">
+                <pre className="text-xs mb-4">
 {`┌──────────────┐
 │   1 DAY      │
 └──────────────┘`}
-              </pre>
-              <div className="text-2xl font-bold mb-2 text-white">$15</div>
-              <div className="text-sm text-green-400 mb-6">one-time</div>
+                </pre>
+                <div className="text-2xl font-bold mb-2 text-white">$15</div>
+                <div className="text-sm text-green-400 mb-6">one-time</div>
 
-              <div className="space-y-2 mb-6 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>24 hour VM access</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>All tutorials</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Perfect for projects</span>
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>24 hour VM access</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>All tutorials</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Perfect for projects</span>
+                  </div>
                 </div>
               </div>
 
@@ -281,27 +293,29 @@ export default function PricingBWPage() {
             </div>
 
             {/* 1-Week Pass */}
-            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors">
-              <pre className="text-xs mb-4">
+            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors flex flex-col">
+              <div className="flex-grow">
+                <pre className="text-xs mb-4">
 {`┌──────────────┐
 │   1 WEEK     │
 └──────────────┘`}
-              </pre>
-              <div className="text-2xl font-bold mb-2 text-white">$50</div>
-              <div className="text-sm text-green-400 mb-6">one-time</div>
+                </pre>
+                <div className="text-2xl font-bold mb-2 text-white">$50</div>
+                <div className="text-sm text-green-400 mb-6">one-time</div>
 
-              <div className="space-y-2 mb-6 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>7 days VM access</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>All features</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-white">[✓]</span>
-                  <span>Extended learning</span>
+                <div className="space-y-2 mb-6 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>7 days VM access</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>All features</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-white">[✓]</span>
+                    <span>Extended learning</span>
+                  </div>
                 </div>
               </div>
 
