@@ -4,8 +4,8 @@ primary_region = 'iad'
 [build]
   dockerfile = "Dockerfile"
 
-[deploy]
-  release_command = "node scripts/run-migration.js migrations/005_add_user_status.sql"
+# [deploy]
+#   release_command = "node scripts/run-migration.js migrations/005_add_user_status.sql"
 
 [env]
   NODE_ENV = "production"
