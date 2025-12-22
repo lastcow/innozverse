@@ -1,258 +1,299 @@
-'use client';
-
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, DollarSign, HeadphonesIcon, Shield, Code, Brain, Rocket, Users, Target } from 'lucide-react';
+import { Home, DollarSign, Headphones } from 'lucide-react';
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation Menu */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
-                innoZverse
-              </div>
-            </Link>
-
-            {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="/#features" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <Sparkles className="h-4 w-4" />
-                <span>Features</span>
-              </Link>
-              <Link href="/pricing" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <DollarSign className="h-4 w-4" />
-                <span>Pricing</span>
-              </Link>
-              <Link href="/#support" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <HeadphonesIcon className="h-4 w-4" />
-                <span>Support</span>
-              </Link>
+    <div className="min-h-screen bg-black text-green-400 font-mono">
+      {/* Terminal Header */}
+      <header className="border-b border-green-400 p-4">
+        <div className="container mx-auto">
+          <div className="flex items-center justify-between">
+            <div className="text-xl font-bold">
+              <span className="text-white">innozverse</span>
+              <span className="text-green-400">:~$</span> cat about.txt
             </div>
-
-            {/* CTA Button */}
-            <div className="flex items-center space-x-4">
-              <Link href="/login" className="hidden sm:inline-block text-white/70 hover:text-white transition-colors">
-                Sign In
+            <nav className="flex gap-6">
+              <Link href="/" className="hover:text-white transition-colors flex items-center gap-2">
+                <Home size={16} />
+                <span>[HOME]</span>
               </Link>
-              <Link href="/login">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                  Get Started
-                </Button>
+              <Link href="/pricing-bw" className="hover:text-white transition-colors flex items-center gap-2">
+                <DollarSign size={16} />
+                <span>[PRICING]</span>
               </Link>
-            </div>
+              <Link href="/#support" className="hover:text-white transition-colors flex items-center gap-2">
+                <Headphones size={16} />
+                <span>[SUPPORT]</span>
+              </Link>
+            </nav>
           </div>
         </div>
-      </nav>
+      </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-24">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            About innoZverse
-          </h1>
-          <p className="text-xl text-white/70 max-w-3xl mx-auto">
-            Empowering the next generation of tech professionals through hands-on learning
-          </p>
+      <main className="container mx-auto px-4 py-12 max-w-4xl">
+        {/* Page Header */}
+        <div className="mb-12">
+          <pre className="text-xs sm:text-sm text-green-400">
+{`
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║   █████╗ ██████╗  ██████╗ ██╗   ██╗████████╗               ║
+║  ██╔══██╗██╔══██╗██╔═══██╗██║   ██║╚══██╔══╝               ║
+║  ███████║██████╔╝██║   ██║██║   ██║   ██║                  ║
+║  ██╔══██║██╔══██╗██║   ██║██║   ██║   ██║                  ║
+║  ██║  ██║██████╔╝╚██████╔╝╚██████╔╝   ██║                  ║
+║  ╚═╝  ╚═╝╚═════╝  ╚═════╝  ╚═════╝    ╚═╝                  ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+`}
+          </pre>
         </div>
 
         {/* Mission Section */}
-        <div className="mb-16">
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <Target className="h-8 w-8 text-purple-400" />
-                <CardTitle className="text-white text-3xl">Our Mission</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-white/80 text-lg leading-relaxed mb-4">
-                At innoZverse, we believe that hands-on experience is the key to mastering technology. Our mission is to provide a comprehensive learning environment where individuals and companies can develop cutting-edge skills through practical, real-world scenarios.
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat mission.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="space-y-4">
+            <div>
+              <div className="text-white font-bold text-lg mb-2">&gt; OUR MISSION</div>
+              <p className="text-sm leading-relaxed">
+                To empower individuals and companies worldwide with cutting-edge technology
+                education through a comprehensive learning environment featuring detailed,
+                ever-growing tutorials.
               </p>
-              <p className="text-white/80 text-lg leading-relaxed">
-                We offer access to virtual machines and detailed tutorials across security, programming, artificial intelligence, and emerging technologies. Our platform is designed to bridge the gap between theoretical knowledge and practical application, ensuring learners gain the confidence and expertise needed to excel in today&apos;s rapidly evolving tech landscape.
+            </div>
+            <div>
+              <div className="text-white font-bold mb-2">&gt; WHAT WE DO</div>
+              <p className="text-sm leading-relaxed">
+                We provide hands-on, practical education across critical technology domains:
+                security, programming, AI, and emerging technologies. Our platform combines
+                VM-based learning environments with expert-curated content to deliver real-world
+                skills that matter.
               </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* What We Offer */}
-        <div className="mb-16">
-          <h2 className="text-4xl font-bold text-white mb-8 text-center">What We Offer</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <Shield className="h-12 w-12 text-purple-400 mb-4" />
-                <CardTitle className="text-white">Security Training</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/70 text-sm">
-                  Master cybersecurity with hands-on labs featuring Kali Linux, vulnerable systems, and real-world attack scenarios.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <Code className="h-12 w-12 text-pink-400 mb-4" />
-                <CardTitle className="text-white">Programming Labs</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/70 text-sm">
-                  Build real applications with our development VMs equipped with databases, Claude Code, and modern tooling.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <Brain className="h-12 w-12 text-blue-400 mb-4" />
-                <CardTitle className="text-white">AI & Machine Learning</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/70 text-sm">
-                  Explore artificial intelligence through practical projects and comprehensive tutorials on the latest AI technologies.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <Rocket className="h-12 w-12 text-green-400 mb-4" />
-                <CardTitle className="text-white">Emerging Tech</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/70 text-sm">
-                  Stay ahead with blockchain, quantum computing, and next-generation technologies through guided learning paths.
-                </p>
-              </CardContent>
-            </Card>
+            </div>
           </div>
         </div>
 
-        {/* Who We Serve */}
-        <div className="mb-16">
-          <h2 className="text-4xl font-bold text-white mb-8 text-center">Who We Serve</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-2">
-                  <Users className="h-6 w-6 text-purple-400" />
-                  <CardTitle className="text-white text-2xl">Individuals</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/70 leading-relaxed">
-                  Whether you&apos;re a student, career changer, or professional looking to upskill, our platform provides the resources and environment you need to master new technologies at your own pace.
-                </p>
-              </CardContent>
-            </Card>
+        {/* What We Offer Section */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat offerings.txt
 
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-2">
-                  <Users className="h-6 w-6 text-pink-400" />
-                  <CardTitle className="text-white text-2xl">Companies</CardTitle>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="space-y-4 text-sm">
+            <div>
+              <div className="text-white font-bold mb-2">[1] SECURITY TRAINING</div>
+              <div className="pl-4">
+                <div className="flex items-start gap-2 mb-1">
+                  <span className="text-white">[✓]</span>
+                  <span>Cybersecurity fundamentals and advanced techniques</span>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/70 leading-relaxed">
-                  Train your teams with custom learning paths, dedicated support, and comprehensive analytics. Our enterprise solutions help organizations stay competitive in the digital age.
-                </p>
-              </CardContent>
-            </Card>
+                <div className="flex items-start gap-2 mb-1">
+                  <span className="text-white">[✓]</span>
+                  <span>Ethical hacking and penetration testing</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Defense strategies and security operations</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-white font-bold mb-2">[2] PROGRAMMING EDUCATION</div>
+              <div className="pl-4">
+                <div className="flex items-start gap-2 mb-1">
+                  <span className="text-white">[✓]</span>
+                  <span>Modern programming languages and frameworks</span>
+                </div>
+                <div className="flex items-start gap-2 mb-1">
+                  <span className="text-white">[✓]</span>
+                  <span>Software development best practices</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Real-world projects and code labs</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-white font-bold mb-2">[3] AI & MACHINE LEARNING</div>
+              <div className="pl-4">
+                <div className="flex items-start gap-2 mb-1">
+                  <span className="text-white">[✓]</span>
+                  <span>Machine learning and deep learning fundamentals</span>
+                </div>
+                <div className="flex items-start gap-2 mb-1">
+                  <span className="text-white">[✓]</span>
+                  <span>Practical AI implementation techniques</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Neural networks and model training</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-white font-bold mb-2">[4] EMERGING TECHNOLOGIES</div>
+              <div className="pl-4">
+                <div className="flex items-start gap-2 mb-1">
+                  <span className="text-white">[✓]</span>
+                  <span>Blockchain and distributed systems</span>
+                </div>
+                <div className="flex items-start gap-2 mb-1">
+                  <span className="text-white">[✓]</span>
+                  <span>Quantum computing introduction</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Next-generation technology trends</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Who We Serve Section */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat audience.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="space-y-4 text-sm">
+            <div>
+              <div className="text-white font-bold mb-2">&gt; FOR INDIVIDUALS</div>
+              <p className="pl-4">
+                Whether you're starting your tech journey or advancing your career,
+                our platform provides the resources and hands-on labs you need to
+                master cutting-edge technologies at your own pace.
+              </p>
+            </div>
+            <div>
+              <div className="text-white font-bold mb-2">&gt; FOR COMPANIES</div>
+              <p className="pl-4">
+                Upskill your teams with enterprise-grade training programs.
+                Our VM-based learning environments provide safe, isolated spaces
+                for employees to develop critical skills in security, programming,
+                and emerging technologies.
+              </p>
+            </div>
+            <div>
+              <div className="text-white font-bold mb-2">&gt; FOR EDUCATORS</div>
+              <p className="pl-4">
+                Enhance your curriculum with practical, hands-on learning resources.
+                Our detailed tutorials and lab environments complement traditional
+                education with real-world applications.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Why Choose Us Section */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat why_innozverse.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="space-y-3 text-sm">
+            <div className="flex items-start gap-2">
+              <span className="text-white font-bold">[+]</span>
+              <div>
+                <span className="text-white font-bold">HANDS-ON LEARNING:</span>
+                <span className="ml-2">Real VMs for practical, immersive experience</span>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white font-bold">[+]</span>
+              <div>
+                <span className="text-white font-bold">EVER-GROWING CONTENT:</span>
+                <span className="ml-2">Tutorials updated with latest industry trends</span>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white font-bold">[+]</span>
+              <div>
+                <span className="text-white font-bold">EXPERT MENTORSHIP:</span>
+                <span className="ml-2">Connect with industry professionals</span>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white font-bold">[+]</span>
+              <div>
+                <span className="text-white font-bold">FLEXIBLE LEARNING:</span>
+                <span className="ml-2">Learn at your own pace, on your schedule</span>
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white font-bold">[+]</span>
+              <div>
+                <span className="text-white font-bold">COMMUNITY SUPPORT:</span>
+                <span className="ml-2">Vibrant learner community available 24/7</span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* CTA Section */}
-        <div className="text-center">
-          <Card className="bg-gradient-to-b from-purple-600/20 to-pink-600/20 border-purple-400/50 backdrop-blur-sm">
-            <CardContent className="pt-12 pb-12">
-              <h2 className="text-3xl font-bold text-white mb-4">
-                Ready to Start Learning?
-              </h2>
-              <p className="text-white/80 mb-8 max-w-2xl mx-auto">
-                Join thousands of learners advancing their careers with innoZverse
-              </p>
-              <div className="flex gap-4 justify-center flex-wrap">
-                <Link href="/login">
-                  <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                    Get Started
-                  </Button>
-                </Link>
-                <Link href="/pricing">
-                  <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
-                    View Pricing
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8 bg-slate-900/50 mt-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            {/* Company Info */}
-            <div className="col-span-2">
-              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-4">
-                innoZverse
-              </div>
-              <p className="text-white/60 text-sm">
-                A comprehensive learning environment with detailed, ever-growing tutorials for individuals and companies.
-              </p>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/#features" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pricing" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#support" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Support
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/about" className="text-white/60 hover:text-white transition-colors text-sm">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
+        <div className="border-2 border-white bg-green-950 p-6 text-center">
+          <div className="text-white font-bold text-xl mb-4">
+            READY TO START YOUR JOURNEY?
           </div>
+          <p className="mb-6">
+            Join thousands of learners advancing their skills with innozverse
+          </p>
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Link href="/login">
+              <button className="border-2 border-white px-8 py-3 bg-white text-black hover:bg-green-400 transition-colors font-bold">
+                &gt; GET_STARTED
+              </button>
+            </Link>
+            <Link href="/pricing-bw">
+              <button className="border-2 border-white px-8 py-3 text-white hover:bg-white hover:text-black transition-colors font-bold">
+                &gt; VIEW_PRICING
+              </button>
+            </Link>
+          </div>
+        </div>
 
-          {/* Bottom Bar */}
-          <div className="border-t border-white/10 pt-8 text-center text-white/60 text-sm">
-            <p>&copy; {new Date().getFullYear()} innoZverse. All rights reserved.</p>
+        {/* Footer Info */}
+        <div className="mt-12 text-center text-sm">
+          <pre className="text-xs">
+{`$ exit
+
+innozverse:~$`}
+          </pre>
+        </div>
+      </main>
+
+      {/* Terminal Footer */}
+      <footer className="border-t border-green-400 mt-12 py-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center text-sm">
+            <p className="text-green-400">
+              innozverse:~$ whoami
+            </p>
+            <p className="text-white mt-2">
+              &copy; {new Date().getFullYear()} Innozverse. All rights reserved.
+            </p>
+            <div className="flex justify-center gap-6 mt-4">
+              <Link href="/" className="hover:text-white transition-colors">
+                [home.txt]
+              </Link>
+              <Link href="/pricing-bw" className="hover:text-white transition-colors">
+                [pricing.txt]
+              </Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">
+                [privacy.txt]
+              </Link>
+            </div>
           </div>
         </div>
       </footer>

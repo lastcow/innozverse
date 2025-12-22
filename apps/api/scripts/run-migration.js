@@ -28,7 +28,9 @@ async function runMigration() {
 
   const pool = new Pool({
     connectionString: databaseUrl,
-    ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+    ssl: databaseUrl.includes('sslmode=require') || process.env.DB_SSL === 'true'
+      ? { rejectUnauthorized: false }
+      : false
   });
 
   try {

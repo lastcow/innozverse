@@ -3,383 +3,338 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Shield, Code, Brain, Rocket, Users, CheckCircle2, BookOpen, Sparkles, DollarSign, HeadphonesIcon } from 'lucide-react';
-import { TechBackground } from '@/components/TechBackground';
+import { Home, DollarSign, Headphones, ArrowRight } from 'lucide-react';
 
-export default function Home() {
+export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is logged in by checking for access token
+    // Check if user is logged in
     const hasToken = typeof window !== 'undefined' && localStorage.getItem('refresh_token');
-
     if (hasToken) {
-      // Redirect to dashboard if logged in
       router.push('/dashboard');
     }
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation Menu */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
-                innoZverse
-              </div>
-            </Link>
-
-            {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="#features" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <Sparkles className="h-4 w-4" />
-                <span>Features</span>
-              </Link>
-              <Link href="/pricing" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <DollarSign className="h-4 w-4" />
-                <span>Pricing</span>
-              </Link>
-              <Link href="#support" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <HeadphonesIcon className="h-4 w-4" />
-                <span>Support</span>
-              </Link>
+    <div className="min-h-screen bg-black text-green-400 font-mono">
+      {/* Terminal Header */}
+      <header className="border-b border-green-400 p-4">
+        <div className="container mx-auto">
+          <div className="flex items-center justify-between">
+            <div className="text-xl font-bold">
+              <span className="text-white">innozverse</span>
+              <span className="text-green-400">:~$</span> cat README.md
             </div>
-
-            {/* CTA Button */}
-            <div className="flex items-center space-x-4">
-              <Link href="/login" className="hidden sm:inline-block text-white/70 hover:text-white transition-colors">
-                Sign In
+            <nav className="flex gap-6">
+              <Link href="#features" className="hover:text-white transition-colors flex items-center gap-2">
+                <span>[FEATURES]</span>
               </Link>
+              <Link href="/pricing-bw" className="hover:text-white transition-colors flex items-center gap-2">
+                <DollarSign size={16} />
+                <span>[PRICING]</span>
+              </Link>
+              <Link href="#support" className="hover:text-white transition-colors flex items-center gap-2">
+                <Headphones size={16} />
+                <span>[SUPPORT]</span>
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-12">
+        {/* Hero Section */}
+        <div className="mb-20">
+          <pre className="text-xs sm:text-sm text-green-400 mb-8">
+{`
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║   ██╗███╗   ██╗███╗   ██╗ ██████╗ ███████╗██╗   ██╗███████╗██████╗ ║
+║   ██║████╗  ██║████╗  ██║██╔═══██╗╚══███╔╝██║   ██║██╔════╝██╔══██╗║
+║   ██║██╔██╗ ██║██╔██╗ ██║██║   ██║  ███╔╝ ██║   ██║█████╗  ██████╔╝║
+║   ██║██║╚██╗██║██║╚██╗██║██║   ██║ ███╔╝  ╚██╗ ██╔╝██╔══╝  ██╔══██╗║
+║   ██║██║ ╚████║██║ ╚████║╚██████╔╝███████╗ ╚████╔╝ ███████╗██║  ██║║
+║   ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+`}
+          </pre>
+
+          <div className="text-center max-w-4xl mx-auto">
+            <p className="text-2xl text-white mb-4">
+              &gt; YOUR GATEWAY TO CUTTING-EDGE TECHNOLOGY LEARNING
+            </p>
+            <p className="text-lg mb-8">
+              &gt; A comprehensive learning environment with detailed, ever-growing tutorials
+              <br />
+              &gt; Master security, programming, AI, and emerging technologies
+            </p>
+            <div className="flex gap-4 justify-center">
               <Link href="/login">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                  Get Started
-                </Button>
+                <button className="border-2 border-green-400 px-6 py-3 hover:bg-green-400 hover:text-black transition-colors font-bold">
+                  &gt; START_LEARNING
+                </button>
+              </Link>
+              <Link href="/pricing-bw">
+                <button className="border-2 border-white px-6 py-3 text-white hover:bg-white hover:text-black transition-colors font-bold">
+                  &gt; VIEW_PRICING
+                </button>
               </Link>
             </div>
           </div>
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-[90vh] flex items-center pt-16">
-        {/* D3.js Interactive Background */}
-        <div className="absolute inset-0 bg-slate-900">
-          <TechBackground />
-        </div>
+        {/* Features Section */}
+        <section id="features" className="mb-20">
+          <h2 className="text-2xl font-bold mb-8 text-center">
+            <span className="text-white">&gt;&gt;&gt;</span> WHAT WE OFFER <span className="text-white">&lt;&lt;&lt;</span>
+          </h2>
 
-        {/* Gradient overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-purple-900/40 to-slate-900/60" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center w-full">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
-            innoZverse
-          </h1>
-          <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto">
-            Your Gateway to Cutting-Edge Technology Learning
-          </p>
-          <p className="text-lg text-white/70 mb-10 max-w-2xl mx-auto">
-            A comprehensive learning environment with detailed, ever-growing tutorials for individuals and companies mastering security, programming, AI, and emerging technologies.
-          </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Link href="/login">
-              <Button size="lg" className="text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                Get Started
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/pricing">
-              <Button size="lg" variant="outline" className="text-lg bg-white/10 text-white border-white/20 hover:bg-white/20">
-                View Pricing
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">What We Offer</h2>
-            <p className="text-xl text-white/70">Comprehensive learning paths across critical technology domains</p>
-          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <Shield className="h-12 w-12 text-purple-400 mb-4" />
-                <CardTitle className="text-white">Security</CardTitle>
-                <CardDescription className="text-white/70">
-                  Master cybersecurity fundamentals, ethical hacking, and advanced defense strategies
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <Code className="h-12 w-12 text-pink-400 mb-4" />
-                <CardTitle className="text-white">Programming</CardTitle>
-                <CardDescription className="text-white/70">
-                  Learn modern programming languages, frameworks, and software development best practices
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <Brain className="h-12 w-12 text-blue-400 mb-4" />
-                <CardTitle className="text-white">Artificial Intelligence</CardTitle>
-                <CardDescription className="text-white/70">
-                  Explore machine learning, deep learning, and practical AI implementation techniques
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <Rocket className="h-12 w-12 text-green-400 mb-4" />
-                <CardTitle className="text-white">Emerging Tech</CardTitle>
-                <CardDescription className="text-white/70">
-                  Stay ahead with blockchain, quantum computing, and next-generation technologies
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Subscription Tiers Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-purple-900/20 to-transparent">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Choose Your Learning Path</h2>
-            <p className="text-xl text-white/70">Flexible subscription plans tailored to your learning journey</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <CardTitle className="text-white text-2xl">Beginner</CardTitle>
-                <CardDescription className="text-white/70 text-lg">
-                  Start your tech journey
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 text-white/80">
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Access to foundational tutorials</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Community forum access</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Monthly live Q&A sessions</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Certificate of completion</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="bg-gradient-to-b from-purple-600/20 to-pink-600/20 border-purple-400/50 backdrop-blur-sm transform md:scale-105 shadow-xl">
-              <CardHeader>
-                <div className="inline-block px-3 py-1 bg-purple-500 text-white text-xs font-semibold rounded-full mb-2">
-                  MOST POPULAR
+            {/* Security */}
+            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors">
+              <pre className="text-xs mb-4">
+{`┌─────────────┐
+│  SECURITY   │
+└─────────────┘`}
+              </pre>
+              <div className="text-sm space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Cybersecurity fundamentals</span>
                 </div>
-                <CardTitle className="text-white text-2xl">Professional</CardTitle>
-                <CardDescription className="text-white/90 text-lg">
-                  Accelerate your expertise
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 text-white/90">
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Everything in Beginner</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Advanced tutorials and projects</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>1-on-1 mentorship sessions</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Hands-on lab environments</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Priority support</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
-              <CardHeader>
-                <CardTitle className="text-white text-2xl">Enterprise</CardTitle>
-                <CardDescription className="text-white/70 text-lg">
-                  For teams and organizations
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 text-white/80">
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Everything in Professional</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Custom learning paths</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Dedicated account manager</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Team analytics dashboard</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                    <span>On-site training options</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Ethical hacking</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Defense strategies</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Programming */}
+            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors">
+              <pre className="text-xs mb-4">
+{`┌───────────────┐
+│  PROGRAMMING  │
+└───────────────┘`}
+              </pre>
+              <div className="text-sm space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Modern languages</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Frameworks & tools</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Best practices</span>
+                </div>
+              </div>
+            </div>
+
+            {/* AI */}
+            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors">
+              <pre className="text-xs mb-4">
+{`┌──────────────┐
+│  AI & ML     │
+└──────────────┘`}
+              </pre>
+              <div className="text-sm space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Machine learning</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Deep learning</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Practical AI</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Emerging Tech */}
+            <div className="border border-green-400 p-6 hover:bg-green-950 transition-colors">
+              <pre className="text-xs mb-4">
+{`┌───────────────┐
+│  EMERGING     │
+│  TECH         │
+└───────────────┘`}
+              </pre>
+              <div className="text-sm space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Blockchain</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Quantum computing</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-white">[✓]</span>
+                  <span>Next-gen tech</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="text-center mt-12">
-            <Link href="/pricing">
-              <Button size="lg" className="text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                View All Pricing Options
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+        </section>
+
+        {/* Quick Pricing Overview */}
+        <section className="mb-20 border border-green-400 p-8">
+          <h2 className="text-2xl font-bold mb-6 text-center">
+            <span className="text-white">&gt;&gt;&gt;</span> SUBSCRIPTION TIERS <span className="text-white">&lt;&lt;&lt;</span>
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="border border-green-400 p-6">
+              <div className="text-white font-bold text-lg mb-2">[ FREE ]</div>
+              <div className="text-2xl text-white mb-4">$0/mo</div>
+              <div className="text-sm space-y-2">
+                <div>[✓] 1 VM remote access</div>
+                <div>[✓] Basic tutorials</div>
+                <div>[✓] Community support</div>
+              </div>
+            </div>
+
+            <div className="border-2 border-white bg-green-950 p-6">
+              <div className="text-white font-bold text-xs mb-2">POPULAR</div>
+              <div className="text-white font-bold text-lg mb-2">[ ADVANCED SECURITY ]</div>
+              <div className="text-2xl text-white mb-4">$29/mo</div>
+              <div className="text-sm space-y-2">
+                <div>[✓] 3 VMs (GUI available)</div>
+                <div>[✓] Advanced labs</div>
+                <div>[✓] Priority support</div>
+              </div>
+            </div>
+
+            <div className="border border-green-400 p-6">
+              <div className="text-white font-bold text-lg mb-2">[ PROGRAMMING ]</div>
+              <div className="text-2xl text-white mb-4">$25/mo</div>
+              <div className="text-sm space-y-2">
+                <div>[✓] 2 VMs (headless)</div>
+                <div>[✓] Programming courses</div>
+                <div>[✓] Code labs & projects</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <Link href="/pricing-bw">
+              <button className="border-2 border-white px-8 py-3 text-white hover:bg-white hover:text-black transition-colors font-bold">
+                &gt; VIEW_ALL_PRICING_OPTIONS
+              </button>
             </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Support Section */}
-      <section id="support" className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-white mb-6">We&apos;re Here to Help</h2>
-              <p className="text-lg text-white/80 mb-6">
-                Our expert support team is dedicated to ensuring your success. Whether you&apos;re stuck on a concept, need guidance on your learning path, or require technical assistance, we&apos;re here for you.
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <Users className="h-6 w-6 text-purple-400 mr-3 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-white font-semibold mb-1">Expert Mentorship</h3>
-                    <p className="text-white/70">Connect with industry professionals who guide your learning journey</p>
-                  </div>
+        {/* Support Section */}
+        <section id="support" className="mb-20">
+          <h2 className="text-2xl font-bold mb-8 text-center">
+            <span className="text-white">&gt;&gt;&gt;</span> SUPPORT & RESOURCES <span className="text-white">&lt;&lt;&lt;</span>
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="border border-green-400 p-6">
+              <pre className="text-xs mb-4">
+{`$ cat support.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+              </pre>
+              <div className="space-y-4 text-sm">
+                <div>
+                  <div className="text-white font-bold mb-1">[*] Expert Mentorship</div>
+                  <div>Connect with industry professionals guiding your learning journey</div>
                 </div>
-                <div className="flex items-start">
-                  <BookOpen className="h-6 w-6 text-pink-400 mr-3 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-white font-semibold mb-1">Comprehensive Resources</h3>
-                    <p className="text-white/70">Access detailed documentation, video tutorials, and practical examples</p>
-                  </div>
+                <div>
+                  <div className="text-white font-bold mb-1">[*] Comprehensive Resources</div>
+                  <div>Detailed documentation, video tutorials, and practical examples</div>
                 </div>
-                <div className="flex items-start">
-                  <CheckCircle2 className="h-6 w-6 text-green-400 mr-3 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-white font-semibold mb-1">24/7 Community Support</h3>
-                    <p className="text-white/70">Join a vibrant community of learners helping each other succeed</p>
-                  </div>
+                <div>
+                  <div className="text-white font-bold mb-1">[*] 24/7 Community</div>
+                  <div>Vibrant community of learners helping each other succeed</div>
                 </div>
               </div>
             </div>
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white text-2xl">Ready to Transform Your Skills?</CardTitle>
-                <CardDescription className="text-white/70 text-base">
-                  Join thousands of learners advancing their careers with innozverse
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Link href="/login">
-                  <Button size="lg" className="w-full text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                    Start Learning Today
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
+
+            <div className="border-2 border-white bg-green-950 p-6">
+              <div className="text-white font-bold text-xl mb-4">
+                READY TO TRANSFORM YOUR SKILLS?
+              </div>
+              <p className="mb-6">
+                Join thousands of learners advancing their careers with innozverse
+              </p>
+              <Link href="/login">
+                <button className="w-full border-2 border-white py-3 bg-white text-black hover:bg-green-400 transition-colors font-bold mb-4">
+                  &gt; START_LEARNING_TODAY
+                </button>
+              </Link>
+              <p className="text-center text-sm">
+                Already have an account?{' '}
+                <Link href="/login" className="text-white underline hover:no-underline">
+                  Sign in
                 </Link>
-                <p className="text-center text-white/60 text-sm mt-4">
-                  Already have an account?{' '}
-                  <Link href="/login" className="text-purple-400 hover:text-purple-300 underline">
-                    Sign in
-                  </Link>
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            {/* Company Info */}
-            <div className="col-span-2">
-              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-4">
-                innoZverse
-              </div>
-              <p className="text-white/60 text-sm">
-                A comprehensive learning environment with detailed, ever-growing tutorials for individuals and companies.
               </p>
             </div>
+          </div>
+        </section>
 
-            {/* Quick Links */}
+        {/* Terminal Info */}
+        <div className="border border-green-400 p-6 mb-12">
+          <pre className="text-xs">
+{`$ whoami
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ABOUT INNOZVERSE
+
+  A comprehensive learning environment with detailed, ever-growing
+  tutorials for individuals and companies.
+
+  Our mission: Empower learners to master security, programming,
+  AI, and emerging technologies through hands-on, practical education.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+$ exit
+`}
+          </pre>
+        </div>
+      </main>
+
+      {/* Terminal Footer */}
+      <footer className="border-t border-green-400 py-8">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8 mb-8 text-sm">
             <div>
-              <h3 className="text-white font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="#features" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pricing" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#support" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Support
-                  </Link>
-                </li>
-              </ul>
+              <div className="text-white font-bold mb-4">innozverse:~$</div>
+              <p>A comprehensive learning environment for technology education</p>
             </div>
-
-            {/* Legal */}
             <div>
-              <h3 className="text-white font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/about" className="text-white/60 hover:text-white transition-colors text-sm">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
+              <div className="text-white font-bold mb-4">[QUICK LINKS]</div>
+              <div className="space-y-2">
+                <div><Link href="#features" className="hover:text-white transition-colors">&gt; features.txt</Link></div>
+                <div><Link href="/pricing-bw" className="hover:text-white transition-colors">&gt; pricing.txt</Link></div>
+                <div><Link href="#support" className="hover:text-white transition-colors">&gt; support.txt</Link></div>
+              </div>
+            </div>
+            <div>
+              <div className="text-white font-bold mb-4">[LEGAL]</div>
+              <div className="space-y-2">
+                <div><Link href="/about" className="hover:text-white transition-colors">&gt; about.txt</Link></div>
+                <div><Link href="/privacy" className="hover:text-white transition-colors">&gt; privacy.txt</Link></div>
+              </div>
             </div>
           </div>
-
-          {/* Bottom Bar */}
-          <div className="border-t border-white/10 pt-8 text-center text-white/60 text-sm">
-            <p>&copy; {new Date().getFullYear()} innoZverse. All rights reserved.</p>
+          <div className="border-t border-green-400 pt-6 text-center text-sm">
+            <p>&copy; {new Date().getFullYear()} innozverse. All rights reserved.</p>
           </div>
         </div>
       </footer>

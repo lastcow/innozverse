@@ -1,291 +1,378 @@
-'use client';
-
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, DollarSign, HeadphonesIcon, Shield } from 'lucide-react';
+import { Home, DollarSign, Headphones } from 'lucide-react';
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Navigation Menu */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
-                innoZverse
-              </div>
-            </Link>
-
-            {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="/#features" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <Sparkles className="h-4 w-4" />
-                <span>Features</span>
-              </Link>
-              <Link href="/pricing" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <DollarSign className="h-4 w-4" />
-                <span>Pricing</span>
-              </Link>
-              <Link href="/#support" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <HeadphonesIcon className="h-4 w-4" />
-                <span>Support</span>
-              </Link>
+    <div className="min-h-screen bg-black text-green-400 font-mono">
+      {/* Terminal Header */}
+      <header className="border-b border-green-400 p-4">
+        <div className="container mx-auto">
+          <div className="flex items-center justify-between">
+            <div className="text-xl font-bold">
+              <span className="text-white">innozverse</span>
+              <span className="text-green-400">:~$</span> cat privacy.txt
             </div>
-
-            {/* CTA Button */}
-            <div className="flex items-center space-x-4">
-              <Link href="/login" className="hidden sm:inline-block text-white/70 hover:text-white transition-colors">
-                Sign In
+            <nav className="flex gap-6">
+              <Link href="/" className="hover:text-white transition-colors flex items-center gap-2">
+                <Home size={16} />
+                <span>[HOME]</span>
               </Link>
-              <Link href="/login">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                  Get Started
-                </Button>
+              <Link href="/pricing-bw" className="hover:text-white transition-colors flex items-center gap-2">
+                <DollarSign size={16} />
+                <span>[PRICING]</span>
               </Link>
-            </div>
+              <Link href="/#support" className="hover:text-white transition-colors flex items-center gap-2">
+                <Headphones size={16} />
+                <span>[SUPPORT]</span>
+              </Link>
+            </nav>
           </div>
         </div>
-      </nav>
+      </header>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-24">
-        {/* Header */}
+      <main className="container mx-auto px-4 py-12 max-w-4xl">
+        {/* Page Header */}
         <div className="mb-12">
-          <div className="flex items-center gap-4 mb-4">
-            <Shield className="h-12 w-12 text-purple-400" />
-            <h1 className="text-5xl md:text-6xl font-bold text-white">
-              Privacy Policy
-            </h1>
+          <pre className="text-xs sm:text-sm text-green-400">
+{`
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║   ██████╗ ██████╗ ██╗██╗   ██╗ █████╗  ██████╗██╗   ██╗    ║
+║   ██╔══██╗██╔══██╗██║██║   ██║██╔══██╗██╔════╝╚██╗ ██╔╝    ║
+║   ██████╔╝██████╔╝██║██║   ██║███████║██║      ╚████╔╝     ║
+║   ██╔═══╝ ██╔══██╗██║╚██╗ ██╔╝██╔══██║██║       ╚██╔╝      ║
+║   ██║     ██║  ██║██║ ╚████╔╝ ██║  ██║╚██████╗   ██║       ║
+║   ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝  ╚═╝  ╚═╝ ╚═════╝   ╚═╝       ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+`}
+          </pre>
+          <div className="text-center text-white mb-4">
+            Last Updated: {new Date().toISOString().split('T')[0]}
           </div>
-          <p className="text-white/70 text-lg">
-            Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+        </div>
+
+        {/* Introduction */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat introduction.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <p className="text-sm leading-relaxed">
+            At Innozverse, we are committed to protecting your privacy and ensuring
+            the security of your personal information. This Privacy Policy explains
+            how we collect, use, disclose, and safeguard your information when you
+            use our platform.
           </p>
         </div>
 
-        {/* Content */}
-        <div className="space-y-8">
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-2xl">Introduction</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-white/80 leading-relaxed">
-                At innoZverse, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our learning platform and virtual machine services. Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.
-              </p>
-            </CardContent>
-          </Card>
+        {/* Information We Collect */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat information_collected.txt
 
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-2xl">Information We Collect</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h3 className="text-white font-semibold mb-2">Personal Information</h3>
-                <p className="text-white/80 leading-relaxed">
-                  We collect personal information that you voluntarily provide to us when you register on the platform, such as your name, email address, and payment information. We also collect information when you use our virtual machines and learning resources.
-                </p>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="space-y-4 text-sm">
+            <div>
+              <div className="text-white font-bold mb-2">[1] PERSONAL INFORMATION</div>
+              <div className="pl-4 space-y-1">
+                <div>[✓] Name and email address</div>
+                <div>[✓] Account credentials</div>
+                <div>[✓] Payment information (processed securely)</div>
+                <div>[✓] Profile information</div>
               </div>
-              <div>
-                <h3 className="text-white font-semibold mb-2">Usage Data</h3>
-                <p className="text-white/80 leading-relaxed">
-                  We automatically collect certain information when you visit, use, or navigate our platform. This information does not reveal your specific identity but may include device and usage information, such as IP address, browser characteristics, operating system, language preferences, referring URLs, and information about how you interact with our platform.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-2xl">How We Use Your Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3 text-white/80">
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>To provide, operate, and maintain our learning platform and services</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>To process your transactions and manage your subscriptions</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>To improve, personalize, and expand our services</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>To communicate with you about updates, tutorials, and customer support</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>To send you marketing and promotional communications (with your consent)</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>To protect against fraudulent, unauthorized, or illegal activity</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-2xl">Data Security</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-white/80 leading-relaxed mb-4">
-                We implement appropriate technical and organizational security measures designed to protect your personal information. However, please note that no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
-              </p>
-              <p className="text-white/80 leading-relaxed">
-                Your virtual machine sessions are isolated and secured. We do not monitor or access the content within your VMs unless required for technical support or security purposes with your explicit consent.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-2xl">Data Retention</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-white/80 leading-relaxed">
-                We will retain your personal information only for as long as necessary to fulfill the purposes outlined in this privacy policy, unless a longer retention period is required or permitted by law. When we have no ongoing legitimate business need to process your personal information, we will either delete or anonymize it.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-2xl">Your Privacy Rights</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-white/80 leading-relaxed mb-4">
-                Depending on your location, you may have the following rights regarding your personal information:
-              </p>
-              <ul className="space-y-3 text-white/80">
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>The right to access and receive a copy of your personal information</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>The right to request correction of inaccurate data</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>The right to request deletion of your personal information</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>The right to object to or restrict certain processing of your data</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-purple-400 mr-2">•</span>
-                  <span>The right to data portability</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-2xl">Cookies and Tracking</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-white/80 leading-relaxed">
-                We use cookies and similar tracking technologies to track activity on our platform and store certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our service.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-2xl">Changes to This Privacy Policy</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-white/80 leading-relaxed">
-                We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last Updated&quot; date. You are advised to review this Privacy Policy periodically for any changes.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-2xl">Contact Us</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-white/80 leading-relaxed mb-4">
-                If you have any questions or concerns about this Privacy Policy or our data practices, please contact us:
-              </p>
-              <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                <p className="text-white/80">
-                  Email: <a href="mailto:privacy@innozverse.com" className="text-purple-400 hover:text-purple-300">privacy@innozverse.com</a>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8 bg-slate-900/50 mt-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            {/* Company Info */}
-            <div className="col-span-2">
-              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-4">
-                innoZverse
-              </div>
-              <p className="text-white/60 text-sm">
-                A comprehensive learning environment with detailed, ever-growing tutorials for individuals and companies.
-              </p>
             </div>
 
-            {/* Quick Links */}
             <div>
-              <h3 className="text-white font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/#features" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pricing" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#support" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Support
-                  </Link>
-                </li>
-              </ul>
+              <div className="text-white font-bold mb-2">[2] USAGE INFORMATION</div>
+              <div className="pl-4 space-y-1">
+                <div>[✓] Learning progress and activity</div>
+                <div>[✓] VM usage statistics</div>
+                <div>[✓] Tutorial completion data</div>
+                <div>[✓] Support interactions</div>
+              </div>
             </div>
 
-            {/* Legal */}
             <div>
-              <h3 className="text-white font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/about" className="text-white/60 hover:text-white transition-colors text-sm">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="text-white/60 hover:text-white transition-colors text-sm">
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
+              <div className="text-white font-bold mb-2">[3] TECHNICAL INFORMATION</div>
+              <div className="pl-4 space-y-1">
+                <div>[✓] IP address and device information</div>
+                <div>[✓] Browser type and version</div>
+                <div>[✓] Operating system</div>
+                <div>[✓] Access times and referring URLs</div>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Bottom Bar */}
-          <div className="border-t border-white/10 pt-8 text-center text-white/60 text-sm">
-            <p>&copy; {new Date().getFullYear()} innoZverse. All rights reserved.</p>
+        {/* How We Use Your Information */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat usage.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-start gap-2">
+              <span className="text-white">[+]</span>
+              <span>Provide and maintain our services</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white">[+]</span>
+              <span>Process your subscription and payments</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white">[+]</span>
+              <span>Personalize your learning experience</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white">[+]</span>
+              <span>Send administrative and educational communications</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white">[+]</span>
+              <span>Improve our platform and develop new features</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white">[+]</span>
+              <span>Ensure security and prevent fraud</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <span className="text-white">[+]</span>
+              <span>Comply with legal obligations</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Data Security */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat security.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="text-sm leading-relaxed space-y-3">
+            <p>
+              We implement industry-standard security measures to protect your
+              personal information:
+            </p>
+            <div className="space-y-2">
+              <div className="flex items-start gap-2">
+                <span className="text-white">[✓]</span>
+                <span>Encryption of data in transit and at rest</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[✓]</span>
+                <span>Secure authentication and access controls</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[✓]</span>
+                <span>Regular security audits and updates</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[✓]</span>
+                <span>Isolated VM environments for learning</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Your Rights */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat your_rights.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="text-sm space-y-3">
+            <p className="mb-2">You have the right to:</p>
+            <div className="space-y-2">
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Access your personal information</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Correct inaccurate data</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Request deletion of your data</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Object to data processing</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Export your data</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Withdraw consent at any time</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Cookies and Tracking */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat cookies.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="text-sm leading-relaxed space-y-3">
+            <p>
+              We use cookies and similar tracking technologies to:
+            </p>
+            <div className="space-y-2">
+              <div className="flex items-start gap-2">
+                <span className="text-white">[✓]</span>
+                <span>Maintain your session and preferences</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[✓]</span>
+                <span>Analyze platform usage and performance</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[✓]</span>
+                <span>Provide personalized content</span>
+              </div>
+            </div>
+            <p className="mt-3">
+              You can manage cookie preferences through your browser settings.
+            </p>
+          </div>
+        </div>
+
+        {/* Third-Party Services */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat third_party.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="text-sm leading-relaxed space-y-3">
+            <p>
+              We may use third-party services for:
+            </p>
+            <div className="space-y-2">
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Payment processing (secure, PCI-compliant providers)</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Analytics and performance monitoring</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Email communications</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>OAuth authentication (Google, GitHub)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Data Retention */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat retention.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="text-sm leading-relaxed">
+            <p>
+              We retain your personal information for as long as necessary to
+              provide our services and comply with legal obligations. After
+              account deletion, we may retain certain data for:
+            </p>
+            <div className="space-y-2 mt-3">
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Legal compliance and dispute resolution</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Fraud prevention</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-white">[•]</span>
+                <span>Backup and disaster recovery</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Changes to Policy */}
+        <div className="border border-green-400 p-6 mb-8">
+          <pre className="text-xs mb-4">
+{`$ cat updates.txt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
+          </pre>
+          <div className="text-sm leading-relaxed">
+            <p>
+              We may update this Privacy Policy from time to time. We will notify
+              you of any changes by posting the new Privacy Policy on this page
+              and updating the "Last Updated" date. Continued use of our platform
+              after changes constitutes acceptance of the updated policy.
+            </p>
+          </div>
+        </div>
+
+        {/* Contact */}
+        <div className="border-2 border-white bg-green-950 p-6 text-center">
+          <div className="text-white font-bold text-xl mb-4">
+            QUESTIONS ABOUT PRIVACY?
+          </div>
+          <p className="text-sm mb-6">
+            If you have any questions or concerns about this Privacy Policy or
+            our data practices, please contact us.
+          </p>
+          <div className="text-sm space-y-1">
+            <div>Email: privacy@innozverse.ai</div>
+            <div>Support: <Link href="/#support" className="text-white underline hover:no-underline">Contact Support</Link></div>
+          </div>
+        </div>
+
+        {/* Footer Info */}
+        <div className="mt-12 text-center text-sm">
+          <pre className="text-xs">
+{`$ exit
+
+innozverse:~$`}
+          </pre>
+        </div>
+      </main>
+
+      {/* Terminal Footer */}
+      <footer className="border-t border-green-400 mt-12 py-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center text-sm">
+            <p className="text-green-400">
+              innozverse:~$ whoami
+            </p>
+            <p className="text-white mt-2">
+              &copy; {new Date().getFullYear()} Innozverse. All rights reserved.
+            </p>
+            <div className="flex justify-center gap-6 mt-4">
+              <Link href="/" className="hover:text-white transition-colors">
+                [home.txt]
+              </Link>
+              <Link href="/about" className="hover:text-white transition-colors">
+                [about.txt]
+              </Link>
+              <Link href="/pricing-bw" className="hover:text-white transition-colors">
+                [pricing.txt]
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
