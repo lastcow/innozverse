@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ApiClient, UserRole } from '@innozverse/api-client';
-import { AlertCircle, Loader2, Trash2, Edit2, UserPlus } from 'lucide-react';
+import { AlertCircle, Loader2, Trash2, Edit2, UserPlus, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const apiClient = new ApiClient(
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
@@ -41,6 +41,12 @@ export default function UsersPage() {
   const [search, setSearch] = useState('');
   const [selectedRole, setSelectedRole] = useState<string>('');
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [limit] = useState(10);
+
   // Edit user state
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editName, setEditName] = useState('');
@@ -57,16 +63,20 @@ export default function UsersPage() {
       setLoading(true);
       setError(null);
       const response = await apiClient.listUsers({
+        page: currentPage,
+        limit: limit,
         search: search || undefined,
         role: selectedRole || undefined,
       });
       setUsers(response.data.users);
+      setTotalPages(response.data.pagination.totalPages);
+      setTotalUsers(response.data.pagination.total);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch users');
     } finally {
       setLoading(false);
     }
-  }, [search, selectedRole]);
+  }, [currentPage, limit, search, selectedRole]);
 
   useEffect(() => {
     // Ensure we have a valid access token before fetching
@@ -133,6 +143,28 @@ export default function UsersPage() {
     }
   };
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setCurrentPage(1); // Reset to first page on search
+  };
+
+  const handleRoleChange = (value: string) => {
+    setSelectedRole(value);
+    setCurrentPage(1); // Reset to first page on filter
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -163,12 +195,12 @@ export default function UsersPage() {
             <Input
               placeholder="Search by name or email..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="max-w-md"
             />
             <select
               value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
+              onChange={(e) => handleRoleChange(e.target.value)}
               className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
             >
               <option value="">All Roles</option>
@@ -249,6 +281,38 @@ export default function UsersPage() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {!loading && users.length > 0 && (
+              <div className="flex items-center justify-between pt-4 border-t">
+                <div className="text-sm text-muted-foreground">
+                  Showing {((currentPage - 1) * limit) + 1} to {Math.min(currentPage * limit, totalUsers)} of {totalUsers} users
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4 mr-1" />
+                    Previous
+                  </Button>
+                  <div className="text-sm font-medium px-2">
+                    Page {currentPage} of {totalPages}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
