@@ -6,6 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { ApiClient, UserRole } from '@innozverse/api-client';
 import { AlertCircle, Loader2, Trash2, Edit2, UserPlus, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -57,6 +67,9 @@ export default function UsersPage() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteName, setInviteName] = useState('');
   const [inviteRole, setInviteRole] = useState<UserRole>('guest');
+
+  // Delete user state
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -115,14 +128,16 @@ export default function UsersPage() {
     }
   };
 
-  const handleDelete = async (userId: string) => {
-    if (!confirm('Are you sure you want to delete this user?')) return;
+  const handleDelete = async () => {
+    if (!userToDelete) return;
 
     try {
-      await apiClient.deleteUser(userId);
+      await apiClient.deleteUser(userToDelete.id);
+      setUserToDelete(null);
       fetchUsers();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete user');
+      setUserToDelete(null);
     }
   };
 
@@ -272,7 +287,7 @@ export default function UsersPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleDelete(user.id)}
+                            onClick={() => setUserToDelete(user)}
                           >
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
@@ -409,6 +424,29 @@ export default function UsersPage() {
             </Card>
           </div>
         )}
+
+        {/* Delete User Alert Dialog */}
+        <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the user
+                <span className="font-semibold"> {userToDelete?.name}</span> ({userToDelete?.email})
+                and remove their data from the system.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete User
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </DashboardLayout>
   );
