@@ -1,3 +1,8 @@
+---
+name: innozverse-architecture
+description: Understand the innozverse monorepo architecture, system design, technology choices, and development patterns. Use when designing features, understanding system structure, making architectural decisions, or planning cross-application changes.
+---
+
 # innozverse Architecture Skill
 
 When working on the innozverse project, follow these architectural principles and patterns.

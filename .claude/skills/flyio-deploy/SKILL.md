@@ -1,3 +1,8 @@
+---
+name: innozverse-flyio-deploy
+description: Deploy the innozverse API to Fly.io, manage deployments, check status, view logs, and troubleshoot deployment issues. Use when deploying the API or debugging Fly.io deployment problems.
+---
+
 # innozverse Fly.io Deployment Skill
 
 Quick reference for deploying the innozverse API to Fly.io.

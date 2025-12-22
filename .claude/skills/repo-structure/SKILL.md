@@ -1,3 +1,8 @@
+---
+name: innozverse-repo-structure
+description: Navigate and understand the innozverse repository structure, file organization, naming conventions, and module boundaries. Use when creating new files, organizing code, or understanding where to add features.
+---
+
 # innozverse Repository Structure Skill
 
 When navigating and modifying the innozverse repository, follow these structure conventions.

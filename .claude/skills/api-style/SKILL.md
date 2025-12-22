@@ -1,3 +1,8 @@
+---
+name: innozverse-api-style
+description: Follow API development conventions including RESTful design, Fastify patterns, Zod validation, error handling, and versioning. Use when building API endpoints, adding routes, or working with API code.
+---
+
 # innozverse API Development Style
 
 When developing API endpoints for innozverse, follow these patterns and conventions.
@@ -13,12 +18,12 @@ export async function usersRoutes(fastify: FastifyInstance) {
   fastify.get('/users', async (request, reply) => {
     return { users: [] };
   });
-  
+
   fastify.get('/users/:id', async (request, reply) => {
     const { id } = request.params as { id: string };
     return { user: { id } };
   });
-  
+
   fastify.post('/users', async (request, reply) => {
     const body = request.body;
     return reply.code(201).send({ user: body });
@@ -129,7 +134,7 @@ fastify.post('/users', async (request, reply) => {
 // apps/api/src/index.ts
 fastify.setErrorHandler((error, request, reply) => {
   fastify.log.error(error);
-  
+
   reply.status(error.statusCode || 500).send({
     error: error.name || 'InternalServerError',
     message: error.message || 'Something went wrong',
@@ -142,7 +147,7 @@ fastify.setErrorHandler((error, request, reply) => {
 ```typescript
 fastify.get('/users/:id', async (request, reply) => {
   const user = await findUser(id);
-  
+
   if (!user) {
     return reply.code(404).send({
       error: 'NotFound',
@@ -150,7 +155,7 @@ fastify.get('/users/:id', async (request, reply) => {
       statusCode: 404
     });
   }
-  
+
   return { data: user };
 });
 ```
@@ -260,21 +265,21 @@ import { buildServer } from '../../index';
 
 describe('Users API', () => {
   let fastify;
-  
+
   beforeAll(async () => {
     fastify = await buildServer();
   });
-  
+
   afterAll(async () => {
     await fastify.close();
   });
-  
+
   test('GET /v1/users returns users list', async () => {
     const response = await fastify.inject({
       method: 'GET',
       url: '/v1/users'
     });
-    
+
     expect(response.statusCode).toBe(200);
     expect(response.json()).toHaveProperty('users');
   });
@@ -303,11 +308,11 @@ fastify.get('/users/:id', async (request, reply) => {
     'SELECT * FROM users WHERE id = $1',
     [request.params.id]
   );
-  
+
   if (rows.length === 0) {
     return reply.code(404).send({ error: 'Not found' });
   }
-  
+
   return { data: rows[0] };
 });
 ```

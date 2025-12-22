@@ -1,3 +1,8 @@
+---
+name: innozverse-flutter-style
+description: Follow Flutter and Dart development best practices including project structure, API service patterns, StatefulWidget usage, and environment configuration. Use when working on mobile app features or modifying Flutter code.
+---
+
 # innozverse Flutter Development Style
 
 Follow these patterns when building mobile features in apps/mobile.
@@ -106,7 +111,7 @@ class _UsersScreenState extends State<UsersScreen> {
   Widget build(BuildContext context) {
     if (_loading) return const CircularProgressIndicator();
     if (_error != null) return Text('Error: $_error');
-    
+
     return ListView.builder(
       itemCount: _users?.length ?? 0,
       itemBuilder: (context, index) {

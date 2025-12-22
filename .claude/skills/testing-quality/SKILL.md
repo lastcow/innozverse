@@ -1,3 +1,8 @@
+---
+name: innozverse-testing-quality
+description: Maintain code quality standards including linting, type checking, testing strategies, and code review practices. Use when preparing commits, reviewing code, or setting up quality checks.
+---
+
 # innozverse Testing & Quality Standards
 
 Maintain high code quality across the innozverse project.

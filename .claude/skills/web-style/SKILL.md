@@ -1,3 +1,8 @@
+---
+name: innozverse-web-style
+description: Follow Next.js web development patterns including App Router conventions, client/server components, API client usage, and environment variables. Use when building web features, creating pages, or working with Next.js code.
+---
+
 # innozverse Web Development Style (Next.js)
 
 Follow these patterns when building web features in apps/web.
@@ -52,7 +57,7 @@ export default function UsersPage() {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  
+
   return <div>{/* render users */}</div>;
 }
 ```
