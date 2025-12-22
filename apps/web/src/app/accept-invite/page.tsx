@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ApiClient } from '@innozverse/api-client';
 import { Button } from '@/components/ui/button';
@@ -13,14 +13,13 @@ const apiClient = new ApiClient(
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 );
 
-export default function AcceptInvitePage() {
+function AcceptInviteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [validating, setValidating] = useState(true);
   const [inviteData, setInviteData] = useState<{ email: string; name: string } | null>(null);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,7 +28,6 @@ export default function AcceptInvitePage() {
   useEffect(() => {
     if (!token) {
       setError('Invalid invitation link');
-      setValidating(false);
       setLoading(false);
       return;
     }
@@ -39,13 +37,11 @@ export default function AcceptInvitePage() {
       .get(`/v1/auth/validate-invite?token=${token}`)
       .then((response) => {
         setInviteData(response.data);
-        setValidating(false);
         setLoading(false);
       })
       .catch((err) => {
         const message = err.response?.data?.message || 'Invalid or expired invitation';
         setError(message);
-        setValidating(false);
         setLoading(false);
       });
   }, [token]);
@@ -195,5 +191,17 @@ export default function AcceptInvitePage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function AcceptInvitePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    }>
+      <AcceptInviteContent />
+    </Suspense>
   );
 }
