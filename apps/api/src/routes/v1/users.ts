@@ -7,6 +7,7 @@ import {
   InviteUserRequest,
 } from '@innozverse/shared';
 import crypto from 'crypto';
+import { emailService } from '../../utils/email';
 
 interface UserIdParams {
   id: string;
@@ -264,16 +265,28 @@ export async function usersRoutes(fastify: FastifyInstance) {
           [email, name, role, ''] // Empty password hash - user needs to set password via invite link
         );
 
-        // In production, you would:
-        // 1. Store the invite token in a separate table with expiration
-        // 2. Send an email with the invite link
-        // 3. Allow user to set password when they click the invite link
+        // Generate invite URL
+        const webAppUrl = process.env.WEB_APP_URL || 'http://localhost:3000';
+        const inviteUrl = `${webAppUrl}/accept-invite?token=${inviteToken}`;
+
+        // Get the inviter's name from the authenticated user
+        const inviterName = (request as any).user?.name;
+
+        // Send invitation email (don't await - send in background)
+        emailService.sendInvitation({
+          to: email,
+          name: name,
+          inviteUrl: inviteUrl,
+          inviterName: inviterName,
+        }).catch((err) => {
+          request.log.error('Failed to send invitation email:', err);
+        });
 
         return reply.status(201).send({
           status: 'ok',
           data: {
             user: result.rows[0],
-            inviteToken, // In production, don't return this - send via email
+            message: 'User invited successfully. Invitation email sent.',
           },
         });
       } catch (error) {
