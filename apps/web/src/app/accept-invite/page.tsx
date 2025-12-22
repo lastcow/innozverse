@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { apiClient } from '@innozverse/api-client';
+import { ApiClient } from '@innozverse/api-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+
+const apiClient = new ApiClient(
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+);
 
 export default function AcceptInvitePage() {
   const router = useRouter();

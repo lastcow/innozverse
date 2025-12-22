@@ -296,10 +296,11 @@ export async function usersRoutes(fastify: FastifyInstance) {
           },
         });
       } catch (error) {
-        request.log.error(error);
+        request.log.error({ error, body: request.body }, 'Failed to invite user');
         return reply.status(500).send({
           error: 'Internal Server Error',
           message: 'Failed to invite user',
+          details: error instanceof Error ? error.message : 'Unknown error'
         });
       }
     }

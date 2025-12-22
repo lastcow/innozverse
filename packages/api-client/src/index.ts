@@ -87,6 +87,31 @@ export class ApiClient {
     return response.json();
   }
 
+  // Public HTTP methods
+  async get<T = any>(path: string): Promise<T> {
+    return this.request<T>(path);
+  }
+
+  async post<T = any>(path: string, data?: any): Promise<T> {
+    return this.request<T>(path, {
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined
+    });
+  }
+
+  async put<T = any>(path: string, data?: any): Promise<T> {
+    return this.request<T>(path, {
+      method: 'PUT',
+      body: data ? JSON.stringify(data) : undefined
+    });
+  }
+
+  async delete<T = any>(path: string): Promise<T> {
+    return this.request<T>(path, {
+      method: 'DELETE'
+    });
+  }
+
   // ==================== Health Check ====================
 
   async getHealth(): Promise<HealthResponse> {
