@@ -255,14 +255,14 @@ export async function usersRoutes(fastify: FastifyInstance) {
 
         // Generate an invite token
         const inviteToken = crypto.randomBytes(32).toString('hex');
+        const inviteExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
-        // Create user with temporary password (they'll need to reset it)
-        // For now, we'll just create the user without password and mark email as unverified
+        // Create user with invite token (they'll need to set password via invite link)
         const result = await pool.query(
-          `INSERT INTO users (email, name, role, password_hash, email_verified, is_active)
-           VALUES ($1, $2, $3, $4, false, true)
+          `INSERT INTO users (email, name, role, password_hash, email_verified, is_active, invite_token, invite_expires_at)
+           VALUES ($1, $2, $3, $4, false, true, $5, $6)
            RETURNING id, email, name, avatar_url, role, is_active, email_verified, email_verified_at, last_login_at, created_at, updated_at`,
-          [email, name, role, ''] // Empty password hash - user needs to set password via invite link
+          [email, name, role, '', inviteToken, inviteExpiresAt] // Empty password hash - user needs to set password via invite link
         );
 
         // Generate invite URL
@@ -278,8 +278,14 @@ export async function usersRoutes(fastify: FastifyInstance) {
           name: name,
           inviteUrl: inviteUrl,
           inviterName: inviterName,
+        }).then((result) => {
+          if (result.success) {
+            request.log.info({ to: email, messageId: result.messageId }, 'Invitation email sent successfully');
+          } else {
+            request.log.error({ to: email, error: result.error }, 'Failed to send invitation email');
+          }
         }).catch((err) => {
-          request.log.error('Failed to send invitation email:', err);
+          request.log.error(err, 'Failed to send invitation email (exception)');
         });
 
         return reply.status(201).send({

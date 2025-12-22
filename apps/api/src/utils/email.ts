@@ -52,8 +52,14 @@ export class EmailService {
   }
 
   async send(options: EmailOptions): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    console.log('[EmailService] Attempting to send email:', {
+      to: options.to,
+      subject: options.subject,
+      enabled: this.config.enabled,
+    });
+
     if (!this.config.enabled) {
-      console.log('Email sending is disabled. Email that would be sent:', {
+      console.log('[EmailService] Email sending is disabled. Email that would be sent:', {
         to: options.to,
         subject: options.subject,
       });
@@ -61,6 +67,7 @@ export class EmailService {
     }
 
     try {
+      console.log('[EmailService] Preparing email with Mailgun...');
       const messageData: any = {
         from: options.from || this.config.from,
         to: Array.isArray(options.to) ? options.to.join(', ') : options.to,
@@ -87,10 +94,12 @@ export class EmailService {
         }));
       }
 
+      console.log('[EmailService] Sending email via Mailgun to domain:', this.config.domain);
       const response = await this.mailgun.messages.create(this.config.domain, messageData);
+      console.log('[EmailService] Email sent successfully. Message ID:', response.id);
       return { success: true, messageId: response.id };
     } catch (error) {
-      console.error('Failed to send email:', error);
+      console.error('[EmailService] Failed to send email:', error);
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
   }

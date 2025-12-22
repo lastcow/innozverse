@@ -816,4 +816,163 @@ export async function authRoutes(fastify: FastifyInstance) {
       });
     }
   });
+
+  // ==================== Invite Acceptance ====================
+
+  /**
+   * POST /v1/auth/accept-invite
+   * Accept an invitation and set password
+   */
+  fastify.post<{ Body: { token: string; password: string } }>('/accept-invite', async (request, reply) => {
+    try {
+      const { token, password } = request.body;
+
+      if (!token || !password) {
+        return reply.code(400).send({
+          error: 'ValidationError',
+          message: 'Token and password are required',
+          statusCode: 400
+        });
+      }
+
+      // Validate password strength
+      if (password.length < 8) {
+        return reply.code(400).send({
+          error: 'ValidationError',
+          message: 'Password must be at least 8 characters long',
+          statusCode: 400
+        });
+      }
+
+      // Find user by invite token
+      const userResult = await pool.query(
+        'SELECT id, email, name, invite_expires_at FROM users WHERE invite_token = $1',
+        [token]
+      );
+
+      if (userResult.rows.length === 0) {
+        return reply.code(400).send({
+          error: 'InvalidToken',
+          message: 'Invalid invitation token',
+          statusCode: 400
+        });
+      }
+
+      const user = userResult.rows[0];
+
+      // Check if token has expired
+      if (new Date() > new Date(user.invite_expires_at)) {
+        return reply.code(400).send({
+          error: 'TokenExpired',
+          message: 'Invitation token has expired',
+          statusCode: 400
+        });
+      }
+
+      // Hash the password
+      const passwordHash = await hashPassword(password);
+
+      // Update user: set password, verify email, clear invite token
+      await pool.query(
+        `UPDATE users
+         SET password_hash = $1, email_verified = true, email_verified_at = CURRENT_TIMESTAMP,
+             invite_token = NULL, invite_expires_at = NULL, updated_at = CURRENT_TIMESTAMP
+         WHERE id = $2`,
+        [passwordHash, user.id]
+      );
+
+      // Get updated user info
+      const updatedUser = await pool.query(
+        'SELECT id, email, name, avatar_url, role, is_active, email_verified FROM users WHERE id = $1',
+        [user.id]
+      );
+
+      // Generate JWT tokens
+      const accessToken = generateAccessToken({
+        userId: updatedUser.rows[0].id,
+        email: updatedUser.rows[0].email,
+        role: updatedUser.rows[0].role
+      });
+
+      const refreshToken = generateRefreshToken({
+        userId: updatedUser.rows[0].id,
+        email: updatedUser.rows[0].email,
+        role: updatedUser.rows[0].role
+      });
+
+      return reply.send({
+        status: 'ok',
+        data: {
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          user: updatedUser.rows[0]
+        }
+      });
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.code(500).send({
+        error: 'InternalServerError',
+        message: 'Failed to accept invitation',
+        statusCode: 500
+      });
+    }
+  });
+
+  /**
+   * GET /v1/auth/validate-invite
+   * Validate an invitation token
+   */
+  fastify.get<{ Querystring: { token: string } }>('/validate-invite', async (request, reply) => {
+    try {
+      const { token } = request.query;
+
+      if (!token) {
+        return reply.code(400).send({
+          error: 'ValidationError',
+          message: 'Token is required',
+          statusCode: 400
+        });
+      }
+
+      // Find user by invite token
+      const userResult = await pool.query(
+        'SELECT id, email, name, invite_expires_at FROM users WHERE invite_token = $1',
+        [token]
+      );
+
+      if (userResult.rows.length === 0) {
+        return reply.code(400).send({
+          error: 'InvalidToken',
+          message: 'Invalid invitation token',
+          statusCode: 400
+        });
+      }
+
+      const user = userResult.rows[0];
+
+      // Check if token has expired
+      if (new Date() > new Date(user.invite_expires_at)) {
+        return reply.code(400).send({
+          error: 'TokenExpired',
+          message: 'Invitation token has expired',
+          statusCode: 400
+        });
+      }
+
+      return reply.send({
+        status: 'ok',
+        data: {
+          email: user.email,
+          name: user.name
+        }
+      });
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.code(500).send({
+        error: 'InternalServerError',
+        message: 'Failed to validate invitation',
+        statusCode: 500
+      });
+    }
+  });
 }
