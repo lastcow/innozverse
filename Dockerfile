@@ -48,6 +48,10 @@ COPY --from=builder /prod/api /app
 COPY --from=builder /app/packages/shared/dist ./node_modules/@innozverse/shared/dist
 COPY --from=builder /app/packages/shared/package.json ./node_modules/@innozverse/shared/package.json
 
+# Copy migrations and scripts
+COPY --from=builder /app/apps/api/migrations ./migrations
+COPY --from=builder /app/apps/api/scripts ./scripts
+
 EXPOSE 8080
 
 CMD ["node", "dist/index.js"]

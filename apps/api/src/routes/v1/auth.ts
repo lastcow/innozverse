@@ -75,7 +75,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       const result = await pool.query(
         `INSERT INTO users (email, password_hash, name, email_verified, last_login_at)
          VALUES ($1, $2, $3, false, NOW())
-         RETURNING id, email, name, avatar_url, role, is_active, email_verified, email_verified_at, last_login_at, created_at, updated_at`,
+         RETURNING id, email, name, avatar_url, role, is_active, status, email_verified, email_verified_at, last_login_at, created_at, updated_at`,
         [normalizedEmail, passwordHash, name]
       );
 
@@ -104,6 +104,7 @@ export async function authRoutes(fastify: FastifyInstance) {
             avatar_url: user.avatar_url,
             role: user.role,
             is_active: user.is_active,
+            status: user.status,
             email_verified: user.email_verified,
             email_verified_at: user.email_verified_at?.toISOString() || null,
             last_login_at: user.last_login_at?.toISOString() || null,
@@ -210,6 +211,7 @@ export async function authRoutes(fastify: FastifyInstance) {
             avatar_url: user.avatar_url,
             role: user.role,
             is_active: user.is_active,
+            status: user.status,
             email_verified: user.email_verified,
             email_verified_at: user.email_verified_at?.toISOString() || null,
             last_login_at: new Date().toISOString(),
@@ -323,6 +325,7 @@ export async function authRoutes(fastify: FastifyInstance) {
             avatar_url: user.avatar_url,
             role: user.role,
             is_active: user.is_active,
+            status: user.status,
             email_verified: user.email_verified,
             email_verified_at: user.email_verified_at?.toISOString() || null,
             last_login_at: user.last_login_at?.toISOString() || null,
@@ -876,14 +879,14 @@ export async function authRoutes(fastify: FastifyInstance) {
       await pool.query(
         `UPDATE users
          SET password_hash = $1, email_verified = true, email_verified_at = CURRENT_TIMESTAMP,
-             is_active = true, invite_token = NULL, invite_expires_at = NULL, updated_at = CURRENT_TIMESTAMP
+             is_active = true, status = 'active', invite_token = NULL, invite_expires_at = NULL, updated_at = CURRENT_TIMESTAMP
          WHERE id = $2`,
         [passwordHash, user.id]
       );
 
       // Get updated user info
       const updatedUser = await pool.query(
-        'SELECT id, email, name, avatar_url, role, is_active, email_verified FROM users WHERE id = $1',
+        'SELECT id, email, name, avatar_url, role, is_active, status, email_verified FROM users WHERE id = $1',
         [user.id]
       );
 

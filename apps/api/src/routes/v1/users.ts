@@ -24,7 +24,7 @@ export async function usersRoutes(fastify: FastifyInstance) {
         const offset = (page - 1) * limit;
 
         // Build query with filters
-        let query = 'SELECT id, email, name, avatar_url, role, is_active, email_verified, email_verified_at, last_login_at, created_at, updated_at FROM users WHERE 1=1';
+        let query = 'SELECT id, email, name, avatar_url, role, is_active, status, email_verified, email_verified_at, last_login_at, created_at, updated_at FROM users WHERE 1=1';
         const params: any[] = [];
         let paramCount = 1;
 
@@ -42,7 +42,7 @@ export async function usersRoutes(fastify: FastifyInstance) {
 
         // Get total count
         const countQuery = query.replace(
-          'SELECT id, email, name, avatar_url, role, is_active, email_verified, email_verified_at, last_login_at, created_at, updated_at FROM users',
+          'SELECT id, email, name, avatar_url, role, is_active, status, email_verified, email_verified_at, last_login_at, created_at, updated_at FROM users',
           'SELECT COUNT(*) FROM users'
         );
         const countResult = await pool.query(countQuery, params);
@@ -86,7 +86,7 @@ export async function usersRoutes(fastify: FastifyInstance) {
 
         // Get user
         const userResult = await pool.query(
-          'SELECT id, email, name, avatar_url, role, is_active, email_verified, email_verified_at, last_login_at, created_at, updated_at FROM users WHERE id = $1',
+          'SELECT id, email, name, avatar_url, role, is_active, status, email_verified, email_verified_at, last_login_at, created_at, updated_at FROM users WHERE id = $1',
           [id]
         );
 
@@ -168,7 +168,7 @@ export async function usersRoutes(fastify: FastifyInstance) {
           UPDATE users
           SET ${updates.join(', ')}
           WHERE id = $${paramCount}
-          RETURNING id, email, name, avatar_url, role, is_active, email_verified, email_verified_at, last_login_at, created_at, updated_at
+          RETURNING id, email, name, avatar_url, role, is_active, status, email_verified, email_verified_at, last_login_at, created_at, updated_at
         `;
 
         const result = await pool.query(query, params);
@@ -258,11 +258,11 @@ export async function usersRoutes(fastify: FastifyInstance) {
         const inviteExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
         // Create user with invite token (they'll need to set password via invite link)
-        // User is inactive until they accept the invitation
+        // User status is 'invited' until they accept the invitation
         const result = await pool.query(
-          `INSERT INTO users (email, name, role, password_hash, email_verified, is_active, invite_token, invite_expires_at)
-           VALUES ($1, $2, $3, $4, false, false, $5, $6)
-           RETURNING id, email, name, avatar_url, role, is_active, email_verified, email_verified_at, last_login_at, created_at, updated_at`,
+          `INSERT INTO users (email, name, role, password_hash, email_verified, is_active, status, invite_token, invite_expires_at)
+           VALUES ($1, $2, $3, $4, false, false, 'invited', $5, $6)
+           RETURNING id, email, name, avatar_url, role, is_active, status, email_verified, email_verified_at, last_login_at, created_at, updated_at`,
           [email, name, role, '', inviteToken, inviteExpiresAt] // Empty password hash - user needs to set password via invite link
         );
 

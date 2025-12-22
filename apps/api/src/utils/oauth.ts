@@ -285,6 +285,7 @@ function mapRowToUser(row: any): User {
     avatar_url: row.avatar_url,
     role: row.role,
     is_active: row.is_active,
+    status: row.status,
     email_verified: row.email_verified,
     email_verified_at: row.email_verified_at?.toISOString() || null,
     last_login_at: row.last_login_at?.toISOString() || null,

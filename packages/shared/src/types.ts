@@ -23,6 +23,8 @@ export type UserRole =
   | 'subscription_5'
   | 'freebie';
 
+export type UserStatus = 'invited' | 'active' | 'suspended' | 'deleted';
+
 export interface User {
   id: string;
   email: string;
@@ -30,6 +32,7 @@ export interface User {
   avatar_url: string | null;
   role: UserRole;
   is_active: boolean;
+  status: UserStatus;
   email_verified: boolean;
   email_verified_at: string | null;
   last_login_at: string | null;
