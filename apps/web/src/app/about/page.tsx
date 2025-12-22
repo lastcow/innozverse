@@ -170,7 +170,7 @@ export default function AboutPage() {
             <div>
               <div className="text-white font-bold mb-2">&gt; FOR INDIVIDUALS</div>
               <p className="pl-4">
-                Whether you're starting your tech journey or advancing your career,
+                Whether you&apos;re starting your tech journey or advancing your career,
                 our platform provides the resources and hands-on labs you need to
                 master cutting-edge technologies at your own pace.
               </p>

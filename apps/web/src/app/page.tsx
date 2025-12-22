@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Home, DollarSign, Headphones, ArrowRight } from 'lucide-react';
+import { DollarSign, Headphones } from 'lucide-react';
 
 export default function HomePage() {
   const router = useRouter();
