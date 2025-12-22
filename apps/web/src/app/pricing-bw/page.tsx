@@ -1,7 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { Home, DollarSign, Headphones } from 'lucide-react';
+import { useState } from 'react';
 
 export default function PricingBWPage() {
+  const [isYearly, setIsYearly] = useState(false);
+
   return (
     <div className="min-h-screen bg-black text-green-400 font-mono">
       {/* Terminal Header */}
@@ -59,11 +64,25 @@ export default function PricingBWPage() {
         <div className="flex justify-center mb-12">
           <div className="border border-green-400 inline-block p-1">
             <div className="flex gap-2">
-              <button className="px-6 py-2 bg-green-400 text-black font-bold">
-                [X] MONTHLY
+              <button
+                onClick={() => setIsYearly(false)}
+                className={`px-6 py-2 font-bold transition-colors ${
+                  !isYearly
+                    ? 'bg-green-400 text-black'
+                    : 'hover:bg-green-900'
+                }`}
+              >
+                {!isYearly ? '[X]' : '[ ]'} MONTHLY
               </button>
-              <button className="px-6 py-2 hover:bg-green-900 transition-colors">
-                [ ] YEARLY (SAVE 17%)
+              <button
+                onClick={() => setIsYearly(true)}
+                className={`px-6 py-2 font-bold transition-colors ${
+                  isYearly
+                    ? 'bg-green-400 text-black'
+                    : 'hover:bg-green-900'
+                }`}
+              >
+                {isYearly ? '[X]' : '[ ]'} YEARLY (SAVE 17%)
               </button>
             </div>
           </div>
@@ -116,8 +135,13 @@ export default function PricingBWPage() {
 │  STARTER SEC    │
 └─────────────────┘`}
                 </pre>
-                <div className="text-3xl font-bold mb-2 text-white">$15</div>
-                <div className="text-sm text-green-400 mb-6">/month or $150/year</div>
+                <div className="text-3xl font-bold mb-2 text-white">
+                  ${isYearly ? '150' : '15'}
+                </div>
+                <div className="text-sm text-green-400 mb-6">
+                  /{isYearly ? 'year' : 'month'}
+                  {isYearly && <span className="text-white ml-2">(save $30)</span>}
+                </div>
 
                 <div className="space-y-2 mb-6 text-sm">
                   <div className="flex items-start gap-2">
@@ -155,8 +179,13 @@ export default function PricingBWPage() {
 │  ADVANCED SEC   │
 └─────────────────┘`}
                 </pre>
-                <div className="text-3xl font-bold mb-2 text-white">$29</div>
-                <div className="text-sm text-green-400 mb-6">/month or $290/year</div>
+                <div className="text-3xl font-bold mb-2 text-white">
+                  ${isYearly ? '290' : '29'}
+                </div>
+                <div className="text-sm text-green-400 mb-6">
+                  /{isYearly ? 'year' : 'month'}
+                  {isYearly && <span className="text-white ml-2">(save $58)</span>}
+                </div>
 
                 <div className="space-y-2 mb-6 text-sm">
                   <div className="flex items-start gap-2">
@@ -191,8 +220,13 @@ export default function PricingBWPage() {
 │  PROGRAMMING    │
 └─────────────────┘`}
                 </pre>
-                <div className="text-3xl font-bold mb-2 text-white">$25</div>
-                <div className="text-sm text-green-400 mb-6">/month or $250/year</div>
+                <div className="text-3xl font-bold mb-2 text-white">
+                  ${isYearly ? '250' : '25'}
+                </div>
+                <div className="text-sm text-green-400 mb-6">
+                  /{isYearly ? 'year' : 'month'}
+                  {isYearly && <span className="text-white ml-2">(save $50)</span>}
+                </div>
 
                 <div className="space-y-2 mb-6 text-sm">
                   <div className="flex items-start gap-2">
