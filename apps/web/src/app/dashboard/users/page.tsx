@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   AlertDialog,
@@ -17,7 +17,22 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { ApiClient, UserRole } from '@innozverse/api-client';
-import { AlertCircle, Loader2, Trash2, Edit2, UserPlus, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  AlertCircle,
+  Loader2,
+  Trash2,
+  Edit2,
+  UserPlus,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  Shield,
+  Eye,
+  FileText,
+  MoreVertical,
+  RotateCcw,
+} from 'lucide-react';
+import Link from 'next/link';
 
 const apiClient = new ApiClient(
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
@@ -71,6 +86,57 @@ export default function UsersPage() {
   // Delete user state
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
+  // Actions menu state
+  const [openActionsMenu, setOpenActionsMenu] = useState<string | null>(null);
+  const actionsMenuRef = useRef<HTMLDivElement>(null);
+
+  // Selected users for bulk actions
+  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
+
+  // Status filter state
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
+
+  // Close actions menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (actionsMenuRef.current && !actionsMenuRef.current.contains(event.target as Node)) {
+        setOpenActionsMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const getRoleIcon = (role: UserRole) => {
+    if (role === 'admin' || role === 'super_user') return Shield;
+    if (role.includes('subscription')) return FileText;
+    return Eye;
+  };
+
+  const getStatusBadge = (isActive: boolean, createdAt: string) => {
+    // Check if user was recently created (within 7 days) to show "Invited" status
+    const createdAtDate = new Date(createdAt);
+    const daysSinceCreation = (Date.now() - createdAtDate.getTime()) / (1000 * 60 * 60 * 24);
+    
+    if (!isActive) {
+      return { label: 'Suspended', className: 'bg-red-100 text-red-700 border-red-200' };
+    }
+    if (daysSinceCreation < 7) {
+      return { label: 'Invited', className: 'bg-blue-100 text-blue-700 border-blue-200' };
+    }
+    return { label: 'Active', className: 'bg-green-100 text-green-700 border-green-200' };
+  };
+
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
@@ -84,6 +150,8 @@ export default function UsersPage() {
       setUsers(response.data.users);
       setTotalPages(response.data.pagination.totalPages);
       setTotalUsers(response.data.pagination.total);
+      // Clear selected users when fetching new data
+      setSelectedUsers(new Set());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch users');
     } finally {
@@ -168,6 +236,83 @@ export default function UsersPage() {
     setCurrentPage(1); // Reset to first page on filter
   };
 
+  const handleStatusChange = (value: string) => {
+    setSelectedStatus(value);
+    setCurrentPage(1);
+  };
+
+  const handleReset = () => {
+    setSearch('');
+    setSelectedRole('');
+    setSelectedStatus('');
+    setCurrentPage(1);
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedUsers(new Set(users.map((u) => u.id)));
+    } else {
+      setSelectedUsers(new Set());
+    }
+  };
+
+  const handleSelectUser = (userId: string, checked: boolean) => {
+    const newSelected = new Set(selectedUsers);
+    if (checked) {
+      newSelected.add(userId);
+    } else {
+      newSelected.delete(userId);
+    }
+    setSelectedUsers(newSelected);
+  };
+
+  const toggleActionsMenu = (userId: string) => {
+    setOpenActionsMenu(openActionsMenu === userId ? null : userId);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  const generatePageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
+    
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -180,15 +325,37 @@ export default function UsersPage() {
     }
   };
 
+  // Filter users by status (client-side filter since API might not support it)
+  const filteredUsers = users.filter((user) => {
+    if (selectedStatus === 'active') return user.is_active;
+    if (selectedStatus === 'suspended') return !user.is_active;
+    if (selectedStatus === 'invited') {
+      const createdAtDate = new Date(user.created_at);
+      const daysSinceCreation = (Date.now() - createdAtDate.getTime()) / (1000 * 60 * 60 * 24);
+      return daysSinceCreation < 7;
+    }
+    return true;
+  });
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
+        {/* Breadcrumbs */}
+        <div className="flex items-center text-sm text-muted-foreground">
+          <Link href="/dashboard" className="hover:text-foreground transition-colors">
+            Dashboard
+          </Link>
+          <span className="mx-2">/</span>
+          <span className="text-foreground">User Management</span>
+        </div>
+
+        {/* Page Header */}
+        <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold">User Management</h1>
-            <p className="text-muted-foreground">Manage users and their roles</p>
+            <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
+            <p className="text-muted-foreground mt-1">Manage access and permissions for team members.</p>
           </div>
-          <Button onClick={() => setShowInvite(true)}>
+          <Button onClick={() => setShowInvite(true)} className="rounded-lg">
             <UserPlus className="mr-2 h-4 w-4" />
             Invite User
           </Button>
@@ -202,133 +369,219 @@ export default function UsersPage() {
         )}
 
         {/* Filters */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Filters</CardTitle>
-          </CardHeader>
-          <CardContent className="flex gap-4">
-            <Input
-              placeholder="Search by name or email..."
-              value={search}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="max-w-md"
-            />
-            <select
-              value={selectedRole}
-              onChange={(e) => handleRoleChange(e.target.value)}
-              className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
-            >
-              <option value="">All Roles</option>
-              {ROLES.map((role) => (
-                <option key={role} value={role}>
-                  {role.replace('_', ' ')}
-                </option>
-              ))}
-            </select>
+        <Card className="rounded-lg border shadow-sm">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="relative flex-1 min-w-[300px]">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Filter users by name or email..."
+                  value={search}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="pl-10 rounded-lg"
+                />
+              </div>
+              <select
+                value={selectedRole}
+                onChange={(e) => handleRoleChange(e.target.value)}
+                className="flex h-10 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <option value="">All Roles</option>
+                {ROLES.map((role) => (
+                  <option key={role} value={role}>
+                    {role.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedStatus}
+                onChange={(e) => handleStatusChange(e.target.value)}
+                className="flex h-10 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="invited">Invited</option>
+                <option value="suspended">Suspended</option>
+              </select>
+              <Button
+                variant="outline"
+                onClick={handleReset}
+                className="rounded-lg"
+              >
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Reset
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
         {/* Users Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Users</CardTitle>
-            <CardDescription>A list of all users in the system</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <Card className="rounded-lg border shadow-sm">
+          <CardContent className="p-0">
             {loading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin" />
+              <div className="flex justify-center py-16">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
-            ) : users.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
+            ) : filteredUsers.length === 0 ? (
+              <div className="text-center py-16 text-muted-foreground">
                 No users found
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-4">Name</th>
-                      <th className="text-left p-4">Email</th>
-                      <th className="text-left p-4">Role</th>
-                      <th className="text-left p-4">Status</th>
-                      <th className="text-left p-4">Created</th>
-                      <th className="text-right p-4">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((user) => (
-                      <tr key={user.id} className="border-b hover:bg-accent">
-                        <td className="p-4">{user.name}</td>
-                        <td className="p-4">{user.email}</td>
-                        <td className="p-4">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-primary-foreground">
-                            {user.role.replace('_', ' ')}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          {user.is_active ? (
-                            <span className="text-green-600">Active</span>
-                          ) : (
-                            <span className="text-red-600">Inactive</span>
-                          )}
-                        </td>
-                        <td className="p-4">
-                          {new Date(user.created_at).toLocaleDateString()}
-                        </td>
-                        <td className="p-4 text-right space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEdit(user)}
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setUserToDelete(user)}
-                          >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </td>
+              <>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b bg-muted/50">
+                        <th className="text-left p-4 w-12">
+                          <input
+                            type="checkbox"
+                            checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
+                            onChange={(e) => handleSelectAll(e.target.checked)}
+                            className="rounded border-gray-300"
+                          />
+                        </th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">User</th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Role</th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Status</th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Joined</th>
+                        <th className="text-right p-4 font-medium text-sm text-muted-foreground">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+                    </thead>
+                    <tbody>
+                      {filteredUsers.map((user) => {
+                        const RoleIcon = getRoleIcon(user.role);
+                        const statusBadge = getStatusBadge(user.is_active, user.created_at);
+                        const isSelected = selectedUsers.has(user.id);
+                        
+                        return (
+                          <tr
+                            key={user.id}
+                            className={`border-b hover:bg-muted/50 transition-colors ${isSelected ? 'bg-muted/30' : ''}`}
+                          >
+                            <td className="p-4">
+                              <input
+                                type="checkbox"
+                                checked={isSelected}
+                                onChange={(e) => handleSelectUser(user.id, e.target.checked)}
+                                className="rounded border-gray-300"
+                              />
+                            </td>
+                            <td className="p-4">
+                              <div className="flex items-center gap-3">
+                                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
+                                  {getInitials(user.name)}
+                                </div>
+                                <div>
+                                  <div className="font-medium">{user.name}</div>
+                                  <div className="text-sm text-muted-foreground">{user.email}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <div className="flex items-center gap-2">
+                                <RoleIcon className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm capitalize">{user.role.replace('_', ' ')}</span>
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusBadge.className}`}>
+                                {statusBadge.label}
+                              </span>
+                            </td>
+                            <td className="p-4 text-sm text-muted-foreground">
+                              {formatDate(user.created_at)}
+                            </td>
+                            <td className="p-4 text-right">
+                              <div className="relative inline-block" ref={openActionsMenu === user.id ? actionsMenuRef : null}>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => toggleActionsMenu(user.id)}
+                                  className="h-8 w-8"
+                                >
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                                {openActionsMenu === user.id && (
+                                  <div className="absolute right-0 mt-2 w-48 bg-background border rounded-lg shadow-lg z-10 py-1">
+                                    <button
+                                      onClick={() => {
+                                        handleEdit(user);
+                                        setOpenActionsMenu(null);
+                                      }}
+                                      className="w-full text-left px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
+                                    >
+                                      <Edit2 className="h-4 w-4" />
+                                      Edit
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setUserToDelete(user);
+                                        setOpenActionsMenu(null);
+                                      }}
+                                      className="w-full text-left px-4 py-2 text-sm hover:bg-muted flex items-center gap-2 text-destructive"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                      Delete
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
 
-            {/* Pagination Controls */}
-            {!loading && users.length > 0 && (
-              <div className="flex items-center justify-between pt-4 border-t">
-                <div className="text-sm text-muted-foreground">
-                  Showing {((currentPage - 1) * limit) + 1} to {Math.min(currentPage * limit, totalUsers)} of {totalUsers} users
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handlePreviousPage}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronLeft className="h-4 w-4 mr-1" />
-                    Previous
-                  </Button>
-                  <div className="text-sm font-medium px-2">
-                    Page {currentPage} of {totalPages}
+                {/* Pagination Controls */}
+                <div className="flex items-center justify-between p-4 border-t">
+                  <div className="text-sm text-muted-foreground">
+                    Showing {((currentPage - 1) * limit) + 1} to {Math.min(currentPage * limit, totalUsers)} of {totalUsers} users
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleNextPage}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                    <ChevronRight className="h-4 w-4 ml-1" />
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handlePreviousPage}
+                      disabled={currentPage === 1}
+                      className="rounded-lg"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    {generatePageNumbers().map((page, index) => {
+                      if (page === '...') {
+                        return (
+                          <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
+                            ...
+                          </span>
+                        );
+                      }
+                      const pageNum = page as number;
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={currentPage === pageNum ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setCurrentPage(pageNum)}
+                          className="rounded-lg min-w-[2.5rem]"
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    })}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                      className="rounded-lg"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </CardContent>
         </Card>

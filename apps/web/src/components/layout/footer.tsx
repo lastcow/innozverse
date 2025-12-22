@@ -11,11 +11,11 @@ interface FooterProps {
 }
 
 export function Footer({
-  companyName = 'innozverse',
+  companyName = 'Innozverse',
   year = new Date().getFullYear(),
   links = [
-    { label: 'Privacy', href: '#' },
-    { label: 'Terms', href: '#' },
+    { label: 'Privacy Policy', href: '#' },
+    { label: 'Terms of Service', href: '#' },
     { label: 'Support', href: '#' },
   ],
   className = '',
