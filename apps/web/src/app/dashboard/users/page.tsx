@@ -23,16 +23,19 @@ import {
   Trash2,
   Edit2,
   UserPlus,
-  ChevronLeft,
-  ChevronRight,
-  Search,
   Shield,
   Eye,
   FileText,
   MoreVertical,
-  RotateCcw,
+  Users,
+  UserCheck,
+  UserX,
+  Mail,
+  ArrowUpRight,
+  ArrowDownRight,
+  Filter,
+  Download,
 } from 'lucide-react';
-import Link from 'next/link';
 
 const apiClient = new ApiClient(
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
@@ -63,14 +66,21 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
-  const [selectedRole, setSelectedRole] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'all' | 'active' | 'invited' | 'suspended'>('all');
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [limit] = useState(10);
+
+  // Stats state
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    active: 0,
+    invited: 0,
+    suspended: 0,
+  });
 
   // Edit user state
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -89,12 +99,6 @@ export default function UsersPage() {
   // Actions menu state
   const [openActionsMenu, setOpenActionsMenu] = useState<string | null>(null);
   const actionsMenuRef = useRef<HTMLDivElement>(null);
-
-  // Selected users for bulk actions
-  const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
-
-  // Status filter state
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
 
   // Close actions menu when clicking outside
   useEffect(() => {
@@ -124,10 +128,9 @@ export default function UsersPage() {
   };
 
   const getStatusBadge = (isActive: boolean, createdAt: string) => {
-    // Check if user was recently created (within 7 days) to show "Invited" status
     const createdAtDate = new Date(createdAt);
     const daysSinceCreation = (Date.now() - createdAtDate.getTime()) / (1000 * 60 * 60 * 24);
-    
+
     if (!isActive) {
       return { label: 'Suspended', className: 'bg-red-100 text-red-700 border-red-200' };
     }
@@ -137,30 +140,49 @@ export default function UsersPage() {
     return { label: 'Active', className: 'bg-green-100 text-green-700 border-green-200' };
   };
 
+  const isUserInvited = (createdAt: string) => {
+    const createdAtDate = new Date(createdAt);
+    const daysSinceCreation = (Date.now() - createdAtDate.getTime()) / (1000 * 60 * 60 * 24);
+    return daysSinceCreation < 7;
+  };
+
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
+
+      // Fetch all users for stats
+      const allResponse = await apiClient.listUsers({ limit: 1000 });
+      const allData = allResponse.data.users as User[];
+
+      // Calculate stats
+      const active = allData.filter((u: User) => u.is_active && !isUserInvited(u.created_at)).length;
+      const invited = allData.filter((u: User) => u.is_active && isUserInvited(u.created_at)).length;
+      const suspended = allData.filter((u: User) => !u.is_active).length;
+
+      setStats({
+        totalUsers: allData.length,
+        active,
+        invited,
+        suspended,
+      });
+
+      // Fetch paginated users for display
       const response = await apiClient.listUsers({
         page: currentPage,
         limit: limit,
-        search: search || undefined,
-        role: selectedRole || undefined,
       });
       setUsers(response.data.users);
       setTotalPages(response.data.pagination.totalPages);
       setTotalUsers(response.data.pagination.total);
-      // Clear selected users when fetching new data
-      setSelectedUsers(new Set());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch users');
     } finally {
       setLoading(false);
     }
-  }, [currentPage, limit, search, selectedRole]);
+  }, [currentPage, limit]);
 
   useEffect(() => {
-    // Ensure we have a valid access token before fetching
     const refreshToken = apiClient.getRefreshToken();
     if (refreshToken) {
       apiClient.refresh().then(() => {
@@ -226,44 +248,9 @@ export default function UsersPage() {
     }
   };
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setCurrentPage(1); // Reset to first page on search
-  };
-
-  const handleRoleChange = (value: string) => {
-    setSelectedRole(value);
-    setCurrentPage(1); // Reset to first page on filter
-  };
-
-  const handleStatusChange = (value: string) => {
-    setSelectedStatus(value);
+  const handleTabChange = (tab: 'all' | 'active' | 'invited' | 'suspended') => {
+    setActiveTab(tab);
     setCurrentPage(1);
-  };
-
-  const handleReset = () => {
-    setSearch('');
-    setSelectedRole('');
-    setSelectedStatus('');
-    setCurrentPage(1);
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedUsers(new Set(users.map((u) => u.id)));
-    } else {
-      setSelectedUsers(new Set());
-    }
-  };
-
-  const handleSelectUser = (userId: string, checked: boolean) => {
-    const newSelected = new Set(selectedUsers);
-    if (checked) {
-      newSelected.add(userId);
-    } else {
-      newSelected.delete(userId);
-    }
-    setSelectedUsers(newSelected);
   };
 
   const toggleActionsMenu = (userId: string) => {
@@ -278,41 +265,6 @@ export default function UsersPage() {
     });
   };
 
-  const generatePageNumbers = () => {
-    const pages: (number | string)[] = [];
-    const maxVisible = 5;
-    
-    if (totalPages <= maxVisible) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        for (let i = 1; i <= 4; i++) {
-          pages.push(i);
-        }
-        pages.push('...');
-        pages.push(totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        pages.push(1);
-        pages.push('...');
-        for (let i = totalPages - 3; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push(1);
-        pages.push('...');
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          pages.push(i);
-        }
-        pages.push('...');
-        pages.push(totalPages);
-      }
-    }
-    
-    return pages;
-  };
-
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -325,40 +277,120 @@ export default function UsersPage() {
     }
   };
 
-  // Filter users by status (client-side filter since API might not support it)
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  // Filter users by tab (client-side)
   const filteredUsers = users.filter((user) => {
-    if (selectedStatus === 'active') return user.is_active;
-    if (selectedStatus === 'suspended') return !user.is_active;
-    if (selectedStatus === 'invited') {
-      const createdAtDate = new Date(user.created_at);
-      const daysSinceCreation = (Date.now() - createdAtDate.getTime()) / (1000 * 60 * 60 * 24);
-      return daysSinceCreation < 7;
-    }
+    if (activeTab === 'active') return user.is_active && !isUserInvited(user.created_at);
+    if (activeTab === 'invited') return user.is_active && isUserInvited(user.created_at);
+    if (activeTab === 'suspended') return !user.is_active;
     return true;
   });
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Breadcrumbs */}
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Link href="/dashboard" className="hover:text-foreground transition-colors">
-            Dashboard
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">User Management</span>
-        </div>
-
         {/* Page Header */}
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-            <p className="text-muted-foreground mt-1">Manage access and permissions for team members.</p>
+            <p className="text-muted-foreground mt-1">
+              Manage access and permissions for team members.
+            </p>
           </div>
-          <Button onClick={() => setShowInvite(true)} className="rounded-lg">
-            <UserPlus className="mr-2 h-4 w-4" />
-            Invite User
-          </Button>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground">Today: {getTodayDate()}</span>
+            <Button onClick={() => setShowInvite(true)} className="rounded-lg bg-blue-600 hover:bg-blue-700">
+              <UserPlus className="mr-2 h-4 w-4" />
+              Invite User
+            </Button>
+          </div>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                  <p className="text-2xl font-bold mt-1">{stats.totalUsers}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
+                    <span className="text-green-500">+8%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <Users className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Active Users</p>
+                  <p className="text-2xl font-bold mt-1">{stats.active}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
+                    <span className="text-green-500">+5%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center">
+                  <UserCheck className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Pending Invites</p>
+                  <p className="text-2xl font-bold mt-1">{stats.invited}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
+                    <span className="text-green-500">+3</span>
+                    {' '}this week
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <Mail className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Suspended</p>
+                  <p className="text-2xl font-bold mt-1">{stats.suspended}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowDownRight className="mr-1 h-3 w-3 text-red-500" />
+                    <span className="text-red-500">-1</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-orange-100 flex items-center justify-center">
+                  <UserX className="h-6 w-6 text-orange-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {error && (
@@ -368,56 +400,80 @@ export default function UsersPage() {
           </Alert>
         )}
 
-        {/* Filters */}
-        <Card className="rounded-lg border shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4 flex-wrap">
-              <div className="relative flex-1 min-w-[300px]">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Filter users by name or email..."
-                  value={search}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-10 rounded-lg"
-                />
-              </div>
-              <select
-                value={selectedRole}
-                onChange={(e) => handleRoleChange(e.target.value)}
-                className="flex h-10 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="">All Roles</option>
-                {ROLES.map((role) => (
-                  <option key={role} value={role}>
-                    {role.replace('_', ' ')}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={selectedStatus}
-                onChange={(e) => handleStatusChange(e.target.value)}
-                className="flex h-10 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="invited">Invited</option>
-                <option value="suspended">Suspended</option>
-              </select>
-              <Button
-                variant="outline"
-                onClick={handleReset}
-                className="rounded-lg"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Users Table */}
         <Card className="rounded-lg border shadow-sm">
           <CardContent className="p-0">
+            {/* Tabs and Actions */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => handleTabChange('all')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'all'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  All Users
+                </button>
+                <button
+                  onClick={() => handleTabChange('active')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'active'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Active
+                  {stats.active > 0 && (
+                    <span className="ml-2 px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
+                      {stats.active}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => handleTabChange('invited')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'invited'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Invited
+                  {stats.invited > 0 && (
+                    <span className="ml-2 px-2 py-0.5 text-xs bg-blue-100 text-blue-700 rounded-full">
+                      {stats.invited}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => handleTabChange('suspended')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+                    activeTab === 'suspended'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Suspended
+                  {stats.suspended > 0 && (
+                    <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full">
+                      {stats.suspended}
+                    </span>
+                  )}
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="rounded-lg">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
+                </Button>
+                <Button variant="outline" size="sm" className="rounded-lg">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+              </div>
+            </div>
+
             {loading ? (
               <div className="flex justify-center py-16">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -432,14 +488,6 @@ export default function UsersPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b bg-muted/50">
-                        <th className="text-left p-4 w-12">
-                          <input
-                            type="checkbox"
-                            checked={selectedUsers.size === filteredUsers.length && filteredUsers.length > 0}
-                            onChange={(e) => handleSelectAll(e.target.checked)}
-                            className="rounded border-gray-300"
-                          />
-                        </th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">User</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Role</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Status</th>
@@ -451,21 +499,12 @@ export default function UsersPage() {
                       {filteredUsers.map((user) => {
                         const RoleIcon = getRoleIcon(user.role);
                         const statusBadge = getStatusBadge(user.is_active, user.created_at);
-                        const isSelected = selectedUsers.has(user.id);
-                        
+
                         return (
                           <tr
                             key={user.id}
-                            className={`border-b hover:bg-muted/50 transition-colors ${isSelected ? 'bg-muted/30' : ''}`}
+                            className="border-b hover:bg-muted/50 transition-colors"
                           >
-                            <td className="p-4">
-                              <input
-                                type="checkbox"
-                                checked={isSelected}
-                                onChange={(e) => handleSelectUser(user.id, e.target.checked)}
-                                className="rounded border-gray-300"
-                              />
-                            </td>
                             <td className="p-4">
                               <div className="flex items-center gap-3">
                                 <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
@@ -539,7 +578,7 @@ export default function UsersPage() {
                   <div className="text-sm text-muted-foreground">
                     Showing {((currentPage - 1) * limit) + 1} to {Math.min(currentPage * limit, totalUsers)} of {totalUsers} users
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -547,29 +586,8 @@ export default function UsersPage() {
                       disabled={currentPage === 1}
                       className="rounded-lg"
                     >
-                      <ChevronLeft className="h-4 w-4" />
+                      Previous
                     </Button>
-                    {generatePageNumbers().map((page, index) => {
-                      if (page === '...') {
-                        return (
-                          <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
-                            ...
-                          </span>
-                        );
-                      }
-                      const pageNum = page as number;
-                      return (
-                        <Button
-                          key={pageNum}
-                          variant={currentPage === pageNum ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => setCurrentPage(pageNum)}
-                          className="rounded-lg min-w-[2.5rem]"
-                        >
-                          {pageNum}
-                        </Button>
-                      );
-                    })}
                     <Button
                       variant="outline"
                       size="sm"
@@ -577,7 +595,7 @@ export default function UsersPage() {
                       disabled={currentPage === totalPages}
                       className="rounded-lg"
                     >
-                      <ChevronRight className="h-4 w-4" />
+                      Next
                     </Button>
                   </div>
                 </div>
