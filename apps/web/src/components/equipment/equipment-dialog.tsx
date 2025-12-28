@@ -127,6 +127,16 @@ export function EquipmentDialog({
 
     setSaving(true);
     try {
+      // Refresh token to ensure we have valid auth
+      const refreshToken = apiClient.getRefreshToken();
+      if (refreshToken) {
+        await apiClient.refresh();
+      } else {
+        onError('Not authenticated. Please log in again.');
+        setSaving(false);
+        return;
+      }
+
       const payload = {
         name: formData.name,
         description: formData.description || undefined,
