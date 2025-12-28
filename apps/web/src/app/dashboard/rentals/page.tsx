@@ -17,6 +17,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { ApiClient, RentalStatus, EquipmentCategory } from '@innozverse/api-client';
+import { SearchableSelect } from '@/components/ui/searchable-select';
 import {
   AlertCircle,
   Loader2,
@@ -772,18 +773,17 @@ export default function RentalsPage() {
                       <Loader2 className="h-5 w-5 animate-spin" />
                     </div>
                   ) : (
-                    <select
+                    <SearchableSelect
+                      options={availableEquipment.map((equipment) => ({
+                        value: equipment.id,
+                        label: equipment.name,
+                        description: `${formatCurrency(equipment.daily_rate)}/day`,
+                      }))}
                       value={createFormData.equipment_id}
-                      onChange={(e) => setCreateFormData({ ...createFormData, equipment_id: e.target.value })}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    >
-                      <option value="">Select equipment...</option>
-                      {availableEquipment.map((equipment) => (
-                        <option key={equipment.id} value={equipment.id}>
-                          {equipment.name} - {formatCurrency(equipment.daily_rate)}/day
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(value) => setCreateFormData({ ...createFormData, equipment_id: value })}
+                      placeholder="Select equipment..."
+                      searchPlaceholder="Search equipment..."
+                    />
                   )}
                 </div>
                 <div>
@@ -793,18 +793,17 @@ export default function RentalsPage() {
                       <Loader2 className="h-5 w-5 animate-spin" />
                     </div>
                   ) : (
-                    <select
+                    <SearchableSelect
+                      options={availableUsers.map((user) => ({
+                        value: user.id,
+                        label: user.name,
+                        description: user.email,
+                      }))}
                       value={createFormData.user_id}
-                      onChange={(e) => setCreateFormData({ ...createFormData, user_id: e.target.value })}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    >
-                      <option value="">Select user...</option>
-                      {availableUsers.map((user) => (
-                        <option key={user.id} value={user.id}>
-                          {user.name} ({user.email})
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(value) => setCreateFormData({ ...createFormData, user_id: value })}
+                      placeholder="Select user..."
+                      searchPlaceholder="Search by name or email..."
+                    />
                   )}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
