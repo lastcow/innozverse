@@ -37,11 +37,16 @@ export function SearchableSelect({
 
   const selectedOption = options.find((opt) => opt.value === value);
 
-  const filteredOptions = options.filter(
-    (opt) =>
-      opt.label.toLowerCase().includes(search.toLowerCase()) ||
-      opt.description?.toLowerCase().includes(search.toLowerCase())
-  );
+  // Fuzzy AND search: all words in search must be present in label or description
+  const filteredOptions = options.filter((opt) => {
+    if (!search.trim()) return true;
+
+    const searchWords = search.toLowerCase().trim().split(/\s+/);
+    const searchText = `${opt.label} ${opt.description || ''}`.toLowerCase();
+
+    // All words must be found (AND logic)
+    return searchWords.every((word) => searchText.includes(word));
+  });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
