@@ -2,8 +2,6 @@
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { cn } from '@/lib/utils';
 
 interface MarkdownRendererProps {
@@ -27,31 +25,18 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
         components={{
           code(props) {
             const { children: codeChildren, className: codeClassName, node, ...rest } = props;
-            const match = /language-(\w+)/.exec(codeClassName || '');
-            // Check if this is a code block (has language) or inline code
-            // Code blocks have a language class, inline code does not
-            const isCodeBlock = match !== null;
-
-            if (isCodeBlock) {
-              return (
-                <SyntaxHighlighter
-                  style={oneDark}
-                  language={match[1]}
-                  PreTag="div"
-                  className="rounded-lg !mt-4 !mb-4"
-                >
-                  {String(codeChildren).replace(/\n$/, '')}
-                </SyntaxHighlighter>
-              );
-            }
-
-            // Inline code - no background, just inherit text style
+            // All code rendered as simple monospace text, no backgrounds
             return (
               <code className="font-mono text-foreground" {...rest}>
                 {codeChildren}
               </code>
             );
           },
+          pre: ({ children: preChildren }) => (
+            <pre className="font-mono text-foreground whitespace-pre-wrap my-4 text-sm">
+              {preChildren}
+            </pre>
+          ),
           h1: ({ children: h1Children }) => (
             <h1 className="scroll-mt-20 text-3xl font-bold mt-8 mb-4 text-foreground" id={slugify(String(h1Children))}>
               {h1Children}
