@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,7 +23,6 @@ import {
   Trash2,
   Edit2,
   Plus,
-  MoreVertical,
   Monitor,
   Laptop,
   Gamepad2,
@@ -50,7 +49,6 @@ export default function EquipmentPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'available' | 'rented' | 'maintenance'>('all');
-  const [isAdmin, setIsAdmin] = useState(false);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,22 +70,6 @@ export default function EquipmentPage() {
 
   // Delete equipment state
   const [equipmentToDelete, setEquipmentToDelete] = useState<Equipment | null>(null);
-
-  // Actions menu state
-  const [openActionsMenu, setOpenActionsMenu] = useState<string | null>(null);
-  const actionsMenuRef = useRef<HTMLDivElement>(null);
-
-  // Close actions menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (actionsMenuRef.current && !actionsMenuRef.current.contains(event.target as Node)) {
-        setOpenActionsMenu(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const getCategoryIcon = (category: EquipmentCategory) => {
     switch (category) {
@@ -167,15 +149,7 @@ export default function EquipmentPage() {
   useEffect(() => {
     const refreshToken = apiClient.getRefreshToken();
     if (refreshToken) {
-      apiClient.refresh().then(async () => {
-        // Check if user is admin
-        try {
-          const meResponse = await apiClient.getMe();
-          const userRole = meResponse.data.user.role;
-          setIsAdmin(userRole === 'admin' || userRole === 'super_user');
-        } catch (e) {
-          console.error('Failed to get user info:', e);
-        }
+      apiClient.refresh().then(() => {
         fetchEquipment();
       }).catch(() => {
         setError('Authentication failed. Please log in again.');
@@ -221,10 +195,6 @@ export default function EquipmentPage() {
   const handleTabChange = (tab: 'all' | 'available' | 'rented' | 'maintenance') => {
     setActiveTab(tab);
     setCurrentPage(1);
-  };
-
-  const toggleActionsMenu = (equipmentId: string) => {
-    setOpenActionsMenu(openActionsMenu === equipmentId ? null : equipmentId);
   };
 
   const formatCurrency = (amount: string) => {
@@ -443,9 +413,7 @@ export default function EquipmentPage() {
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Status</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Condition</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Added</th>
-                        {isAdmin && (
-                          <th className="text-right p-4 font-medium text-sm text-muted-foreground">Actions</th>
-                        )}
+                        <th className="text-right p-4 font-medium text-sm text-muted-foreground">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -460,9 +428,17 @@ export default function EquipmentPage() {
                           >
                             <td className="p-4">
                               <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white flex-shrink-0">
-                                  <CategoryIcon className="h-5 w-5" />
-                                </div>
+                                {item.image_url ? (
+                                  <img
+                                    src={item.image_url}
+                                    alt={item.name}
+                                    className="h-10 w-10 rounded-lg object-cover flex-shrink-0"
+                                  />
+                                ) : (
+                                  <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white flex-shrink-0">
+                                    <CategoryIcon className="h-5 w-5" />
+                                  </div>
+                                )}
                                 <div>
                                   <div className="font-medium">{item.name}</div>
                                   <div className="text-sm text-muted-foreground">
@@ -489,44 +465,26 @@ export default function EquipmentPage() {
                             <td className="p-4 text-sm text-muted-foreground">
                               {formatDate(item.created_at)}
                             </td>
-                            {isAdmin && (
-                              <td className="p-4 text-right">
-                                <div className="relative inline-block" ref={openActionsMenu === item.id ? actionsMenuRef : null}>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => toggleActionsMenu(item.id)}
-                                    className="h-8 w-8"
-                                  >
-                                    <MoreVertical className="h-4 w-4" />
-                                  </Button>
-                                  {openActionsMenu === item.id && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-background border rounded-lg shadow-lg z-10 py-1">
-                                      <button
-                                        onClick={() => {
-                                          handleEdit(item);
-                                          setOpenActionsMenu(null);
-                                        }}
-                                        className="w-full text-left px-4 py-2 text-sm hover:bg-muted flex items-center gap-2"
-                                      >
-                                        <Edit2 className="h-4 w-4" />
-                                        Edit
-                                      </button>
-                                      <button
-                                        onClick={() => {
-                                          setEquipmentToDelete(item);
-                                          setOpenActionsMenu(null);
-                                        }}
-                                        className="w-full text-left px-4 py-2 text-sm hover:bg-muted flex items-center gap-2 text-destructive"
-                                      >
-                                        <Trash2 className="h-4 w-4" />
-                                        Delete
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
-                              </td>
-                            )}
+                            <td className="p-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleEdit(item)}
+                                  className="h-8 w-8"
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => setEquipmentToDelete(item)}
+                                  className="h-8 w-8 text-destructive hover:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </td>
                           </tr>
                         );
                       })}
