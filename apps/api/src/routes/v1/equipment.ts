@@ -36,54 +36,54 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
         } = request.query;
         const offset = (page - 1) * limit;
 
-        // Build query with filters
-        let query = `
-          SELECT id, name, description, category, brand, model, serial_number,
-                 daily_rate, image_url, specs, status, condition, purchase_date,
-                 notes, created_at, updated_at
-          FROM equipment
-          WHERE 1=1
-        `;
+        // Build WHERE clause with filters
+        let whereClause = 'WHERE 1=1';
         const params: (string | number)[] = [];
         let paramCount = 1;
 
         if (category) {
-          query += ` AND category = $${paramCount}`;
+          whereClause += ` AND category = $${paramCount}`;
           params.push(category);
           paramCount++;
         }
 
         if (status) {
-          query += ` AND status = $${paramCount}`;
+          whereClause += ` AND status = $${paramCount}`;
           params.push(status);
           paramCount++;
         }
 
         if (search) {
-          query += ` AND (name ILIKE $${paramCount} OR brand ILIKE $${paramCount} OR model ILIKE $${paramCount})`;
+          whereClause += ` AND (name ILIKE $${paramCount} OR brand ILIKE $${paramCount} OR model ILIKE $${paramCount})`;
           params.push(`%${search}%`);
           paramCount++;
         }
 
         if (min_rate !== undefined) {
-          query += ` AND daily_rate >= $${paramCount}`;
+          whereClause += ` AND daily_rate >= $${paramCount}`;
           params.push(min_rate);
           paramCount++;
         }
 
         if (max_rate !== undefined) {
-          query += ` AND daily_rate <= $${paramCount}`;
+          whereClause += ` AND daily_rate <= $${paramCount}`;
           params.push(max_rate);
           paramCount++;
         }
 
         // Get total count
-        const countQuery = query.replace(
-          /SELECT .* FROM equipment/,
-          'SELECT COUNT(*) FROM equipment'
-        );
+        const countQuery = `SELECT COUNT(*) FROM equipment ${whereClause}`;
         const countResult = await pool.query(countQuery, params);
         const total = parseInt(countResult.rows[0].count);
+
+        // Build full query with SELECT
+        let query = `
+          SELECT id, name, description, category, brand, model, serial_number,
+                 daily_rate, image_url, specs, status, condition, purchase_date,
+                 notes, created_at, updated_at
+          FROM equipment
+          ${whereClause}
+        `;
 
         // Add pagination
         query += ` ORDER BY created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;

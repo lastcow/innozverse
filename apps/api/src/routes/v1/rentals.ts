@@ -39,7 +39,52 @@ export async function rentalRoutes(fastify: FastifyInstance) {
         } = request.query;
         const offset = (page - 1) * limit;
 
-        // Build query with filters
+        // Build WHERE clause with filters
+        let whereClause = 'WHERE 1=1';
+        const params: (string | number)[] = [];
+        let paramCount = 1;
+
+        // Non-admins can only see their own rentals
+        if (!isAdmin) {
+          whereClause += ` AND r.user_id = $${paramCount}`;
+          params.push(user.userId);
+          paramCount++;
+        } else if (user_id) {
+          whereClause += ` AND r.user_id = $${paramCount}`;
+          params.push(user_id);
+          paramCount++;
+        }
+
+        if (status) {
+          whereClause += ` AND r.status = $${paramCount}`;
+          params.push(status);
+          paramCount++;
+        }
+
+        if (equipment_id) {
+          whereClause += ` AND r.equipment_id = $${paramCount}`;
+          params.push(equipment_id);
+          paramCount++;
+        }
+
+        if (start_date_from) {
+          whereClause += ` AND r.start_date >= $${paramCount}`;
+          params.push(start_date_from);
+          paramCount++;
+        }
+
+        if (start_date_to) {
+          whereClause += ` AND r.start_date <= $${paramCount}`;
+          params.push(start_date_to);
+          paramCount++;
+        }
+
+        // Get total count
+        const countQuery = `SELECT COUNT(*) FROM rentals r ${whereClause}`;
+        const countResult = await pool.query(countQuery, params);
+        const total = parseInt(countResult.rows[0].count);
+
+        // Build full query with SELECT and JOINs
         let query = `
           SELECT r.id, r.user_id, r.equipment_id, r.start_date, r.end_date,
                  r.daily_rate, r.total_amount, r.status, r.notes,
@@ -50,56 +95,8 @@ export async function rentalRoutes(fastify: FastifyInstance) {
           FROM rentals r
           JOIN users u ON r.user_id = u.id
           JOIN equipment e ON r.equipment_id = e.id
-          WHERE 1=1
+          ${whereClause}
         `;
-        const params: (string | number)[] = [];
-        let paramCount = 1;
-
-        // Non-admins can only see their own rentals
-        if (!isAdmin) {
-          query += ` AND r.user_id = $${paramCount}`;
-          params.push(user.userId);
-          paramCount++;
-        } else if (user_id) {
-          query += ` AND r.user_id = $${paramCount}`;
-          params.push(user_id);
-          paramCount++;
-        }
-
-        if (status) {
-          query += ` AND r.status = $${paramCount}`;
-          params.push(status);
-          paramCount++;
-        }
-
-        if (equipment_id) {
-          query += ` AND r.equipment_id = $${paramCount}`;
-          params.push(equipment_id);
-          paramCount++;
-        }
-
-        if (start_date_from) {
-          query += ` AND r.start_date >= $${paramCount}`;
-          params.push(start_date_from);
-          paramCount++;
-        }
-
-        if (start_date_to) {
-          query += ` AND r.start_date <= $${paramCount}`;
-          params.push(start_date_to);
-          paramCount++;
-        }
-
-        // Get total count
-        const countQuery = query.replace(
-          /SELECT .* FROM rentals/,
-          'SELECT COUNT(*) FROM rentals'
-        ).replace(/json_build_object.*as user,/, '')
-         .replace(/json_build_object.*as equipment/, '')
-         .replace(/JOIN users u ON r.user_id = u.id/, '')
-         .replace(/JOIN equipment e ON r.equipment_id = e.id/, '');
-        const countResult = await pool.query(countQuery, params);
-        const total = parseInt(countResult.rows[0].count);
 
         // Add pagination
         query += ` ORDER BY r.created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
