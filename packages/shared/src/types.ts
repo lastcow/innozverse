@@ -213,6 +213,7 @@ export interface Equipment {
   model: string | null;
   serial_number: string | null;
   daily_rate: string;
+  retail_price: string | null;
   image_url: string | null;
   specs: EquipmentSpecs | null;
   status: EquipmentStatus;
@@ -231,6 +232,7 @@ export interface CreateEquipmentRequest {
   model?: string;
   serial_number?: string;
   daily_rate: number;
+  retail_price?: number;
   image_url?: string;
   specs?: EquipmentSpecs;
   condition?: EquipmentCondition;
@@ -246,6 +248,7 @@ export interface UpdateEquipmentRequest {
   model?: string;
   serial_number?: string;
   daily_rate?: number;
+  retail_price?: number;
   image_url?: string;
   specs?: EquipmentSpecs;
   status?: EquipmentStatus;

@@ -79,7 +79,7 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
         // Build full query with SELECT
         let query = `
           SELECT id, name, description, category, brand, model, serial_number,
-                 daily_rate, image_url, specs, status, condition, purchase_date,
+                 daily_rate, retail_price, image_url, specs, status, condition, purchase_date,
                  notes, created_at, updated_at
           FROM equipment
           ${whereClause}
@@ -124,7 +124,7 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
 
         const result = await pool.query(
           `SELECT id, name, description, category, brand, model, serial_number,
-                  daily_rate, image_url, specs, status, condition, purchase_date,
+                  daily_rate, retail_price, image_url, specs, status, condition, purchase_date,
                   notes, created_at, updated_at
            FROM equipment WHERE id = $1`,
           [id]
@@ -248,6 +248,7 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
           model,
           serial_number,
           daily_rate,
+          retail_price,
           image_url,
           specs,
           condition,
@@ -258,10 +259,10 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
         const result = await pool.query(
           `INSERT INTO equipment (
             name, description, category, brand, model, serial_number,
-            daily_rate, image_url, specs, condition, purchase_date, notes
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            daily_rate, retail_price, image_url, specs, condition, purchase_date, notes
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
           RETURNING id, name, description, category, brand, model, serial_number,
-                    daily_rate, image_url, specs, status, condition, purchase_date,
+                    daily_rate, retail_price, image_url, specs, status, condition, purchase_date,
                     notes, created_at, updated_at`,
           [
             name,
@@ -271,6 +272,7 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
             model || null,
             serial_number || null,
             daily_rate,
+            retail_price || null,
             image_url || null,
             specs ? JSON.stringify(specs) : null,
             condition || 'excellent',
@@ -367,6 +369,12 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
           paramCount++;
         }
 
+        if (data.retail_price !== undefined) {
+          updates.push(`retail_price = $${paramCount}`);
+          params.push(data.retail_price);
+          paramCount++;
+        }
+
         if (data.image_url !== undefined) {
           updates.push(`image_url = $${paramCount}`);
           params.push(data.image_url);
@@ -412,7 +420,7 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
           SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP
           WHERE id = $${paramCount}
           RETURNING id, name, description, category, brand, model, serial_number,
-                    daily_rate, image_url, specs, status, condition, purchase_date,
+                    daily_rate, retail_price, image_url, specs, status, condition, purchase_date,
                     notes, created_at, updated_at
         `;
 

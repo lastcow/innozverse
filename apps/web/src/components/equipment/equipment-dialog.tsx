@@ -40,6 +40,7 @@ export interface EquipmentFormData {
   model: string;
   serial_number: string;
   daily_rate: string;
+  retail_price: string;
   image_url: string;
   condition: EquipmentCondition;
   notes: string;
@@ -54,6 +55,7 @@ export interface Equipment {
   model: string | null;
   serial_number: string | null;
   daily_rate: string;
+  retail_price: string | null;
   image_url: string | null;
   specs: Record<string, string | number | boolean> | null;
   status: string;
@@ -80,6 +82,7 @@ const initialFormData: EquipmentFormData = {
   model: '',
   serial_number: '',
   daily_rate: '',
+  retail_price: '',
   image_url: '',
   condition: 'excellent',
   notes: '',
@@ -109,6 +112,7 @@ export function EquipmentDialog({
           model: equipment.model || '',
           serial_number: equipment.serial_number || '',
           daily_rate: equipment.daily_rate,
+          retail_price: equipment.retail_price || '',
           image_url: equipment.image_url || '',
           condition: equipment.condition,
           notes: equipment.notes || '',
@@ -145,6 +149,7 @@ export function EquipmentDialog({
         model: formData.model || undefined,
         serial_number: formData.serial_number || undefined,
         daily_rate: parseFloat(formData.daily_rate),
+        retail_price: formData.retail_price ? parseFloat(formData.retail_price) : undefined,
         image_url: formData.image_url || undefined,
         condition: formData.condition,
         notes: formData.notes || undefined,
@@ -231,19 +236,30 @@ export function EquipmentDialog({
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Condition</label>
-              <select
-                value={formData.condition}
-                onChange={(e) => setFormData({ ...formData, condition: e.target.value as EquipmentCondition })}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                {CONDITION_OPTIONS.map((condition) => (
-                  <option key={condition} value={condition}>
-                    {condition.charAt(0).toUpperCase() + condition.slice(1)}
-                  </option>
-                ))}
-              </select>
+              <label className="text-sm font-medium">Retail Price</label>
+              <Input
+                type="number"
+                step="0.01"
+                value={formData.retail_price}
+                onChange={(e) => setFormData({ ...formData, retail_price: e.target.value })}
+                placeholder="1999.00"
+              />
             </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Condition</label>
+            <select
+              value={formData.condition}
+              onChange={(e) => setFormData({ ...formData, condition: e.target.value as EquipmentCondition })}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {CONDITION_OPTIONS.map((condition) => (
+                <option key={condition} value={condition}>
+                  {condition.charAt(0).toUpperCase() + condition.slice(1)}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
