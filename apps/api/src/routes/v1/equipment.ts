@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { pool } from '../../db';
-import { requireAuth, requireRole } from '../../middleware/auth';
+import { requireAuth } from '../../middleware/auth';
 import {
   CreateEquipmentRequest,
   UpdateEquipmentRequest,
@@ -225,10 +225,10 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Create equipment (admin only)
+  // Create equipment
   fastify.post<{ Body: CreateEquipmentRequest }>(
     '/equipment',
-    { preHandler: [requireAuth, requireRole('admin', 'super_user')] },
+    { preHandler: requireAuth },
     async (request, reply) => {
       try {
         const validation = createEquipmentRequestSchema.safeParse(request.body);
@@ -301,10 +301,10 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Update equipment (admin only)
+  // Update equipment
   fastify.put<{ Params: EquipmentIdParams; Body: UpdateEquipmentRequest }>(
     '/equipment/:id',
-    { preHandler: [requireAuth, requireRole('admin', 'super_user')] },
+    { preHandler: requireAuth },
     async (request, reply) => {
       try {
         const { id } = request.params;
@@ -448,10 +448,10 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Delete equipment (admin only)
+  // Delete equipment
   fastify.delete<{ Params: EquipmentIdParams }>(
     '/equipment/:id',
-    { preHandler: [requireAuth, requireRole('admin', 'super_user')] },
+    { preHandler: requireAuth },
     async (request, reply) => {
       try {
         const { id } = request.params;
