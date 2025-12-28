@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { pool } from '../../db';
-import { requireAuth } from '../../middleware/auth';
+import { requireAuth, requireRole } from '../../middleware/auth';
 import {
   CreateEquipmentRequest,
   UpdateEquipmentRequest,
@@ -301,10 +301,10 @@ export async function equipmentRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Update equipment
+  // Update equipment (admin only)
   fastify.put<{ Params: EquipmentIdParams; Body: UpdateEquipmentRequest }>(
     '/equipment/:id',
-    { preHandler: requireAuth },
+    { preHandler: [requireAuth, requireRole('admin', 'super_user')] },
     async (request, reply) => {
       try {
         const { id } = request.params;
