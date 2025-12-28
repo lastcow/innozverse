@@ -63,6 +63,7 @@ export default function KnowledgeBasePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -233,6 +234,7 @@ export default function KnowledgeBasePage() {
         setIsAdmin(['admin', 'super_user'].includes(role));
 
         await Promise.all([fetchCategories(), fetchStats()]);
+        setInitialized(true);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to initialize');
       }
@@ -240,10 +242,12 @@ export default function KnowledgeBasePage() {
     init();
   }, [fetchCategories, fetchStats]);
 
-  // Fetch articles when filters change
+  // Fetch articles when filters change (only after initialized)
   useEffect(() => {
-    fetchArticles();
-  }, [fetchArticles]);
+    if (initialized) {
+      fetchArticles();
+    }
+  }, [fetchArticles, initialized]);
 
   // Handle search with debounce
   useEffect(() => {
