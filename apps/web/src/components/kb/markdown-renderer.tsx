@@ -21,67 +21,77 @@ function slugify(text?: string): string {
 
 export function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   return (
-    <div className={cn('prose prose-slate max-w-none dark:prose-invert', className)}>
+    <div className={cn('prose prose-neutral max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground', className)}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
           code(props) {
-            const { children: codeChildren, className: codeClassName, ...rest } = props;
+            const { children: codeChildren, className: codeClassName, node, ...rest } = props;
             const match = /language-(\w+)/.exec(codeClassName || '');
-            const isInline = !match;
+            // Check if this is a code block (has language) or inline code
+            // Code blocks have a language class, inline code does not
+            const isCodeBlock = match !== null;
 
-            return isInline ? (
-              <code className={cn('bg-muted px-1.5 py-0.5 rounded text-sm', codeClassName)} {...rest}>
+            if (isCodeBlock) {
+              return (
+                <SyntaxHighlighter
+                  style={oneDark}
+                  language={match[1]}
+                  PreTag="div"
+                  className="rounded-lg !mt-4 !mb-4"
+                >
+                  {String(codeChildren).replace(/\n$/, '')}
+                </SyntaxHighlighter>
+              );
+            }
+
+            // Inline code - only style with background if it's actual inline code (backticks)
+            return (
+              <code
+                className="bg-muted/50 px-1.5 py-0.5 rounded text-sm font-mono text-foreground"
+                {...rest}
+              >
                 {codeChildren}
               </code>
-            ) : (
-              <SyntaxHighlighter
-                style={oneDark}
-                language={match[1]}
-                PreTag="div"
-                className="rounded-lg !mt-4 !mb-4"
-              >
-                {String(codeChildren).replace(/\n$/, '')}
-              </SyntaxHighlighter>
             );
           },
           h1: ({ children: h1Children }) => (
-            <h1 className="scroll-mt-20 text-3xl font-bold mt-8 mb-4" id={slugify(String(h1Children))}>
+            <h1 className="scroll-mt-20 text-3xl font-bold mt-8 mb-4 text-foreground" id={slugify(String(h1Children))}>
               {h1Children}
             </h1>
           ),
           h2: ({ children: h2Children }) => (
-            <h2 className="scroll-mt-20 text-2xl font-semibold mt-6 mb-3 border-b pb-2" id={slugify(String(h2Children))}>
+            <h2 className="scroll-mt-20 text-2xl font-semibold mt-6 mb-3 border-b pb-2 text-foreground" id={slugify(String(h2Children))}>
               {h2Children}
             </h2>
           ),
           h3: ({ children: h3Children }) => (
-            <h3 className="scroll-mt-20 text-xl font-semibold mt-5 mb-2" id={slugify(String(h3Children))}>
+            <h3 className="scroll-mt-20 text-xl font-semibold mt-5 mb-2 text-foreground" id={slugify(String(h3Children))}>
               {h3Children}
             </h3>
           ),
           h4: ({ children: h4Children }) => (
-            <h4 className="scroll-mt-20 text-lg font-semibold mt-4 mb-2" id={slugify(String(h4Children))}>
+            <h4 className="scroll-mt-20 text-lg font-semibold mt-4 mb-2 text-foreground" id={slugify(String(h4Children))}>
               {h4Children}
             </h4>
           ),
           p: ({ children: pChildren }) => (
-            <p className="leading-7 mb-4">
+            <p className="leading-7 mb-4 text-foreground">
               {pChildren}
             </p>
           ),
           ul: ({ children: ulChildren }) => (
-            <ul className="list-disc list-inside mb-4 space-y-1">
+            <ul className="list-disc list-inside mb-4 space-y-1 text-foreground">
               {ulChildren}
             </ul>
           ),
           ol: ({ children: olChildren }) => (
-            <ol className="list-decimal list-inside mb-4 space-y-1">
+            <ol className="list-decimal list-inside mb-4 space-y-1 text-foreground">
               {olChildren}
             </ol>
           ),
           li: ({ children: liChildren }) => (
-            <li className="leading-7">
+            <li className="leading-7 text-foreground">
               {liChildren}
             </li>
           ),
