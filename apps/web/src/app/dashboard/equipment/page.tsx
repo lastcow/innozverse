@@ -3,8 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   AlertDialog,
@@ -16,7 +15,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { ApiClient, EquipmentCategory, EquipmentStatus, EquipmentCondition } from '@innozverse/api-client';
+import { EquipmentDialog, Equipment } from '@/components/equipment/equipment-dialog';
+import { ApiClient, EquipmentCategory, EquipmentStatus } from '@innozverse/api-client';
 import {
   AlertCircle,
   Loader2,
@@ -45,39 +45,6 @@ const apiClient = new ApiClient(
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
 );
 
-const CATEGORIES: EquipmentCategory[] = [
-  'laptop',
-  'desktop',
-  'monitor',
-  'keyboard',
-  'mouse',
-  'headset',
-  'gaming_console',
-  'controller',
-  'peripheral',
-];
-
-const CONDITION_OPTIONS: EquipmentCondition[] = ['excellent', 'good', 'fair'];
-
-interface Equipment {
-  id: string;
-  name: string;
-  description: string | null;
-  category: EquipmentCategory;
-  brand: string | null;
-  model: string | null;
-  serial_number: string | null;
-  daily_rate: string;
-  image_url: string | null;
-  specs: Record<string, string | number | boolean> | null;
-  status: EquipmentStatus;
-  condition: EquipmentCondition;
-  purchase_date: string | null;
-  notes: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
 export default function EquipmentPage() {
   const [equipment, setEquipment] = useState<Equipment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,21 +66,9 @@ export default function EquipmentPage() {
     maintenance: 0,
   });
 
-  // Add/Edit equipment state
-  const [showAddModal, setShowAddModal] = useState(false);
+  // Dialog state
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [editingEquipment, setEditingEquipment] = useState<Equipment | null>(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    category: 'laptop' as EquipmentCategory,
-    brand: '',
-    model: '',
-    serial_number: '',
-    daily_rate: '',
-    image_url: '',
-    condition: 'excellent' as EquipmentCondition,
-    notes: '',
-  });
 
   // Delete equipment state
   const [equipmentToDelete, setEquipmentToDelete] = useState<Equipment | null>(null);
@@ -234,72 +189,20 @@ export default function EquipmentPage() {
 
   const handleAdd = () => {
     setEditingEquipment(null);
-    setFormData({
-      name: '',
-      description: '',
-      category: 'laptop',
-      brand: '',
-      model: '',
-      serial_number: '',
-      daily_rate: '',
-      image_url: '',
-      condition: 'excellent',
-      notes: '',
-    });
-    setShowAddModal(true);
+    setDialogOpen(true);
   };
 
   const handleEdit = (item: Equipment) => {
     setEditingEquipment(item);
-    setFormData({
-      name: item.name,
-      description: item.description || '',
-      category: item.category,
-      brand: item.brand || '',
-      model: item.model || '',
-      serial_number: item.serial_number || '',
-      daily_rate: item.daily_rate,
-      image_url: item.image_url || '',
-      condition: item.condition,
-      notes: item.notes || '',
-    });
-    setShowAddModal(true);
+    setDialogOpen(true);
   };
 
-  const handleSave = async () => {
-    try {
-      if (editingEquipment) {
-        await apiClient.updateEquipment(editingEquipment.id, {
-          name: formData.name,
-          description: formData.description || undefined,
-          category: formData.category,
-          brand: formData.brand || undefined,
-          model: formData.model || undefined,
-          serial_number: formData.serial_number || undefined,
-          daily_rate: parseFloat(formData.daily_rate),
-          image_url: formData.image_url || undefined,
-          condition: formData.condition,
-          notes: formData.notes || undefined,
-        });
-      } else {
-        await apiClient.createEquipment({
-          name: formData.name,
-          description: formData.description || undefined,
-          category: formData.category,
-          brand: formData.brand || undefined,
-          model: formData.model || undefined,
-          serial_number: formData.serial_number || undefined,
-          daily_rate: parseFloat(formData.daily_rate),
-          image_url: formData.image_url || undefined,
-          condition: formData.condition,
-          notes: formData.notes || undefined,
-        });
-      }
-      setShowAddModal(false);
-      fetchEquipment();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save equipment');
-    }
+  const handleDialogSuccess = () => {
+    fetchEquipment();
+  };
+
+  const handleDialogError = (errorMessage: string) => {
+    setError(errorMessage);
   };
 
   const handleDelete = async () => {
@@ -348,15 +251,6 @@ export default function EquipmentPage() {
     }
   };
 
-  const getTodayDate = () => {
-    const today = new Date();
-    return today.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -368,15 +262,12 @@ export default function EquipmentPage() {
               Manage your equipment catalog and track availability.
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">Today: {getTodayDate()}</span>
-            {isAdmin && (
-              <Button onClick={handleAdd} className="rounded-lg bg-blue-600 hover:bg-blue-700">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Equipment
-              </Button>
-            )}
-          </div>
+          {isAdmin && (
+            <Button onClick={handleAdd} className="rounded-lg bg-blue-600 hover:bg-blue-700">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Equipment
+            </Button>
+          )}
         </div>
 
         {/* KPI Cards */}
@@ -562,7 +453,7 @@ export default function EquipmentPage() {
                     <tbody>
                       {equipment.map((item) => {
                         const CategoryIcon = getCategoryIcon(item.category);
-                        const statusBadge = getStatusBadge(item.status);
+                        const statusBadge = getStatusBadge(item.status as EquipmentStatus);
 
                         return (
                           <tr
@@ -676,132 +567,14 @@ export default function EquipmentPage() {
           </CardContent>
         </Card>
 
-        {/* Add/Edit Equipment Modal */}
-        {showAddModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto">
-              <CardHeader>
-                <CardTitle>{editingEquipment ? 'Edit Equipment' : 'Add Equipment'}</CardTitle>
-                <CardDescription>
-                  {editingEquipment ? 'Update equipment information' : 'Add new equipment to inventory'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium">Name *</label>
-                  <Input
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="MacBook Pro 16-inch"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Category *</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value as EquipmentCategory })}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    {CATEGORIES.map((category) => (
-                      <option key={category} value={category}>
-                        {category.replace('_', ' ')}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium">Brand</label>
-                    <Input
-                      value={formData.brand}
-                      onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                      placeholder="Apple"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Model</label>
-                    <Input
-                      value={formData.model}
-                      onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                      placeholder="M3 Pro"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium">Daily Rate *</label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      value={formData.daily_rate}
-                      onChange={(e) => setFormData({ ...formData, daily_rate: e.target.value })}
-                      placeholder="50.00"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Condition</label>
-                    <select
-                      value={formData.condition}
-                      onChange={(e) => setFormData({ ...formData, condition: e.target.value as EquipmentCondition })}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    >
-                      {CONDITION_OPTIONS.map((condition) => (
-                        <option key={condition} value={condition}>
-                          {condition.charAt(0).toUpperCase() + condition.slice(1)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Serial Number</label>
-                  <Input
-                    value={formData.serial_number}
-                    onChange={(e) => setFormData({ ...formData, serial_number: e.target.value })}
-                    placeholder="ABC123XYZ"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Description</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Equipment description..."
-                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Image URL</label>
-                  <Input
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Notes</label>
-                  <textarea
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    placeholder="Internal notes..."
-                    className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  />
-                </div>
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button variant="outline" onClick={() => setShowAddModal(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleSave}
-                    disabled={!formData.name || !formData.daily_rate}
-                  >
-                    {editingEquipment ? 'Save Changes' : 'Add Equipment'}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        {/* Equipment Dialog (Add/Edit) */}
+        <EquipmentDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          equipment={editingEquipment}
+          onSuccess={handleDialogSuccess}
+          onError={handleDialogError}
+        />
 
         {/* Delete Equipment Alert Dialog */}
         <AlertDialog open={!!equipmentToDelete} onOpenChange={(open) => !open && setEquipmentToDelete(null)}>
