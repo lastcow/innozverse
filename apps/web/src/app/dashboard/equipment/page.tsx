@@ -23,11 +23,7 @@ import {
   Trash2,
   Edit2,
   Plus,
-  ChevronLeft,
-  ChevronRight,
-  Search,
   MoreVertical,
-  RotateCcw,
   Monitor,
   Laptop,
   Gamepad2,
@@ -36,8 +32,14 @@ import {
   Headphones,
   Tv,
   Package,
+  Box,
+  Wrench,
+  CheckCircle,
+  ArrowUpRight,
+  ArrowDownRight,
+  Filter,
+  Download,
 } from 'lucide-react';
-import Link from 'next/link';
 
 const apiClient = new ApiClient(
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
@@ -55,7 +57,6 @@ const CATEGORIES: EquipmentCategory[] = [
   'peripheral',
 ];
 
-const STATUS_OPTIONS: EquipmentStatus[] = ['available', 'rented', 'maintenance', 'retired'];
 const CONDITION_OPTIONS: EquipmentCondition[] = ['excellent', 'good', 'fair'];
 
 interface Equipment {
@@ -81,9 +82,7 @@ export default function EquipmentPage() {
   const [equipment, setEquipment] = useState<Equipment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'all' | 'available' | 'rented' | 'maintenance'>('all');
   const [isAdmin, setIsAdmin] = useState(false);
 
   // Pagination state
@@ -91,6 +90,14 @@ export default function EquipmentPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalEquipment, setTotalEquipment] = useState(0);
   const [limit] = useState(10);
+
+  // Stats state
+  const [stats, setStats] = useState({
+    totalEquipment: 0,
+    available: 0,
+    rented: 0,
+    maintenance: 0,
+  });
 
   // Add/Edit equipment state
   const [showAddModal, setShowAddModal] = useState(false);
@@ -169,12 +176,28 @@ export default function EquipmentPage() {
     try {
       setLoading(true);
       setError(null);
+
+      // Fetch all equipment for stats
+      const allResponse = await apiClient.listEquipment({ limit: 1000 });
+      const allData = allResponse.data.equipment as Equipment[];
+
+      // Calculate stats
+      const available = allData.filter((e: Equipment) => e.status === 'available').length;
+      const rented = allData.filter((e: Equipment) => e.status === 'rented').length;
+      const maintenance = allData.filter((e: Equipment) => e.status === 'maintenance').length;
+
+      setStats({
+        totalEquipment: allData.length,
+        available,
+        rented,
+        maintenance,
+      });
+
+      // Fetch paginated equipment for display
       const response = await apiClient.listEquipment({
         page: currentPage,
         limit: limit,
-        search: search || undefined,
-        category: selectedCategory || undefined,
-        status: selectedStatus || undefined,
+        status: activeTab === 'all' ? undefined : activeTab,
       });
       setEquipment(response.data.equipment);
       setTotalPages(response.data.pagination.totalPages);
@@ -184,7 +207,7 @@ export default function EquipmentPage() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, limit, search, selectedCategory, selectedStatus]);
+  }, [currentPage, limit, activeTab]);
 
   useEffect(() => {
     const refreshToken = apiClient.getRefreshToken();
@@ -292,25 +315,8 @@ export default function EquipmentPage() {
     }
   };
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setCurrentPage(1);
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setSelectedCategory(value);
-    setCurrentPage(1);
-  };
-
-  const handleStatusChange = (value: string) => {
-    setSelectedStatus(value);
-    setCurrentPage(1);
-  };
-
-  const handleReset = () => {
-    setSearch('');
-    setSelectedCategory('');
-    setSelectedStatus('');
+  const handleTabChange = (tab: 'all' | 'available' | 'rented' | 'maintenance') => {
+    setActiveTab(tab);
     setCurrentPage(1);
   };
 
@@ -330,41 +336,6 @@ export default function EquipmentPage() {
     });
   };
 
-  const generatePageNumbers = () => {
-    const pages: (number | string)[] = [];
-    const maxVisible = 5;
-
-    if (totalPages <= maxVisible) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        for (let i = 1; i <= 4; i++) {
-          pages.push(i);
-        }
-        pages.push('...');
-        pages.push(totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        pages.push(1);
-        pages.push('...');
-        for (let i = totalPages - 3; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push(1);
-        pages.push('...');
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          pages.push(i);
-        }
-        pages.push('...');
-        pages.push(totalPages);
-      }
-    }
-
-    return pages;
-  };
-
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -377,30 +348,114 @@ export default function EquipmentPage() {
     }
   };
 
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Breadcrumbs */}
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Link href="/dashboard" className="hover:text-foreground transition-colors">
-            Dashboard
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">Equipment</span>
-        </div>
-
         {/* Page Header */}
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Equipment</h1>
-            <p className="text-muted-foreground mt-1">Browse and manage rental equipment inventory.</p>
+            <h1 className="text-3xl font-bold tracking-tight">Equipment Inventory</h1>
+            <p className="text-muted-foreground mt-1">
+              Manage your equipment catalog and track availability.
+            </p>
           </div>
-          {isAdmin && (
-            <Button onClick={handleAdd} className="rounded-lg">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Equipment
-            </Button>
-          )}
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground">Today: {getTodayDate()}</span>
+            {isAdmin && (
+              <Button onClick={handleAdd} className="rounded-lg bg-blue-600 hover:bg-blue-700">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Equipment
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Equipment</p>
+                  <p className="text-2xl font-bold mt-1">{stats.totalEquipment}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
+                    <span className="text-green-500">+3%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <Box className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Available</p>
+                  <p className="text-2xl font-bold mt-1">{stats.available}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
+                    <span className="text-green-500">+5%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center">
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Currently Rented</p>
+                  <p className="text-2xl font-bold mt-1">{stats.rented}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
+                    <span className="text-green-500">+12%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <Laptop className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">In Maintenance</p>
+                  <p className="text-2xl font-bold mt-1">{stats.maintenance}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowDownRight className="mr-1 h-3 w-3 text-red-500" />
+                    <span className="text-red-500">-2%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-orange-100 flex items-center justify-center">
+                  <Wrench className="h-6 w-6 text-orange-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {error && (
@@ -410,58 +465,75 @@ export default function EquipmentPage() {
           </Alert>
         )}
 
-        {/* Filters */}
-        <Card className="rounded-lg border shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4 flex-wrap">
-              <div className="relative flex-1 min-w-[300px]">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search equipment by name, brand, or model..."
-                  value={search}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-10 rounded-lg"
-                />
-              </div>
-              <select
-                value={selectedCategory}
-                onChange={(e) => handleCategoryChange(e.target.value)}
-                className="flex h-10 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="">All Categories</option>
-                {CATEGORIES.map((category) => (
-                  <option key={category} value={category}>
-                    {category.replace('_', ' ')}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={selectedStatus}
-                onChange={(e) => handleStatusChange(e.target.value)}
-                className="flex h-10 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="">All Status</option>
-                {STATUS_OPTIONS.map((status) => (
-                  <option key={status} value={status}>
-                    {status.charAt(0).toUpperCase() + status.slice(1)}
-                  </option>
-                ))}
-              </select>
-              <Button
-                variant="outline"
-                onClick={handleReset}
-                className="rounded-lg"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Equipment Table */}
         <Card className="rounded-lg border shadow-sm">
           <CardContent className="p-0">
+            {/* Tabs and Actions */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => handleTabChange('all')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'all'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  All Equipment
+                </button>
+                <button
+                  onClick={() => handleTabChange('available')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'available'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Available
+                  {stats.available > 0 && (
+                    <span className="ml-2 px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
+                      {stats.available}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => handleTabChange('rented')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'rented'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Rented
+                </button>
+                <button
+                  onClick={() => handleTabChange('maintenance')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+                    activeTab === 'maintenance'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Maintenance
+                  {stats.maintenance > 0 && (
+                    <span className="ml-2 px-2 py-0.5 text-xs bg-orange-100 text-orange-700 rounded-full">
+                      {stats.maintenance}
+                    </span>
+                  )}
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="rounded-lg">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
+                </Button>
+                <Button variant="outline" size="sm" className="rounded-lg">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+              </div>
+            </div>
+
             {loading ? (
               <div className="flex justify-center py-16">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -578,7 +650,7 @@ export default function EquipmentPage() {
                   <div className="text-sm text-muted-foreground">
                     Showing {((currentPage - 1) * limit) + 1} to {Math.min(currentPage * limit, totalEquipment)} of {totalEquipment} items
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -586,29 +658,8 @@ export default function EquipmentPage() {
                       disabled={currentPage === 1}
                       className="rounded-lg"
                     >
-                      <ChevronLeft className="h-4 w-4" />
+                      Previous
                     </Button>
-                    {generatePageNumbers().map((page, index) => {
-                      if (page === '...') {
-                        return (
-                          <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
-                            ...
-                          </span>
-                        );
-                      }
-                      const pageNum = page as number;
-                      return (
-                        <Button
-                          key={pageNum}
-                          variant={currentPage === pageNum ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => setCurrentPage(pageNum)}
-                          className="rounded-lg min-w-[2.5rem]"
-                        >
-                          {pageNum}
-                        </Button>
-                      );
-                    })}
                     <Button
                       variant="outline"
                       size="sm"
@@ -616,7 +667,7 @@ export default function EquipmentPage() {
                       disabled={currentPage === totalPages}
                       className="rounded-lg"
                     >
-                      <ChevronRight className="h-4 w-4" />
+                      Next
                     </Button>
                   </div>
                 </div>
