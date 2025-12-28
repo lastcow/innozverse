@@ -21,37 +21,31 @@ import {
   AlertCircle,
   Loader2,
   Plus,
-  ChevronLeft,
-  ChevronRight,
-  Search,
   MoreVertical,
-  RotateCcw,
-  Calendar,
   X,
   CheckCircle,
   Package,
   Clock,
+  ArrowUpRight,
+  ArrowDownRight,
+  Box,
+  Laptop,
+  AlertTriangle,
+  DollarSign,
+  Filter,
+  Download,
 } from 'lucide-react';
-import Link from 'next/link';
 
 const apiClient = new ApiClient(
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
 );
-
-const RENTAL_STATUS_OPTIONS: RentalStatus[] = [
-  'pending',
-  'confirmed',
-  'active',
-  'completed',
-  'cancelled',
-  'overdue',
-];
 
 interface Equipment {
   id: string;
   name: string;
   category: EquipmentCategory;
   image_url: string | null;
+  serial_number?: string | null;
 }
 
 interface RentalUser {
@@ -90,10 +84,11 @@ interface EquipmentOption {
 
 export default function RentalsPage() {
   const [rentals, setRentals] = useState<Rental[]>([]);
+  const [, setAllRentals] = useState<Rental[]>([]); // For stats calculation
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [selectedStatus] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'all' | 'current' | 'overdue'>('all');
   const [isAdmin, setIsAdmin] = useState(false);
 
   // Pagination state
@@ -101,6 +96,14 @@ export default function RentalsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalRentals, setTotalRentals] = useState(0);
   const [limit] = useState(10);
+
+  // Stats state
+  const [stats, setStats] = useState({
+    totalInventory: 0,
+    activeRentals: 0,
+    overdueReturns: 0,
+    totalRevenue: 0,
+  });
 
   // Create rental state
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -140,13 +143,13 @@ export default function RentalsPage() {
       case 'confirmed':
         return { label: 'Confirmed', className: 'bg-blue-100 text-blue-700 border-blue-200' };
       case 'active':
-        return { label: 'Active', className: 'bg-green-100 text-green-700 border-green-200' };
+        return { label: 'Rented', className: 'bg-orange-100 text-orange-700 border-orange-200' };
       case 'completed':
-        return { label: 'Completed', className: 'bg-gray-100 text-gray-700 border-gray-200' };
+        return { label: 'Available', className: 'bg-green-100 text-green-700 border-green-200' };
       case 'cancelled':
         return { label: 'Cancelled', className: 'bg-red-100 text-red-700 border-red-200' };
       case 'overdue':
-        return { label: 'Overdue', className: 'bg-orange-100 text-orange-700 border-orange-200' };
+        return { label: 'Overdue', className: 'bg-red-100 text-red-700 border-red-200' };
       default:
         return { label: status, className: 'bg-gray-100 text-gray-700 border-gray-200' };
     }
@@ -156,6 +159,33 @@ export default function RentalsPage() {
     try {
       setLoading(true);
       setError(null);
+      
+      // Fetch all rentals for stats
+      const allResponse = await apiClient.listRentals({ limit: 1000 });
+      setAllRentals(allResponse.data.rentals);
+      
+      // Calculate stats
+      const rentalsData = allResponse.data.rentals as Rental[];
+      const active = rentalsData.filter((r: Rental) => r.status === 'active').length;
+      const overdue = rentalsData.filter((r: Rental) => r.status === 'overdue').length;
+      const revenue = rentalsData
+        .filter((r: Rental) => r.status === 'completed' || r.status === 'active')
+        .reduce((sum: number, r: Rental) => sum + parseFloat(r.total_amount), 0);
+      
+      // Fetch equipment count for inventory
+      try {
+        const equipmentResponse = await apiClient.listEquipment({ limit: 1000 });
+        setStats({
+          totalInventory: equipmentResponse.data.equipment.length,
+          activeRentals: active,
+          overdueReturns: overdue,
+          totalRevenue: revenue,
+        });
+      } catch (e) {
+        console.error('Failed to fetch equipment:', e);
+      }
+      
+      // Fetch paginated rentals for display
       const response = await apiClient.listRentals({
         page: currentPage,
         limit: limit,
@@ -272,17 +302,6 @@ export default function RentalsPage() {
     }
   };
 
-  const handleStatusChange = (value: string) => {
-    setSelectedStatus(value);
-    setCurrentPage(1);
-  };
-
-  const handleReset = () => {
-    setSearch('');
-    setSelectedStatus('');
-    setCurrentPage(1);
-  };
-
   const toggleActionsMenu = (rentalId: string) => {
     setOpenActionsMenu(openActionsMenu === rentalId ? null : rentalId);
   };
@@ -315,41 +334,6 @@ export default function RentalsPage() {
     return (parseFloat(equipment.daily_rate) * days).toFixed(2);
   };
 
-  const generatePageNumbers = () => {
-    const pages: (number | string)[] = [];
-    const maxVisible = 5;
-
-    if (totalPages <= maxVisible) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        for (let i = 1; i <= 4; i++) {
-          pages.push(i);
-        }
-        pages.push('...');
-        pages.push(totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        pages.push(1);
-        pages.push('...');
-        for (let i = totalPages - 3; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push(1);
-        pages.push('...');
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          pages.push(i);
-        }
-        pages.push('...');
-        pages.push(totalPages);
-      }
-    }
-
-    return pages;
-  };
-
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -362,41 +346,128 @@ export default function RentalsPage() {
     }
   };
 
-  // Filter rentals by search (client-side)
+  // Filter rentals by tab (client-side)
   const filteredRentals = rentals.filter((rental) => {
-    if (!search) return true;
-    const searchLower = search.toLowerCase();
-    return (
-      rental.equipment.name.toLowerCase().includes(searchLower) ||
-      rental.user.name.toLowerCase().includes(searchLower) ||
-      rental.user.email.toLowerCase().includes(searchLower)
-    );
+    if (activeTab === 'current' && rental.status !== 'active') return false;
+    if (activeTab === 'overdue' && rental.status !== 'overdue') return false;
+    return true;
   });
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Breadcrumbs */}
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Link href="/dashboard" className="hover:text-foreground transition-colors">
-            Dashboard
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">Rentals</span>
-        </div>
-
         {/* Page Header */}
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Rentals</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
             <p className="text-muted-foreground mt-1">
-              {isAdmin ? 'Manage all equipment rentals.' : 'View and manage your equipment rentals.'}
+              Manage your inventory and track rental performance.
             </p>
           </div>
-          <Button onClick={handleCreateRental} className="rounded-lg">
-            <Plus className="mr-2 h-4 w-4" />
-            New Rental
-          </Button>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground">Today: {getTodayDate()}</span>
+            <Button onClick={handleCreateRental} className="rounded-lg bg-blue-600 hover:bg-blue-700">
+              <Plus className="mr-2 h-4 w-4" />
+              New Rental
+            </Button>
+          </div>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Inventory</p>
+                  <p className="text-2xl font-bold mt-1">{stats.totalInventory}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
+                    <span className="text-green-500">+5%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <Box className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Active Rentals</p>
+                  <p className="text-2xl font-bold mt-1">{stats.activeRentals}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
+                    <span className="text-green-500">+12%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <Laptop className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Overdue Returns</p>
+                  <p className="text-2xl font-bold mt-1">{stats.overdueReturns}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowDownRight className="mr-1 h-3 w-3 text-red-500" />
+                    <span className="text-red-500">-2%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-orange-100 flex items-center justify-center">
+                  <AlertTriangle className="h-6 w-6 text-orange-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-lg border shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                  <p className="text-2xl font-bold mt-1">${stats.totalRevenue.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground flex items-center mt-2">
+                    <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
+                    <span className="text-green-500">+8%</span>
+                    {' '}from last month
+                  </p>
+                </div>
+                <div className="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center">
+                  <DollarSign className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {error && (
@@ -406,46 +477,60 @@ export default function RentalsPage() {
           </Alert>
         )}
 
-        {/* Filters */}
-        <Card className="rounded-lg border shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4 flex-wrap">
-              <div className="relative flex-1 min-w-[300px]">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search by equipment or user..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10 rounded-lg"
-                />
-              </div>
-              <select
-                value={selectedStatus}
-                onChange={(e) => handleStatusChange(e.target.value)}
-                className="flex h-10 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="">All Status</option>
-                {RENTAL_STATUS_OPTIONS.map((status) => (
-                  <option key={status} value={status}>
-                    {status.charAt(0).toUpperCase() + status.slice(1)}
-                  </option>
-                ))}
-              </select>
-              <Button
-                variant="outline"
-                onClick={handleReset}
-                className="rounded-lg"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Rentals Table */}
         <Card className="rounded-lg border shadow-sm">
           <CardContent className="p-0">
+            {/* Tabs and Actions */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setActiveTab('all')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'all'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  All Rentals
+                </button>
+                <button
+                  onClick={() => setActiveTab('current')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors ${
+                    activeTab === 'current'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Current Rentals
+                </button>
+                <button
+                  onClick={() => setActiveTab('overdue')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+                    activeTab === 'overdue'
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Overdue
+                  {stats.overdueReturns > 0 && (
+                    <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full">
+                      {stats.overdueReturns}
+                    </span>
+                  )}
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="rounded-lg">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
+                </Button>
+                <Button variant="outline" size="sm" className="rounded-lg">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+              </div>
+            </div>
+
             {loading ? (
               <div className="flex justify-center py-16">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -461,20 +546,16 @@ export default function RentalsPage() {
                     <thead>
                       <tr className="border-b bg-muted/50">
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Equipment</th>
-                        {isAdmin && (
-                          <th className="text-left p-4 font-medium text-sm text-muted-foreground">User</th>
-                        )}
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Period</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Total</th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Serial Number</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Status</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Created</th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Current User</th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Period</th>
                         <th className="text-right p-4 font-medium text-sm text-muted-foreground">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredRentals.map((rental) => {
                         const statusBadge = getStatusBadge(rental.status);
-                        const days = calculateDays(rental.start_date, rental.end_date);
                         const canCancel = ['pending', 'confirmed'].includes(rental.status);
                         const canConfirm = isAdmin && rental.status === 'pending';
                         const canPickup = isAdmin && rental.status === 'confirmed';
@@ -486,43 +567,11 @@ export default function RentalsPage() {
                             className="border-b hover:bg-muted/50 transition-colors"
                           >
                             <td className="p-4">
-                              <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white flex-shrink-0">
-                                  <Package className="h-5 w-5" />
-                                </div>
-                                <div>
-                                  <div className="font-medium">{rental.equipment.name}</div>
-                                  <div className="text-sm text-muted-foreground capitalize">
-                                    {rental.equipment.category.replace('_', ' ')}
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            {isAdmin && (
-                              <td className="p-4">
-                                <div>
-                                  <div className="font-medium">{rental.user.name}</div>
-                                  <div className="text-sm text-muted-foreground">{rental.user.email}</div>
-                                </div>
-                              </td>
-                            )}
-                            <td className="p-4">
-                              <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4 text-muted-foreground" />
-                                <div>
-                                  <div className="text-sm">
-                                    {formatDate(rental.start_date)} - {formatDate(rental.end_date)}
-                                  </div>
-                                  <div className="text-xs text-muted-foreground">{days} day(s)</div>
-                                </div>
-                              </div>
+                              <div className="font-medium">{rental.equipment.name}</div>
                             </td>
                             <td className="p-4">
-                              <div>
-                                <div className="font-medium">{formatCurrency(rental.total_amount)}</div>
-                                <div className="text-xs text-muted-foreground">
-                                  {formatCurrency(rental.daily_rate)}/day
-                                </div>
+                              <div className="text-sm text-muted-foreground">
+                                {rental.equipment.serial_number || 'N/A'}
                               </div>
                             </td>
                             <td className="p-4">
@@ -530,8 +579,22 @@ export default function RentalsPage() {
                                 {statusBadge.label}
                               </span>
                             </td>
-                            <td className="p-4 text-sm text-muted-foreground">
-                              {formatDate(rental.created_at)}
+                            <td className="p-4">
+                              {rental.status === 'active' || rental.status === 'overdue' ? (
+                                <div className="flex items-center gap-2">
+                                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-xs font-medium">
+                                    {getInitials(rental.user.name)}
+                                  </div>
+                                  <span className="font-medium">{rental.user.name}</span>
+                                </div>
+                              ) : (
+                                <span className="text-muted-foreground">--</span>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              <div className="text-sm">
+                                {formatDate(rental.start_date)} - {formatDate(rental.end_date)}
+                              </div>
                             </td>
                             <td className="p-4 text-right">
                               <div className="relative inline-block" ref={openActionsMenu === rental.id ? actionsMenuRef : null}>
@@ -612,9 +675,9 @@ export default function RentalsPage() {
                 {/* Pagination Controls */}
                 <div className="flex items-center justify-between p-4 border-t">
                   <div className="text-sm text-muted-foreground">
-                    Showing {((currentPage - 1) * limit) + 1} to {Math.min(currentPage * limit, totalRentals)} of {totalRentals} rentals
+                    Showing {((currentPage - 1) * limit) + 1} to {Math.min(currentPage * limit, totalRentals)} of {totalRentals} results
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -622,29 +685,8 @@ export default function RentalsPage() {
                       disabled={currentPage === 1}
                       className="rounded-lg"
                     >
-                      <ChevronLeft className="h-4 w-4" />
+                      Previous
                     </Button>
-                    {generatePageNumbers().map((page, index) => {
-                      if (page === '...') {
-                        return (
-                          <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
-                            ...
-                          </span>
-                        );
-                      }
-                      const pageNum = page as number;
-                      return (
-                        <Button
-                          key={pageNum}
-                          variant={currentPage === pageNum ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => setCurrentPage(pageNum)}
-                          className="rounded-lg min-w-[2.5rem]"
-                        >
-                          {pageNum}
-                        </Button>
-                      );
-                    })}
                     <Button
                       variant="outline"
                       size="sm"
@@ -652,7 +694,7 @@ export default function RentalsPage() {
                       disabled={currentPage === totalPages}
                       className="rounded-lg"
                     >
-                      <ChevronRight className="h-4 w-4" />
+                      Next
                     </Button>
                   </div>
                 </div>
