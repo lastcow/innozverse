@@ -259,6 +259,180 @@ export class ApiClient {
       body: JSON.stringify(data)
     });
   }
+
+  // ==================== Equipment Management ====================
+
+  async listEquipment(params?: {
+    page?: number;
+    limit?: number;
+    category?: string;
+    status?: string;
+    search?: string;
+    min_rate?: number;
+    max_rate?: number;
+    available_from?: string;
+    available_to?: string;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.category) queryParams.set('category', params.category);
+    if (params?.status) queryParams.set('status', params.status);
+    if (params?.search) queryParams.set('search', params.search);
+    if (params?.min_rate) queryParams.set('min_rate', params.min_rate.toString());
+    if (params?.max_rate) queryParams.set('max_rate', params.max_rate.toString());
+    if (params?.available_from) queryParams.set('available_from', params.available_from);
+    if (params?.available_to) queryParams.set('available_to', params.available_to);
+
+    const query = queryParams.toString();
+    return this.request(`/v1/equipment${query ? `?${query}` : ''}`);
+  }
+
+  async getEquipment(id: string): Promise<any> {
+    return this.request(`/v1/equipment/${id}`);
+  }
+
+  async checkEquipmentAvailability(
+    id: string,
+    startDate: string,
+    endDate: string
+  ): Promise<any> {
+    return this.request(
+      `/v1/equipment/${id}/availability?start_date=${startDate}&end_date=${endDate}`
+    );
+  }
+
+  async createEquipment(data: {
+    name: string;
+    description?: string;
+    category: string;
+    brand?: string;
+    model?: string;
+    serial_number?: string;
+    daily_rate: number;
+    image_url?: string;
+    specs?: Record<string, string | number | boolean>;
+    condition?: string;
+    purchase_date?: string;
+    notes?: string;
+  }): Promise<any> {
+    return this.request('/v1/equipment', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async updateEquipment(
+    id: string,
+    data: {
+      name?: string;
+      description?: string;
+      category?: string;
+      brand?: string;
+      model?: string;
+      serial_number?: string;
+      daily_rate?: number;
+      image_url?: string;
+      specs?: Record<string, string | number | boolean>;
+      status?: string;
+      condition?: string;
+      notes?: string;
+    }
+  ): Promise<any> {
+    return this.request(`/v1/equipment/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteEquipment(id: string): Promise<any> {
+    return this.request(`/v1/equipment/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // ==================== Rental Management ====================
+
+  async listRentals(params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    user_id?: string;
+    equipment_id?: string;
+    start_date_from?: string;
+    start_date_to?: string;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.status) queryParams.set('status', params.status);
+    if (params?.user_id) queryParams.set('user_id', params.user_id);
+    if (params?.equipment_id) queryParams.set('equipment_id', params.equipment_id);
+    if (params?.start_date_from) queryParams.set('start_date_from', params.start_date_from);
+    if (params?.start_date_to) queryParams.set('start_date_to', params.start_date_to);
+
+    const query = queryParams.toString();
+    return this.request(`/v1/rentals${query ? `?${query}` : ''}`);
+  }
+
+  async getMyRentals(): Promise<any> {
+    return this.request('/v1/rentals/my');
+  }
+
+  async getRental(id: string): Promise<any> {
+    return this.request(`/v1/rentals/${id}`);
+  }
+
+  async createRental(data: {
+    equipment_id: string;
+    start_date: string;
+    end_date: string;
+    notes?: string;
+  }): Promise<any> {
+    return this.request('/v1/rentals', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async updateRental(
+    id: string,
+    data: {
+      status?: string;
+      notes?: string;
+      cancelled_reason?: string;
+    }
+  ): Promise<any> {
+    return this.request(`/v1/rentals/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async cancelRental(id: string, reason?: string): Promise<any> {
+    return this.request(`/v1/rentals/${id}/cancel`, {
+      method: 'POST',
+      body: JSON.stringify({ reason })
+    });
+  }
+
+  async confirmRental(id: string): Promise<any> {
+    return this.request(`/v1/rentals/${id}/confirm`, {
+      method: 'POST'
+    });
+  }
+
+  async pickupRental(id: string): Promise<any> {
+    return this.request(`/v1/rentals/${id}/pickup`, {
+      method: 'POST'
+    });
+  }
+
+  async returnRental(id: string): Promise<any> {
+    return this.request(`/v1/rentals/${id}/return`, {
+      method: 'POST'
+    });
+  }
 }
 
 export * from '@innozverse/shared';

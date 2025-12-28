@@ -182,3 +182,247 @@ export interface InviteUserResponse {
     inviteToken: string;
   };
 }
+
+// ==================== Equipment Types ====================
+
+export type EquipmentCategory =
+  | 'laptop'
+  | 'desktop'
+  | 'monitor'
+  | 'keyboard'
+  | 'mouse'
+  | 'headset'
+  | 'gaming_console'
+  | 'controller'
+  | 'peripheral';
+
+export type EquipmentStatus = 'available' | 'rented' | 'maintenance' | 'retired';
+
+export type EquipmentCondition = 'excellent' | 'good' | 'fair';
+
+export interface EquipmentSpecs {
+  [key: string]: string | number | boolean;
+}
+
+export interface Equipment {
+  id: string;
+  name: string;
+  description: string | null;
+  category: EquipmentCategory;
+  brand: string | null;
+  model: string | null;
+  serial_number: string | null;
+  daily_rate: string;
+  image_url: string | null;
+  specs: EquipmentSpecs | null;
+  status: EquipmentStatus;
+  condition: EquipmentCondition;
+  purchase_date: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateEquipmentRequest {
+  name: string;
+  description?: string;
+  category: EquipmentCategory;
+  brand?: string;
+  model?: string;
+  serial_number?: string;
+  daily_rate: number;
+  image_url?: string;
+  specs?: EquipmentSpecs;
+  condition?: EquipmentCondition;
+  purchase_date?: string;
+  notes?: string;
+}
+
+export interface UpdateEquipmentRequest {
+  name?: string;
+  description?: string;
+  category?: EquipmentCategory;
+  brand?: string;
+  model?: string;
+  serial_number?: string;
+  daily_rate?: number;
+  image_url?: string;
+  specs?: EquipmentSpecs;
+  status?: EquipmentStatus;
+  condition?: EquipmentCondition;
+  notes?: string;
+}
+
+export interface ListEquipmentRequest {
+  page?: number;
+  limit?: number;
+  category?: EquipmentCategory;
+  status?: EquipmentStatus;
+  search?: string;
+  min_rate?: number;
+  max_rate?: number;
+  available_from?: string;
+  available_to?: string;
+}
+
+export interface ListEquipmentResponse {
+  status: 'ok';
+  data: {
+    equipment: Equipment[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+export interface GetEquipmentResponse {
+  status: 'ok';
+  data: {
+    equipment: Equipment;
+  };
+}
+
+export interface CreateEquipmentResponse {
+  status: 'created';
+  data: {
+    equipment: Equipment;
+  };
+}
+
+export interface UpdateEquipmentResponse {
+  status: 'ok';
+  data: {
+    equipment: Equipment;
+  };
+}
+
+export interface DeleteEquipmentResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+export interface CheckAvailabilityRequest {
+  equipment_id: string;
+  start_date: string;
+  end_date: string;
+}
+
+export interface CheckAvailabilityResponse {
+  status: 'ok';
+  data: {
+    available: boolean;
+    conflicting_rentals?: { start_date: string; end_date: string }[];
+  };
+}
+
+// ==================== Rental Types ====================
+
+export type RentalStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'active'
+  | 'completed'
+  | 'cancelled'
+  | 'overdue';
+
+export interface Rental {
+  id: string;
+  user_id: string;
+  equipment_id: string;
+  start_date: string;
+  end_date: string;
+  daily_rate: string;
+  total_amount: string;
+  status: RentalStatus;
+  notes: string | null;
+  pickup_date: string | null;
+  return_date: string | null;
+  cancelled_at: string | null;
+  cancelled_reason: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RentalWithDetails extends Rental {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  equipment: {
+    id: string;
+    name: string;
+    category: EquipmentCategory;
+    image_url: string | null;
+  };
+}
+
+export interface CreateRentalRequest {
+  equipment_id: string;
+  start_date: string;
+  end_date: string;
+  notes?: string;
+}
+
+export interface UpdateRentalRequest {
+  status?: RentalStatus;
+  notes?: string;
+  cancelled_reason?: string;
+}
+
+export interface ListRentalsRequest {
+  page?: number;
+  limit?: number;
+  status?: RentalStatus;
+  user_id?: string;
+  equipment_id?: string;
+  start_date_from?: string;
+  start_date_to?: string;
+}
+
+export interface ListRentalsResponse {
+  status: 'ok';
+  data: {
+    rentals: RentalWithDetails[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+export interface GetRentalResponse {
+  status: 'ok';
+  data: {
+    rental: RentalWithDetails;
+  };
+}
+
+export interface CreateRentalResponse {
+  status: 'created';
+  data: {
+    rental: Rental;
+  };
+}
+
+export interface UpdateRentalResponse {
+  status: 'ok';
+  data: {
+    rental: Rental;
+  };
+}
+
+export interface CancelRentalResponse {
+  status: 'ok';
+  data: {
+    rental: Rental;
+    message: string;
+  };
+}

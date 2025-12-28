@@ -12,6 +12,8 @@ import {
   BarChart3,
   Package,
   LogOut,
+  Monitor,
+  Calendar,
 } from 'lucide-react';
 import { ApiClient } from '@innozverse/api-client';
 
@@ -34,6 +36,16 @@ const menuItems = [
     title: 'Projects',
     href: '/dashboard/projects',
     icon: Package,
+  },
+  {
+    title: 'Equipment',
+    href: '/dashboard/equipment',
+    icon: Monitor,
+  },
+  {
+    title: 'Rentals',
+    href: '/dashboard/rentals',
+    icon: Calendar,
   },
   {
     title: 'Users',

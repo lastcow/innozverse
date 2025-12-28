@@ -1,6 +1,8 @@
 import { FastifyInstance } from 'fastify';
 import { authRoutes } from './auth';
 import { usersRoutes } from './users';
+import { equipmentRoutes } from './equipment';
+import { rentalRoutes } from './rentals';
 
 export async function v1Routes(fastify: FastifyInstance) {
   fastify.get('/', async (_request, reply) => {
@@ -9,7 +11,9 @@ export async function v1Routes(fastify: FastifyInstance) {
       endpoints: {
         health: '/health',
         auth: '/v1/auth',
-        users: '/v1/users'
+        users: '/v1/users',
+        equipment: '/v1/equipment',
+        rentals: '/v1/rentals'
       }
     });
   });
@@ -20,5 +24,9 @@ export async function v1Routes(fastify: FastifyInstance) {
   // Register user management routes
   await fastify.register(usersRoutes);
 
-  // Add more v1 routes here as the API grows
+  // Register equipment routes
+  await fastify.register(equipmentRoutes);
+
+  // Register rental routes
+  await fastify.register(rentalRoutes);
 }
