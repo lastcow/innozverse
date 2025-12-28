@@ -91,7 +91,7 @@ export async function rentalRoutes(fastify: FastifyInstance) {
                  r.pickup_date, r.return_date, r.cancelled_at, r.cancelled_reason,
                  r.created_at, r.updated_at,
                  json_build_object('id', u.id, 'name', u.name, 'email', u.email) as user,
-                 json_build_object('id', e.id, 'name', e.name, 'category', e.category, 'image_url', e.image_url) as equipment
+                 json_build_object('id', e.id, 'name', e.name, 'category', e.category, 'image_url', e.image_url, 'serial_number', e.serial_number, 'condition', e.condition, 'brand', e.brand, 'model', e.model) as equipment
           FROM rentals r
           JOIN users u ON r.user_id = u.id
           JOIN equipment e ON r.equipment_id = e.id
@@ -246,8 +246,12 @@ export async function rentalRoutes(fastify: FastifyInstance) {
           });
         }
 
-        const { equipment_id, start_date, end_date, notes } = validation.data;
+        const { equipment_id, user_id: requestedUserId, start_date, end_date, notes } = validation.data;
         const user = (request as any).user;
+        const isAdmin = ['admin', 'super_user'].includes(user.role);
+
+        // Use requested user_id if admin, otherwise use logged-in user
+        const rentalUserId = (isAdmin && requestedUserId) ? requestedUserId : user.userId;
 
         // Check if equipment exists and is available
         const equipmentResult = await pool.query(
@@ -312,7 +316,7 @@ export async function rentalRoutes(fastify: FastifyInstance) {
            RETURNING id, user_id, equipment_id, start_date, end_date, daily_rate, total_amount,
                      status, notes, pickup_date, return_date, cancelled_at, cancelled_reason,
                      created_at, updated_at`,
-          [user.userId, equipment_id, start_date, end_date, dailyRate, totalAmount, notes || null]
+          [rentalUserId, equipment_id, start_date, end_date, dailyRate, totalAmount, notes || null]
         );
 
         return reply.status(201).send({

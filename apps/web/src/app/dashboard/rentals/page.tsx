@@ -46,6 +46,15 @@ interface Equipment {
   category: EquipmentCategory;
   image_url: string | null;
   serial_number?: string | null;
+  condition?: string | null;
+  brand?: string | null;
+  model?: string | null;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
 }
 
 interface RentalUser {
@@ -108,9 +117,12 @@ export default function RentalsPage() {
   // Create rental state
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [availableEquipment, setAvailableEquipment] = useState<EquipmentOption[]>([]);
+  const [availableUsers, setAvailableUsers] = useState<User[]>([]);
   const [loadingEquipment, setLoadingEquipment] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(false);
   const [createFormData, setCreateFormData] = useState({
     equipment_id: '',
+    user_id: '',
     start_date: '',
     end_date: '',
     notes: '',
@@ -213,6 +225,18 @@ export default function RentalsPage() {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      setLoadingUsers(true);
+      const response = await apiClient.listUsers({ limit: 100 });
+      setAvailableUsers(response.data.users);
+    } catch (err) {
+      console.error('Failed to fetch users:', err);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
   useEffect(() => {
     const refreshToken = apiClient.getRefreshToken();
     if (refreshToken) {
@@ -239,11 +263,13 @@ export default function RentalsPage() {
   const handleCreateRental = () => {
     setCreateFormData({
       equipment_id: '',
+      user_id: '',
       start_date: '',
       end_date: '',
       notes: '',
     });
     fetchAvailableEquipment();
+    fetchUsers();
     setShowCreateModal(true);
   };
 
@@ -251,6 +277,7 @@ export default function RentalsPage() {
     try {
       await apiClient.createRental({
         equipment_id: createFormData.equipment_id,
+        user_id: createFormData.user_id || undefined,
         start_date: createFormData.start_date,
         end_date: createFormData.end_date,
         notes: createFormData.notes || undefined,
@@ -308,14 +335,6 @@ export default function RentalsPage() {
 
   const formatCurrency = (amount: string) => {
     return `$${parseFloat(amount).toFixed(2)}`;
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
   };
 
   const calculateDays = (startDate: string, endDate: string) => {
@@ -545,11 +564,11 @@ export default function RentalsPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b bg-muted/50">
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Equipment</th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Laptop Model</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Serial Number</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Status</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Current User</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Period</th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Condition</th>
                         <th className="text-right p-4 font-medium text-sm text-muted-foreground">Actions</th>
                       </tr>
                     </thead>
@@ -561,17 +580,50 @@ export default function RentalsPage() {
                         const canPickup = isAdmin && rental.status === 'confirmed';
                         const canReturn = isAdmin && rental.status === 'active';
 
+                        const getConditionDisplay = (condition: string | null | undefined) => {
+                          switch (condition) {
+                            case 'excellent':
+                              return { label: 'Excellent', className: 'text-green-500' };
+                            case 'good':
+                              return { label: 'Good', className: 'text-green-500' };
+                            case 'fair':
+                              return { label: 'Fair', className: 'text-yellow-500' };
+                            default:
+                              return { label: condition || 'Unknown', className: 'text-gray-500' };
+                          }
+                        };
+
+                        const conditionDisplay = getConditionDisplay(rental.equipment.condition);
+
                         return (
                           <tr
                             key={rental.id}
                             className="border-b hover:bg-muted/50 transition-colors"
                           >
                             <td className="p-4">
-                              <div className="font-medium">{rental.equipment.name}</div>
+                              <div className="flex items-center gap-3">
+                                {rental.equipment.image_url ? (
+                                  <img
+                                    src={rental.equipment.image_url}
+                                    alt={rental.equipment.name}
+                                    className="h-10 w-10 rounded-lg object-cover flex-shrink-0"
+                                  />
+                                ) : (
+                                  <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white flex-shrink-0">
+                                    <Laptop className="h-5 w-5" />
+                                  </div>
+                                )}
+                                <div>
+                                  <div className="font-medium">{rental.equipment.name}</div>
+                                  <div className="text-sm text-muted-foreground">
+                                    {rental.equipment.brand} {rental.equipment.model}
+                                  </div>
+                                </div>
+                              </div>
                             </td>
                             <td className="p-4">
                               <div className="text-sm text-muted-foreground">
-                                {rental.equipment.serial_number || 'N/A'}
+                                {rental.equipment.serial_number ? `SN-${rental.equipment.serial_number}` : '--'}
                               </div>
                             </td>
                             <td className="p-4">
@@ -580,9 +632,9 @@ export default function RentalsPage() {
                               </span>
                             </td>
                             <td className="p-4">
-                              {rental.status === 'active' || rental.status === 'overdue' ? (
+                              {rental.user ? (
                                 <div className="flex items-center gap-2">
-                                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-xs font-medium">
+                                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-xs font-medium">
                                     {getInitials(rental.user.name)}
                                   </div>
                                   <span className="font-medium">{rental.user.name}</span>
@@ -592,8 +644,9 @@ export default function RentalsPage() {
                               )}
                             </td>
                             <td className="p-4">
-                              <div className="text-sm">
-                                {formatDate(rental.start_date)} - {formatDate(rental.end_date)}
+                              <div className="flex items-center gap-2">
+                                <span className={`inline-block h-2 w-2 rounded-full ${conditionDisplay.className.replace('text-', 'bg-')}`}></span>
+                                <span className="text-sm">{conditionDisplay.label}</span>
                               </div>
                             </td>
                             <td className="p-4 text-right">
@@ -733,6 +786,27 @@ export default function RentalsPage() {
                     </select>
                   )}
                 </div>
+                <div>
+                  <label className="text-sm font-medium">Assign to User *</label>
+                  {loadingUsers ? (
+                    <div className="flex items-center justify-center py-4">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    </div>
+                  ) : (
+                    <select
+                      value={createFormData.user_id}
+                      onChange={(e) => setCreateFormData({ ...createFormData, user_id: e.target.value })}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    >
+                      <option value="">Select user...</option>
+                      {availableUsers.map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.name} ({user.email})
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium">Start Date *</label>
@@ -780,7 +854,7 @@ export default function RentalsPage() {
                   </Button>
                   <Button
                     onClick={handleSubmitRental}
-                    disabled={!createFormData.equipment_id || !createFormData.start_date || !createFormData.end_date}
+                    disabled={!createFormData.equipment_id || !createFormData.user_id || !createFormData.start_date || !createFormData.end_date}
                   >
                     Create Rental
                   </Button>

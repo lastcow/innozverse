@@ -385,6 +385,7 @@ export class ApiClient {
 
   async createRental(data: {
     equipment_id: string;
+    user_id?: string;
     start_date: string;
     end_date: string;
     notes?: string;

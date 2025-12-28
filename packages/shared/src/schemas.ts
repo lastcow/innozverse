@@ -178,6 +178,7 @@ export const rentalSchema = z.object({
 
 export const createRentalRequestSchema = z.object({
   equipment_id: z.string().uuid('Invalid equipment ID'),
+  user_id: z.string().uuid('Invalid user ID').optional(),
   start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
   end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
   notes: z.string().max(1000, 'Notes are too long').optional()
