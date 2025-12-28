@@ -262,12 +262,10 @@ export default function EquipmentPage() {
               Manage your equipment catalog and track availability.
             </p>
           </div>
-          {isAdmin && (
-            <Button onClick={handleAdd} className="rounded-lg bg-blue-600 hover:bg-blue-700">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Equipment
-            </Button>
-          )}
+          <Button onClick={handleAdd} className="rounded-lg bg-blue-600 hover:bg-blue-700">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Equipment
+          </Button>
         </div>
 
         {/* KPI Cards */}
