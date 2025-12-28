@@ -434,6 +434,169 @@ export class ApiClient {
       method: 'POST'
     });
   }
+
+  // ==================== Knowledge Base Categories ====================
+
+  async listKBCategories(params?: {
+    parent_id?: string;
+    include_children?: boolean;
+    include_article_count?: boolean;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.parent_id !== undefined) queryParams.set('parent_id', params.parent_id);
+    if (params?.include_children) queryParams.set('include_children', 'true');
+    if (params?.include_article_count) queryParams.set('include_article_count', 'true');
+
+    const query = queryParams.toString();
+    return this.request(`/v1/kb/categories${query ? `?${query}` : ''}`);
+  }
+
+  async getKBCategory(id: string): Promise<any> {
+    return this.request(`/v1/kb/categories/${id}`);
+  }
+
+  async createKBCategory(data: {
+    name: string;
+    slug?: string;
+    description?: string;
+    parent_id?: string;
+    sort_order?: number;
+    icon?: string;
+    is_active?: boolean;
+  }): Promise<any> {
+    return this.request('/v1/kb/categories', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async updateKBCategory(
+    id: string,
+    data: {
+      name?: string;
+      slug?: string;
+      description?: string;
+      parent_id?: string | null;
+      sort_order?: number;
+      icon?: string;
+      is_active?: boolean;
+    }
+  ): Promise<any> {
+    return this.request(`/v1/kb/categories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteKBCategory(id: string): Promise<any> {
+    return this.request(`/v1/kb/categories/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // ==================== Knowledge Base Articles ====================
+
+  async listKBArticles(params?: {
+    page?: number;
+    limit?: number;
+    category_id?: string;
+    status?: string;
+    search?: string;
+    is_featured?: boolean;
+    author_id?: string;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.category_id) queryParams.set('category_id', params.category_id);
+    if (params?.status) queryParams.set('status', params.status);
+    if (params?.search) queryParams.set('search', params.search);
+    if (params?.is_featured !== undefined) queryParams.set('is_featured', params.is_featured.toString());
+    if (params?.author_id) queryParams.set('author_id', params.author_id);
+
+    const query = queryParams.toString();
+    return this.request(`/v1/kb/articles${query ? `?${query}` : ''}`);
+  }
+
+  async searchKBArticles(query: string, params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    queryParams.set('q', query);
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+
+    return this.request(`/v1/kb/articles/search?${queryParams.toString()}`);
+  }
+
+  async getKBArticle(id: string): Promise<any> {
+    return this.request(`/v1/kb/articles/${id}`);
+  }
+
+  async getKBArticleBySlug(slug: string): Promise<any> {
+    return this.request(`/v1/kb/articles/slug/${slug}`);
+  }
+
+  async createKBArticle(data: {
+    category_id: string;
+    title: string;
+    slug?: string;
+    summary?: string;
+    content: string;
+    status?: string;
+    is_featured?: boolean;
+  }): Promise<any> {
+    return this.request('/v1/kb/articles', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async importKBArticle(data: {
+    category_id: string;
+    title: string;
+    slug?: string;
+    summary?: string;
+    content: string;
+    status?: string;
+    is_featured?: boolean;
+  }): Promise<any> {
+    return this.request('/v1/kb/articles/import', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async updateKBArticle(
+    id: string,
+    data: {
+      category_id?: string;
+      title?: string;
+      slug?: string;
+      summary?: string;
+      content?: string;
+      status?: string;
+      is_featured?: boolean;
+    }
+  ): Promise<any> {
+    return this.request(`/v1/kb/articles/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteKBArticle(id: string): Promise<any> {
+    return this.request(`/v1/kb/articles/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async incrementKBArticleView(id: string): Promise<any> {
+    return this.request(`/v1/kb/articles/${id}/view`, {
+      method: 'POST'
+    });
+  }
 }
 
 export * from '@innozverse/shared';

@@ -429,3 +429,218 @@ export interface CancelRentalResponse {
     message: string;
   };
 }
+
+// ==================== Knowledge Base Types ====================
+
+export type ArticleStatus = 'draft' | 'published' | 'archived';
+
+export interface KBCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  parent_id: string | null;
+  sort_order: number;
+  icon: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface KBCategoryWithChildren extends KBCategory {
+  children?: KBCategoryWithChildren[];
+  article_count?: number;
+}
+
+export interface KBArticle {
+  id: string;
+  category_id: string;
+  title: string;
+  slug: string;
+  summary: string | null;
+  content: string;
+  status: ArticleStatus;
+  author_id: string | null;
+  view_count: number;
+  is_featured: boolean;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface KBArticleWithDetails extends KBArticle {
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  author: {
+    id: string;
+    name: string;
+  } | null;
+}
+
+// KB Category Request/Response Types
+
+export interface CreateKBCategoryRequest {
+  name: string;
+  slug?: string;
+  description?: string;
+  parent_id?: string;
+  sort_order?: number;
+  icon?: string;
+  is_active?: boolean;
+}
+
+export interface UpdateKBCategoryRequest {
+  name?: string;
+  slug?: string;
+  description?: string;
+  parent_id?: string | null;
+  sort_order?: number;
+  icon?: string;
+  is_active?: boolean;
+}
+
+export interface ListKBCategoriesRequest {
+  parent_id?: string;
+  include_children?: boolean;
+  include_article_count?: boolean;
+}
+
+export interface ListKBCategoriesResponse {
+  status: 'ok';
+  data: {
+    categories: KBCategoryWithChildren[];
+  };
+}
+
+export interface GetKBCategoryResponse {
+  status: 'ok';
+  data: {
+    category: KBCategoryWithChildren;
+  };
+}
+
+export interface CreateKBCategoryResponse {
+  status: 'created';
+  data: {
+    category: KBCategory;
+  };
+}
+
+export interface UpdateKBCategoryResponse {
+  status: 'ok';
+  data: {
+    category: KBCategory;
+  };
+}
+
+export interface DeleteKBCategoryResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+// KB Article Request/Response Types
+
+export interface CreateKBArticleRequest {
+  category_id: string;
+  title: string;
+  slug?: string;
+  summary?: string;
+  content: string;
+  status?: ArticleStatus;
+  is_featured?: boolean;
+}
+
+export interface ImportKBArticleRequest {
+  category_id: string;
+  title: string;
+  slug?: string;
+  summary?: string;
+  content: string;
+  status?: ArticleStatus;
+  is_featured?: boolean;
+}
+
+export interface UpdateKBArticleRequest {
+  category_id?: string;
+  title?: string;
+  slug?: string;
+  summary?: string;
+  content?: string;
+  status?: ArticleStatus;
+  is_featured?: boolean;
+}
+
+export interface ListKBArticlesRequest {
+  page?: number;
+  limit?: number;
+  category_id?: string;
+  status?: ArticleStatus;
+  search?: string;
+  is_featured?: boolean;
+  author_id?: string;
+}
+
+export interface ListKBArticlesResponse {
+  status: 'ok';
+  data: {
+    articles: KBArticleWithDetails[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+export interface GetKBArticleResponse {
+  status: 'ok';
+  data: {
+    article: KBArticleWithDetails;
+  };
+}
+
+export interface CreateKBArticleResponse {
+  status: 'created';
+  data: {
+    article: KBArticle;
+  };
+}
+
+export interface UpdateKBArticleResponse {
+  status: 'ok';
+  data: {
+    article: KBArticle;
+  };
+}
+
+export interface DeleteKBArticleResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+export interface SearchKBArticlesRequest {
+  q: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface SearchKBArticlesResponse {
+  status: 'ok';
+  data: {
+    articles: (KBArticleWithDetails & { rank?: number; highlighted_summary?: string })[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}

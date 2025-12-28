@@ -3,6 +3,7 @@ import { authRoutes } from './auth';
 import { usersRoutes } from './users';
 import { equipmentRoutes } from './equipment';
 import { rentalRoutes } from './rentals';
+import { kbRoutes } from './kb';
 
 export async function v1Routes(fastify: FastifyInstance) {
   fastify.get('/', async (_request, reply) => {
@@ -13,7 +14,8 @@ export async function v1Routes(fastify: FastifyInstance) {
         auth: '/v1/auth',
         users: '/v1/users',
         equipment: '/v1/equipment',
-        rentals: '/v1/rentals'
+        rentals: '/v1/rentals',
+        kb: '/v1/kb'
       }
     });
   });
@@ -29,4 +31,7 @@ export async function v1Routes(fastify: FastifyInstance) {
 
   // Register rental routes
   await fastify.register(rentalRoutes);
+
+  // Register knowledge base routes
+  await fastify.register(kbRoutes);
 }

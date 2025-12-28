@@ -195,3 +195,96 @@ export const updateRentalRequestSchema = z.object({
   notes: z.string().max(1000).optional(),
   cancelled_reason: z.string().max(500).optional()
 });
+
+// ==================== Knowledge Base Schemas ====================
+
+export const articleStatusSchema = z.enum(['draft', 'published', 'archived']);
+
+export const kbCategorySchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  slug: z.string(),
+  description: z.string().nullable(),
+  parent_id: z.string().uuid().nullable(),
+  sort_order: z.number(),
+  icon: z.string().nullable(),
+  is_active: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string()
+});
+
+export const kbArticleSchema = z.object({
+  id: z.string().uuid(),
+  category_id: z.string().uuid(),
+  title: z.string(),
+  slug: z.string(),
+  summary: z.string().nullable(),
+  content: z.string(),
+  status: articleStatusSchema,
+  author_id: z.string().uuid().nullable(),
+  view_count: z.number(),
+  is_featured: z.boolean(),
+  published_at: z.string().nullable(),
+  created_at: z.string(),
+  updated_at: z.string()
+});
+
+// KB Category Request Schemas
+
+export const createKBCategoryRequestSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
+  slug: z.string().max(255).regex(/^[a-z0-9-]+$/, 'Slug must be lowercase with hyphens only').optional(),
+  description: z.string().max(2000, 'Description is too long').optional(),
+  parent_id: z.string().uuid('Invalid parent category ID').optional(),
+  sort_order: z.number().int().min(0).optional(),
+  icon: z.string().max(50, 'Icon name is too long').optional(),
+  is_active: z.boolean().optional()
+});
+
+export const updateKBCategoryRequestSchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  slug: z.string().max(255).regex(/^[a-z0-9-]+$/, 'Slug must be lowercase with hyphens only').optional(),
+  description: z.string().max(2000).optional(),
+  parent_id: z.string().uuid().nullable().optional(),
+  sort_order: z.number().int().min(0).optional(),
+  icon: z.string().max(50).optional(),
+  is_active: z.boolean().optional()
+});
+
+// KB Article Request Schemas
+
+export const createKBArticleRequestSchema = z.object({
+  category_id: z.string().uuid('Invalid category ID'),
+  title: z.string().min(1, 'Title is required').max(500, 'Title is too long'),
+  slug: z.string().max(500).regex(/^[a-z0-9-]+$/, 'Slug must be lowercase with hyphens only').optional(),
+  summary: z.string().max(1000, 'Summary is too long').optional(),
+  content: z.string().min(1, 'Content is required'),
+  status: articleStatusSchema.optional(),
+  is_featured: z.boolean().optional()
+});
+
+export const importKBArticleRequestSchema = z.object({
+  category_id: z.string().uuid('Invalid category ID'),
+  title: z.string().min(1, 'Title is required').max(500, 'Title is too long'),
+  slug: z.string().max(500).regex(/^[a-z0-9-]+$/, 'Slug must be lowercase with hyphens only').optional(),
+  summary: z.string().max(1000, 'Summary is too long').optional(),
+  content: z.string().min(1, 'Content is required'),
+  status: articleStatusSchema.optional(),
+  is_featured: z.boolean().optional()
+});
+
+export const updateKBArticleRequestSchema = z.object({
+  category_id: z.string().uuid().optional(),
+  title: z.string().min(1).max(500).optional(),
+  slug: z.string().max(500).regex(/^[a-z0-9-]+$/, 'Slug must be lowercase with hyphens only').optional(),
+  summary: z.string().max(1000).optional(),
+  content: z.string().min(1).optional(),
+  status: articleStatusSchema.optional(),
+  is_featured: z.boolean().optional()
+});
+
+export const searchKBArticlesRequestSchema = z.object({
+  q: z.string().min(2, 'Search query must be at least 2 characters'),
+  page: z.number().int().positive().optional(),
+  limit: z.number().int().positive().max(100).optional()
+});

@@ -14,6 +14,7 @@ import {
   LogOut,
   Monitor,
   Calendar,
+  BookOpen,
 } from 'lucide-react';
 import { ApiClient } from '@innozverse/api-client';
 
@@ -56,6 +57,11 @@ const menuItems = [
     title: 'Documents',
     href: '/dashboard/documents',
     icon: FileText,
+  },
+  {
+    title: 'Knowledge Base',
+    href: '/dashboard/knowledge-base',
+    icon: BookOpen,
   },
   {
     title: 'Settings',
