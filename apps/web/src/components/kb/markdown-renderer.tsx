@@ -45,12 +45,9 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
               );
             }
 
-            // Inline code - only style with background if it's actual inline code (backticks)
+            // Inline code - no background, just inherit text style
             return (
-              <code
-                className="bg-muted/50 px-1.5 py-0.5 rounded text-sm font-mono text-foreground"
-                {...rest}
-              >
+              <code className="font-mono text-foreground" {...rest}>
                 {codeChildren}
               </code>
             );
