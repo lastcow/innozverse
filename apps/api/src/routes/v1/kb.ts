@@ -60,10 +60,9 @@ function buildCategoryTree(
 export async function kbRoutes(fastify: FastifyInstance) {
   // ==================== CATEGORIES ====================
 
-  // List categories
+  // List categories (public)
   fastify.get<{ Querystring: ListKBCategoriesRequest }>(
     '/kb/categories',
-    { preHandler: requireAuth },
     async (request, reply) => {
       try {
         const { parent_id, include_children, include_article_count } = request.query;
@@ -470,18 +469,18 @@ export async function kbRoutes(fastify: FastifyInstance) {
 
   // ==================== ARTICLES ====================
 
-  // List articles with pagination
+  // List articles with pagination (public - only published for non-authenticated)
   fastify.get<{ Querystring: ListKBArticlesRequest }>(
     '/kb/articles',
-    { preHandler: requireAuth },
     async (request, reply) => {
       try {
         const { page = 1, limit = 20, category_id, status, search, is_featured, author_id } =
           request.query;
         const offset = (page - 1) * limit;
 
+        // Check if user is authenticated and admin
         const user = (request as any).user;
-        const isAdmin = ['admin', 'super_user'].includes(user.role);
+        const isAdmin = user && ['admin', 'super_user'].includes(user.role);
 
         // Build WHERE clause
         let whereClause = 'WHERE 1=1';
@@ -572,10 +571,9 @@ export async function kbRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Full-text search articles
+  // Full-text search articles (public - only published)
   fastify.get<{ Querystring: SearchQuery }>(
     '/kb/articles/search',
-    { preHandler: requireAuth },
     async (request, reply) => {
       try {
         const { q, page = 1, limit = 20 } = request.query;
@@ -647,15 +645,14 @@ export async function kbRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Get article by ID
+  // Get article by ID (public - only published for non-authenticated)
   fastify.get<{ Params: ArticleIdParams }>(
     '/kb/articles/:id',
-    { preHandler: requireAuth },
     async (request, reply) => {
       try {
         const { id } = request.params;
         const user = (request as any).user;
-        const isAdmin = ['admin', 'super_user'].includes(user.role);
+        const isAdmin = user && ['admin', 'super_user'].includes(user.role);
 
         let whereClause = 'WHERE a.id = $1';
         if (!isAdmin) {
@@ -702,15 +699,14 @@ export async function kbRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Get article by slug
+  // Get article by slug (public - only published for non-authenticated)
   fastify.get<{ Params: ArticleSlugParams }>(
     '/kb/articles/slug/:slug',
-    { preHandler: requireAuth },
     async (request, reply) => {
       try {
         const { slug } = request.params;
         const user = (request as any).user;
-        const isAdmin = ['admin', 'super_user'].includes(user.role);
+        const isAdmin = user && ['admin', 'super_user'].includes(user.role);
 
         let whereClause = 'WHERE a.slug = $1';
         if (!isAdmin) {
@@ -1097,10 +1093,9 @@ export async function kbRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // Increment view count
+  // Increment view count (public)
   fastify.post<{ Params: ArticleIdParams }>(
     '/kb/articles/:id/view',
-    { preHandler: requireAuth },
     async (request, reply) => {
       try {
         const { id } = request.params;
