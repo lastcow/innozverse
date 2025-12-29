@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, DollarSign, HeadphonesIcon, Shield, Code, Brain, Rocket, Users, Target, FileText, LayoutDashboard } from 'lucide-react';
+import { Sparkles, DollarSign, HeadphonesIcon, Shield, Users, Target, FileText, LayoutDashboard, Monitor, Laptop, GraduationCap, MapPin, Wifi, Package } from 'lucide-react';
 import { ApiClient } from '@innozverse/api-client';
 
 const apiClient = new ApiClient(
@@ -109,7 +109,7 @@ export default function AboutPage() {
             About innoZverse
           </h1>
           <p className="text-xl text-white/70 max-w-3xl mx-auto">
-            Empowering the next generation of tech professionals through hands-on learning
+            Your complete learning partner - providing environments, equipment, and support for students
           </p>
         </div>
 
@@ -124,10 +124,10 @@ export default function AboutPage() {
             </CardHeader>
             <CardContent>
               <p className="text-white/80 text-lg leading-relaxed mb-4">
-                At innoZverse, we believe that hands-on experience is the key to mastering technology. Our mission is to provide a comprehensive learning environment where individuals and companies can develop cutting-edge skills through practical, real-world scenarios.
+                At innoZverse, we&apos;re dedicated to making quality tech education accessible to everyone. We provide comprehensive learning environments - both on-site workspaces and remote virtual labs - so students can learn and practice wherever they are.
               </p>
               <p className="text-white/80 text-lg leading-relaxed">
-                We offer access to virtual machines and detailed tutorials across security, programming, artificial intelligence, and emerging technologies. Our platform is designed to bridge the gap between theoretical knowledge and practical application, ensuring learners gain the confidence and expertise needed to excel in today&apos;s rapidly evolving tech landscape.
+                Beyond learning environments, we help students get the equipment they need at prices they can afford. Through our equipment leasing programs and discounted sales, we ensure that financial barriers don&apos;t stand in the way of education.
               </p>
             </CardContent>
           </Card>
@@ -136,51 +136,75 @@ export default function AboutPage() {
         {/* What We Offer */}
         <div className="mb-16">
           <h2 className="text-4xl font-bold text-white mb-8 text-center">What We Offer</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
               <CardHeader>
-                <Shield className="h-12 w-12 text-purple-400 mb-4" />
-                <CardTitle className="text-white">Security Training</CardTitle>
+                <MapPin className="h-12 w-12 text-purple-400 mb-4" />
+                <CardTitle className="text-white">On-Site Learning</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/70 text-sm">
-                  Master cybersecurity with hands-on labs featuring Kali Linux, vulnerable systems, and real-world attack scenarios.
+                  Access our physical workspace locations equipped with high-performance computers, networking labs, and collaborative spaces for hands-on learning.
                 </p>
               </CardContent>
             </Card>
 
             <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
               <CardHeader>
-                <Code className="h-12 w-12 text-pink-400 mb-4" />
-                <CardTitle className="text-white">Programming Labs</CardTitle>
+                <Wifi className="h-12 w-12 text-pink-400 mb-4" />
+                <CardTitle className="text-white">Remote VM Labs</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/70 text-sm">
-                  Build real applications with our development VMs equipped with databases, Claude Code, and modern tooling.
+                  Learn from anywhere with our cloud-based virtual machines. Get full access to development environments, security labs, and more from your own device.
                 </p>
               </CardContent>
             </Card>
 
             <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
               <CardHeader>
-                <Brain className="h-12 w-12 text-blue-400 mb-4" />
-                <CardTitle className="text-white">AI & Machine Learning</CardTitle>
+                <Laptop className="h-12 w-12 text-blue-400 mb-4" />
+                <CardTitle className="text-white">Equipment Leasing</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/70 text-sm">
-                  Explore artificial intelligence through practical projects and comprehensive tutorials on the latest AI technologies.
+                  Need a laptop or gaming console? Lease quality equipment at affordable monthly rates. Perfect for students who need hardware without the upfront cost.
                 </p>
               </CardContent>
             </Card>
 
             <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
               <CardHeader>
-                <Rocket className="h-12 w-12 text-green-400 mb-4" />
-                <CardTitle className="text-white">Emerging Tech</CardTitle>
+                <Package className="h-12 w-12 text-green-400 mb-4" />
+                <CardTitle className="text-white">Discounted Equipment</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/70 text-sm">
-                  Stay ahead with blockchain, quantum computing, and next-generation technologies through guided learning paths.
+                  Members get exclusive discounts on Microsoft products, gaming consoles, and accessories. Save 10-20% on equipment you need for learning.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
+              <CardHeader>
+                <Monitor className="h-12 w-12 text-orange-400 mb-4" />
+                <CardTitle className="text-white">Free Knowledge Base</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-white/70 text-sm">
+                  Access our comprehensive tutorials and documentation completely free. Learn at your own pace with guides covering security, programming, and more.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
+              <CardHeader>
+                <Shield className="h-12 w-12 text-cyan-400 mb-4" />
+                <CardTitle className="text-white">Student Support</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-white/70 text-sm">
+                  Dedicated email support for all members. Get help with technical questions, account issues, or guidance on your learning path.
                 </p>
               </CardContent>
             </Card>
@@ -190,17 +214,17 @@ export default function AboutPage() {
         {/* Who We Serve */}
         <div className="mb-16">
           <h2 className="text-4xl font-bold text-white mb-8 text-center">Who We Serve</h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
-                  <Users className="h-6 w-6 text-purple-400" />
-                  <CardTitle className="text-white text-2xl">Individuals</CardTitle>
+                  <GraduationCap className="h-6 w-6 text-purple-400" />
+                  <CardTitle className="text-white text-2xl">Students</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <p className="text-white/70 leading-relaxed">
-                  Whether you&apos;re a student, career changer, or professional looking to upskill, our platform provides the resources and environment you need to master new technologies at your own pace.
+                  Whether you&apos;re in high school, college, or pursuing certifications, we offer semester pricing with 35% savings and affordable equipment options to support your education.
                 </p>
               </CardContent>
             </Card>
@@ -209,12 +233,26 @@ export default function AboutPage() {
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
                   <Users className="h-6 w-6 text-pink-400" />
-                  <CardTitle className="text-white text-2xl">Companies</CardTitle>
+                  <CardTitle className="text-white text-2xl">Career Changers</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <p className="text-white/70 leading-relaxed">
-                  Train your teams with custom learning paths, dedicated support, and comprehensive analytics. Our enterprise solutions help organizations stay competitive in the digital age.
+                  Looking to break into tech? Our flexible monthly plans and comprehensive learning resources help you build practical skills at your own pace.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <Users className="h-6 w-6 text-blue-400" />
+                  <CardTitle className="text-white text-2xl">Remote Learners</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-white/70 leading-relaxed">
+                  Can&apos;t make it to a physical location? Access the same powerful VM environments from anywhere with our remote learning options.
                 </p>
               </CardContent>
             </Card>
@@ -229,7 +267,7 @@ export default function AboutPage() {
                 Ready to Start Learning?
               </h2>
               <p className="text-white/80 mb-8 max-w-2xl mx-auto">
-                Join thousands of learners advancing their careers with innoZverse
+                Join innoZverse today and get access to learning environments, equipment deals, and free educational resources
               </p>
               <div className="flex gap-4 justify-center flex-wrap">
                 <Link href="/login">
