@@ -264,7 +264,7 @@ export default function PricingPage() {
               <CardHeader className="pb-2 pt-6">
                 <CardTitle className="text-white text-xl">Pro</CardTitle>
                 <div className="text-3xl font-bold text-white">
-                  {billingCycle === 'monthly' ? '$35' : '$119'}
+                  {billingCycle === 'monthly' ? '$30' : '$99'}
                   <span className="text-lg font-normal text-white/60">/{billingCycle === 'monthly' ? 'mo' : 'sem'}</span>
                 </div>
                 <CardDescription className="text-white/60 text-xs">15% equipment discount</CardDescription>
@@ -277,7 +277,7 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
-                    <span>Priority support</span>
+                    <span>Email support</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
@@ -292,7 +292,7 @@ export default function PricingPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-xl">Premium</CardTitle>
                 <div className="text-3xl font-bold text-white">
-                  {billingCycle === 'monthly' ? '$59' : '$199'}
+                  {billingCycle === 'monthly' ? '$55' : '$179'}
                   <span className="text-lg font-normal text-white/60">/{billingCycle === 'monthly' ? 'mo' : 'sem'}</span>
                 </div>
                 <CardDescription className="text-white/60 text-xs">20% equipment discount</CardDescription>
@@ -305,7 +305,7 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
-                    <span>24/7 support</span>
+                    <span>Email support</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
@@ -361,8 +361,8 @@ export default function PricingPage() {
                   <td className="py-3 px-4 text-center">$0</td>
                   <td className="py-3 px-4 text-center">$2/hour</td>
                   <td className="py-3 px-4 text-center">$19/mo</td>
-                  <td className="py-3 px-4 text-center bg-purple-600/10">$35/mo</td>
-                  <td className="py-3 px-4 text-center">$59/mo</td>
+                  <td className="py-3 px-4 text-center bg-purple-600/10">$30/mo</td>
+                  <td className="py-3 px-4 text-center">$55/mo</td>
                 </tr>
                 <tr className="border-b border-white/10">
                   <td className="py-3 px-4">VMs</td>
@@ -707,7 +707,7 @@ export default function PricingPage() {
             {/* Monthly Comparison */}
             <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white text-xl">Monthly Comparison (vs Pro $35/mo)</CardTitle>
+                <CardTitle className="text-white text-xl">Monthly Comparison (vs Pro $30/mo)</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -812,7 +812,7 @@ export default function PricingPage() {
               </CardHeader>
               <CardContent className="text-white/70 text-sm">
                 <p className="mb-3">Monthly VM plans, Surface leasing, in-site workspace</p>
-                <p className="text-white/50">Remote + In-Site | Pro/Premium $35-59/month</p>
+                <p className="text-white/50">Remote + In-Site | Pro/Premium $30-55/month</p>
               </CardContent>
             </Card>
 
@@ -825,7 +825,7 @@ export default function PricingPage() {
               </CardHeader>
               <CardContent className="text-white/70 text-sm">
                 <p className="mb-3">Monthly VM plans for remote development</p>
-                <p className="text-white/50">Remote only | Pro/Premium $35-59/month</p>
+                <p className="text-white/50">Remote only | Pro/Premium $30-55/month</p>
               </CardContent>
             </Card>
 
