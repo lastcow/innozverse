@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -171,31 +171,60 @@ export function Sidebar() {
   const [loading, setLoading] = useState(true);
   const [kbCategories, setKbCategories] = useState<KBCategoryWithChildren[]>([]);
   const [kbExpanded, setKbExpanded] = useState(false);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [expandedCategoryIds, setExpandedCategoryIds] = useState<Set<string>>(new Set());
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
-  // Get selected category from URL and auto-expand ancestors
+  // Get category from URL
+  const getCategoryFromUrl = useCallback(() => {
+    if (typeof window === 'undefined') return null;
+    const params = new URLSearchParams(window.location.search);
+    return params.get('category');
+  }, []);
+
+  // Update selected category when URL changes
   useEffect(() => {
-    if (typeof window !== 'undefined' && pathname === '/dashboard/knowledge-base') {
-      const params = new URLSearchParams(window.location.search);
-      const categoryId = params.get('category');
-      setSelectedCategoryId(categoryId);
-
-      // Auto-expand ancestors of selected category
-      if (categoryId && kbCategories.length > 0) {
-        const ancestors = findAncestorIds(kbCategories, categoryId);
-        if (ancestors && ancestors.length > 0) {
-          setExpandedCategoryIds((prev) => {
-            const next = new Set(prev);
-            ancestors.forEach((id) => next.add(id));
-            return next;
-          });
-        }
+    const updateCategory = () => {
+      if (pathname === '/dashboard/knowledge-base') {
+        setSelectedCategoryId(getCategoryFromUrl());
+      } else {
+        setSelectedCategoryId(null);
       }
-    } else {
-      setSelectedCategoryId(null);
+    };
+
+    updateCategory();
+
+    // Listen for popstate (back/forward) and custom event for link clicks
+    window.addEventListener('popstate', updateCategory);
+
+    // Use MutationObserver to detect URL changes from Next.js navigation
+    const observer = new MutationObserver(() => {
+      if (pathname === '/dashboard/knowledge-base') {
+        const newCategoryId = getCategoryFromUrl();
+        setSelectedCategoryId(newCategoryId);
+      }
+    });
+
+    observer.observe(document, { subtree: true, childList: true });
+
+    return () => {
+      window.removeEventListener('popstate', updateCategory);
+      observer.disconnect();
+    };
+  }, [pathname, getCategoryFromUrl]);
+
+  // Auto-expand ancestors when category changes
+  useEffect(() => {
+    if (selectedCategoryId && kbCategories.length > 0) {
+      const ancestors = findAncestorIds(kbCategories, selectedCategoryId);
+      if (ancestors && ancestors.length > 0) {
+        setExpandedCategoryIds((prev) => {
+          const next = new Set(prev);
+          ancestors.forEach((id) => next.add(id));
+          return next;
+        });
+      }
     }
-  }, [pathname, kbCategories]);
+  }, [selectedCategoryId, kbCategories]);
 
   const toggleCategoryExpand = (id: string) => {
     setExpandedCategoryIds((prev) => {
