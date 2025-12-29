@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Shield, Code, Brain, Rocket, Users, CheckCircle2, BookOpen, Sparkles, DollarSign, HeadphonesIcon, LayoutDashboard } from 'lucide-react';
+import { ArrowRight, Shield, Code, Brain, Rocket, Users, CheckCircle2, BookOpen, Sparkles, DollarSign, HeadphonesIcon, LayoutDashboard, FileText } from 'lucide-react';
 import { TechBackground } from '@/components/TechBackground';
 import { ApiClient } from '@innozverse/api-client';
 
@@ -65,6 +65,10 @@ export default function Home() {
               <Link href="/pricing" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
                 <DollarSign className="h-4 w-4" />
                 <span>Pricing</span>
+              </Link>
+              <Link href="/knowledge-base" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                <FileText className="h-4 w-4" />
+                <span>Knowledge Base</span>
               </Link>
               <Link href="#support" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
                 <HeadphonesIcon className="h-4 w-4" />
@@ -390,6 +394,11 @@ export default function Home() {
                 <li>
                   <Link href="/pricing" className="text-white/60 hover:text-white transition-colors text-sm">
                     Pricing
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/knowledge-base" className="text-white/60 hover:text-white transition-colors text-sm">
+                    Knowledge Base
                   </Link>
                 </li>
                 <li>

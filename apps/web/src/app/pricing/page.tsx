@@ -20,6 +20,7 @@ import {
   Building,
   Globe,
   Zap,
+  FileText,
 } from 'lucide-react';
 
 export default function PricingPage() {
@@ -44,6 +45,10 @@ export default function PricingPage() {
               <Link href="/pricing" className="flex items-center gap-2 text-white hover:text-white transition-colors">
                 <DollarSign className="h-4 w-4" />
                 <span>Pricing</span>
+              </Link>
+              <Link href="/knowledge-base" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                <FileText className="h-4 w-4" />
+                <span>Knowledge Base</span>
               </Link>
               <Link href="/#support" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
                 <HeadphonesIcon className="h-4 w-4" />
