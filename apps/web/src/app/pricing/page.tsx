@@ -218,10 +218,6 @@ export default function PricingPage() {
                     <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
                     <span>Email support</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
-                    <span>5 pages printing</span>
-                  </li>
                 </ul>
               </CardContent>
             </Card>
@@ -249,10 +245,6 @@ export default function PricingPage() {
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
                     <span>Email support</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
-                    <span>20 pages printing</span>
                   </li>
                 </ul>
               </CardContent>
@@ -287,14 +279,6 @@ export default function PricingPage() {
                     <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
                     <span>Extended hours</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
-                    <span>Snapshots included</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
-                    <span>50 pages printing</span>
-                  </li>
                 </ul>
               </CardContent>
             </Card>
@@ -322,14 +306,6 @@ export default function PricingPage() {
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
                     <span>Custom configs</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
-                    <span>Unlimited snapshots</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
-                    <span>Unlimited printing</span>
                   </li>
                 </ul>
               </CardContent>
