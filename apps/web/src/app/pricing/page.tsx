@@ -176,7 +176,7 @@ export default function PricingPage() {
                   {billingCycle === 'monthly' ? '$19' : '$65'}
                   <span className="text-lg font-normal text-white/60">/{billingCycle === 'monthly' ? 'mo' : 'sem'}</span>
                 </div>
-                <CardDescription className="text-white/60 text-xs">5% equipment discount</CardDescription>
+                <CardDescription className="text-white/60 text-xs">10% equipment discount</CardDescription>
               </CardHeader>
               <CardContent className="text-sm">
                 <ul className="space-y-2 text-white/70">
@@ -213,7 +213,7 @@ export default function PricingPage() {
                   {billingCycle === 'monthly' ? '$35' : '$119'}
                   <span className="text-lg font-normal text-white/60">/{billingCycle === 'monthly' ? 'mo' : 'sem'}</span>
                 </div>
-                <CardDescription className="text-white/60 text-xs">10% equipment discount</CardDescription>
+                <CardDescription className="text-white/60 text-xs">15% equipment discount</CardDescription>
               </CardHeader>
               <CardContent className="text-sm">
                 <ul className="space-y-2 text-white/80">
@@ -249,7 +249,7 @@ export default function PricingPage() {
                   {billingCycle === 'monthly' ? '$59' : '$199'}
                   <span className="text-lg font-normal text-white/60">/{billingCycle === 'monthly' ? 'mo' : 'sem'}</span>
                 </div>
-                <CardDescription className="text-white/60 text-xs">15-20% equipment discount</CardDescription>
+                <CardDescription className="text-white/60 text-xs">20% equipment discount</CardDescription>
               </CardHeader>
               <CardContent className="text-sm">
                 <ul className="space-y-2 text-white/70">
@@ -354,9 +354,9 @@ export default function PricingPage() {
                   <td className="py-3 px-4">Equipment Discount</td>
                   <td className="py-3 px-4 text-center">-</td>
                   <td className="py-3 px-4 text-center">-</td>
-                  <td className="py-3 px-4 text-center">5%</td>
-                  <td className="py-3 px-4 text-center bg-purple-600/10">10%</td>
-                  <td className="py-3 px-4 text-center">15-20%</td>
+                  <td className="py-3 px-4 text-center">10%</td>
+                  <td className="py-3 px-4 text-center bg-purple-600/10">15%</td>
+                  <td className="py-3 px-4 text-center">20%</td>
                 </tr>
                 <tr className="border-b border-white/10">
                   <td className="py-3 px-4">Support</td>
@@ -516,6 +516,7 @@ export default function PricingPage() {
           <div className="flex items-center gap-3 mb-8">
             <Package className="h-8 w-8 text-orange-400" />
             <h2 className="text-3xl font-bold text-white">Microsoft Product Discounts</h2>
+            <span className="text-sm text-white/50 bg-white/10 px-3 py-1 rounded-full">Sample Products</span>
             <span className="text-sm text-white/50 bg-white/10 px-3 py-1 rounded-full">Members Only</span>
           </div>
 
@@ -525,53 +526,53 @@ export default function PricingPage() {
                 <tr className="bg-white/10">
                   <th className="py-4 px-4 text-white font-medium">Product</th>
                   <th className="py-4 px-4 text-white/70 font-medium text-right">Retail</th>
-                  <th className="py-4 px-4 text-white font-medium text-right">Basic (5%)</th>
-                  <th className="py-4 px-4 text-white font-medium text-right">Pro (10%)</th>
-                  <th className="py-4 px-4 text-white font-medium text-right">Premium (15-20%)</th>
+                  <th className="py-4 px-4 text-white font-medium text-right">Basic (10%)</th>
+                  <th className="py-4 px-4 text-white font-medium text-right">Pro (15%)</th>
+                  <th className="py-4 px-4 text-white font-medium text-right">Premium (20%)</th>
                 </tr>
               </thead>
               <tbody className="text-white/80">
                 <tr className="border-b border-white/10">
                   <td className="py-3 px-4 font-medium">Surface Pro</td>
                   <td className="py-3 px-4 text-right text-white/50">$999</td>
-                  <td className="py-3 px-4 text-right">$949</td>
                   <td className="py-3 px-4 text-right">$899</td>
-                  <td className="py-3 px-4 text-right text-green-400">$799-849</td>
+                  <td className="py-3 px-4 text-right">$849</td>
+                  <td className="py-3 px-4 text-right text-green-400">$799</td>
                 </tr>
                 <tr className="border-b border-white/10">
                   <td className="py-3 px-4 font-medium">Surface Laptop</td>
                   <td className="py-3 px-4 text-right text-white/50">$1,299</td>
-                  <td className="py-3 px-4 text-right">$1,234</td>
                   <td className="py-3 px-4 text-right">$1,169</td>
-                  <td className="py-3 px-4 text-right text-green-400">$1,039-1,104</td>
+                  <td className="py-3 px-4 text-right">$1,104</td>
+                  <td className="py-3 px-4 text-right text-green-400">$1,039</td>
                 </tr>
                 <tr className="border-b border-white/10">
                   <td className="py-3 px-4 font-medium">Xbox Series S</td>
                   <td className="py-3 px-4 text-right text-white/50">$299</td>
-                  <td className="py-3 px-4 text-right">$284</td>
                   <td className="py-3 px-4 text-right">$269</td>
-                  <td className="py-3 px-4 text-right text-green-400">$239-254</td>
+                  <td className="py-3 px-4 text-right">$254</td>
+                  <td className="py-3 px-4 text-right text-green-400">$239</td>
                 </tr>
                 <tr className="border-b border-white/10">
                   <td className="py-3 px-4 font-medium">Xbox Series X</td>
                   <td className="py-3 px-4 text-right text-white/50">$499</td>
-                  <td className="py-3 px-4 text-right">$474</td>
                   <td className="py-3 px-4 text-right">$449</td>
-                  <td className="py-3 px-4 text-right text-green-400">$399-424</td>
+                  <td className="py-3 px-4 text-right">$424</td>
+                  <td className="py-3 px-4 text-right text-green-400">$399</td>
                 </tr>
                 <tr className="border-b border-white/10">
                   <td className="py-3 px-4 font-medium">Standard Controller</td>
                   <td className="py-3 px-4 text-right text-white/50">$59</td>
-                  <td className="py-3 px-4 text-right">$56</td>
                   <td className="py-3 px-4 text-right">$53</td>
-                  <td className="py-3 px-4 text-right text-green-400">$47-50</td>
+                  <td className="py-3 px-4 text-right">$50</td>
+                  <td className="py-3 px-4 text-right text-green-400">$47</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-4 font-medium">Elite Controller</td>
                   <td className="py-3 px-4 text-right text-white/50">$179</td>
-                  <td className="py-3 px-4 text-right">$170</td>
                   <td className="py-3 px-4 text-right">$161</td>
-                  <td className="py-3 px-4 text-right text-green-400">$143-152</td>
+                  <td className="py-3 px-4 text-right">$152</td>
+                  <td className="py-3 px-4 text-right text-green-400">$143</td>
                 </tr>
               </tbody>
             </table>
