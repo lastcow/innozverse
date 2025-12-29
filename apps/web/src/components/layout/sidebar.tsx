@@ -73,6 +73,90 @@ const menuItems = [
   },
 ];
 
+// Recursive component for nested categories
+function CategoryMenuItem({
+  categories,
+  pathname,
+  level,
+}: {
+  categories: KBCategoryWithChildren[];
+  pathname: string | null;
+  level: number;
+}) {
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  return (
+    <>
+      {categories.map((category) => {
+        const categoryUrl = `/dashboard/knowledge-base?category=${category.id}`;
+        const isCategoryActive =
+          pathname === '/dashboard/knowledge-base' &&
+          typeof window !== 'undefined' &&
+          window.location.search.includes(`category=${category.id}`);
+        const hasChildren = category.children && category.children.length > 0;
+        const isExpanded = expandedIds.has(category.id);
+
+        return (
+          <div key={category.id}>
+            <div
+              className={cn(
+                'flex items-center rounded-lg px-2 py-1.5 text-sm transition-colors',
+                isCategoryActive
+                  ? 'bg-accent text-accent-foreground'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+              )}
+              style={{ paddingLeft: `${level * 12 + 8}px` }}
+            >
+              {hasChildren ? (
+                <button
+                  onClick={() => toggleExpand(category.id)}
+                  className="p-0.5 mr-1 hover:bg-black/10 rounded"
+                >
+                  {isExpanded ? (
+                    <ChevronDown className="h-3 w-3" />
+                  ) : (
+                    <ChevronRight className="h-3 w-3" />
+                  )}
+                </button>
+              ) : (
+                <span className="w-4 mr-1" />
+              )}
+              <Link href={categoryUrl} className="flex items-center flex-1 min-w-0">
+                <Folder className="h-4 w-4 mr-2 flex-shrink-0" />
+                <span className="truncate">{category.name}</span>
+              </Link>
+              {category.article_count !== undefined && category.article_count > 0 && (
+                <span className="ml-auto text-xs text-muted-foreground pl-2">
+                  {category.article_count}
+                </span>
+              )}
+            </div>
+            {hasChildren && isExpanded && (
+              <CategoryMenuItem
+                categories={category.children!}
+                pathname={pathname}
+                level={level + 1}
+              />
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -210,33 +294,8 @@ export function Sidebar() {
                   </div>
                   {/* KB Categories submenu */}
                   {kbExpanded && kbCategories.length > 0 && (
-                    <div className="ml-4 mt-1 space-y-1">
-                      {kbCategories.map((category) => {
-                        const categoryUrl = `/dashboard/knowledge-base?category=${category.id}`;
-                        const isCategoryActive = pathname === '/dashboard/knowledge-base' &&
-                          typeof window !== 'undefined' &&
-                          window.location.search.includes(`category=${category.id}`);
-                        return (
-                          <Link
-                            key={category.id}
-                            href={categoryUrl}
-                            className={cn(
-                              'flex items-center space-x-2 rounded-lg px-3 py-1.5 text-sm transition-colors',
-                              isCategoryActive
-                                ? 'bg-accent text-accent-foreground'
-                                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                            )}
-                          >
-                            <Folder className="h-4 w-4" />
-                            <span className="truncate">{category.name}</span>
-                            {category.article_count !== undefined && category.article_count > 0 && (
-                              <span className="ml-auto text-xs text-muted-foreground">
-                                {category.article_count}
-                              </span>
-                            )}
-                          </Link>
-                        );
-                      })}
+                    <div className="ml-4 mt-1 space-y-0.5">
+                      <CategoryMenuItem categories={kbCategories} pathname={pathname} level={0} />
                     </div>
                   )}
                 </div>
