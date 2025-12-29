@@ -281,7 +281,7 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
-                    <span>Extended hours</span>
+                    <span>Custom configs</span>
                   </li>
                 </ul>
               </CardContent>
