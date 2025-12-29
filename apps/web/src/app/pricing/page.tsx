@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,10 +21,38 @@ import {
   Globe,
   Zap,
   FileText,
+  LayoutDashboard,
 } from 'lucide-react';
+import { ApiClient } from '@innozverse/api-client';
+
+const apiClient = new ApiClient(
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'
+);
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'semester'>('monthly');
+  const [user, setUser] = useState<{ name: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const refreshToken = apiClient.getRefreshToken();
+        if (!refreshToken) {
+          setIsLoading(false);
+          return;
+        }
+        await apiClient.refresh();
+        const response = await apiClient.getMe();
+        setUser({ name: response.data.user.name });
+      } catch {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -54,16 +82,35 @@ export default function PricingPage() {
                 <HeadphonesIcon className="h-4 w-4" />
                 <span>Support</span>
               </Link>
+              {user && (
+                <Link href="/dashboard" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
+              )}
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/login" className="hidden sm:inline-block text-white/70 hover:text-white transition-colors">
-                Sign In
-              </Link>
-              <Link href="/login">
-                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                  Get Started
-                </Button>
-              </Link>
+              {isLoading ? (
+                <div className="h-8 w-8 rounded-full bg-white/20 animate-pulse" />
+              ) : user ? (
+                <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                  <span className="hidden sm:inline-block text-white/90">{user.name}</span>
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-sm font-medium">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                </Link>
+              ) : (
+                <>
+                  <Link href="/login" className="hidden sm:inline-block text-white/70 hover:text-white transition-colors">
+                    Sign In
+                  </Link>
+                  <Link href="/login">
+                    <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                      Get Started
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
