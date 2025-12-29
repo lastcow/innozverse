@@ -15,8 +15,11 @@ import {
   Monitor,
   Calendar,
   BookOpen,
+  ChevronDown,
+  ChevronRight,
+  Folder,
 } from 'lucide-react';
-import { ApiClient } from '@innozverse/api-client';
+import { ApiClient, KBCategoryWithChildren } from '@innozverse/api-client';
 
 const apiClient = new ApiClient(
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
@@ -75,6 +78,8 @@ export function Sidebar() {
   const router = useRouter();
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [kbCategories, setKbCategories] = useState<KBCategoryWithChildren[]>([]);
+  const [kbExpanded, setKbExpanded] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -103,6 +108,17 @@ export function Sidebar() {
           name: response.data.user.name,
           email: response.data.user.email,
         });
+
+        // Fetch KB categories
+        try {
+          const catResponse = await apiClient.listKBCategories({
+            include_children: true,
+            include_article_count: true,
+          });
+          setKbCategories(catResponse.data.categories);
+        } catch (catError) {
+          console.error('Failed to fetch KB categories:', catError);
+        }
       } catch (error) {
         console.error('Failed to fetch user:', error);
         // If failed to fetch user, redirect to login
@@ -114,6 +130,13 @@ export function Sidebar() {
 
     fetchUser();
   }, [router]);
+
+  // Auto-expand KB menu if on KB page
+  useEffect(() => {
+    if (pathname?.startsWith('/dashboard/knowledge-base')) {
+      setKbExpanded(true);
+    }
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {
@@ -141,9 +164,85 @@ export function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 p-4">
+        <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
+            const isKbItem = item.href === '/dashboard/knowledge-base';
+            const isKbPage = pathname?.startsWith('/dashboard/knowledge-base');
+
+            // Special rendering for Knowledge Base with categories
+            if (isKbItem) {
+              return (
+                <div key={item.href}>
+                  <div
+                    className={cn(
+                      'flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer',
+                      isKbPage
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                    )}
+                    onClick={() => setKbExpanded(!kbExpanded)}
+                  >
+                    <Link
+                      href={item.href}
+                      className="flex items-center space-x-3 flex-1"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.title}</span>
+                    </Link>
+                    {kbCategories.length > 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setKbExpanded(!kbExpanded);
+                        }}
+                        className="p-0.5"
+                      >
+                        {kbExpanded ? (
+                          <ChevronDown className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </button>
+                    )}
+                  </div>
+                  {/* KB Categories submenu */}
+                  {kbExpanded && kbCategories.length > 0 && (
+                    <div className="ml-4 mt-1 space-y-1">
+                      {kbCategories.map((category) => {
+                        const categoryUrl = `/dashboard/knowledge-base?category=${category.id}`;
+                        const isCategoryActive = pathname === '/dashboard/knowledge-base' &&
+                          typeof window !== 'undefined' &&
+                          window.location.search.includes(`category=${category.id}`);
+                        return (
+                          <Link
+                            key={category.id}
+                            href={categoryUrl}
+                            className={cn(
+                              'flex items-center space-x-2 rounded-lg px-3 py-1.5 text-sm transition-colors',
+                              isCategoryActive
+                                ? 'bg-accent text-accent-foreground'
+                                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                            )}
+                          >
+                            <Folder className="h-4 w-4" />
+                            <span className="truncate">{category.name}</span>
+                            {category.article_count !== undefined && category.article_count > 0 && (
+                              <span className="ml-auto text-xs text-muted-foreground">
+                                {category.article_count}
+                              </span>
+                            )}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={item.href}

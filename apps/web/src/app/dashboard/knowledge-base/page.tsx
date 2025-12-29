@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, useCallback, useRef, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +23,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { CategoryTree } from '@/components/kb/category-tree';
 import {
   ApiClient,
   KBCategoryWithChildren,
@@ -51,12 +50,13 @@ const apiClient = new ApiClient(
 
 type TabType = 'all' | 'published' | 'drafts' | 'featured';
 
-export default function KnowledgeBasePage() {
+function KnowledgeBaseContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
 
   // Data state
   const [articles, setArticles] = useState<KBArticleWithDetails[]>([]);
-  const [categories, setCategories] = useState<KBCategoryWithChildren[]>([]);
   const [flatCategories, setFlatCategories] = useState<KBCategoryWithChildren[]>([]);
 
   // UI state
@@ -67,8 +67,13 @@ export default function KnowledgeBasePage() {
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryFromUrl || '');
   const [activeTab, setActiveTab] = useState<TabType>('all');
+
+  // Sync selectedCategory with URL
+  useEffect(() => {
+    setSelectedCategory(categoryFromUrl || '');
+  }, [categoryFromUrl]);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -132,23 +137,16 @@ export default function KnowledgeBasePage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Fetch categories
+  // Fetch categories for dropdowns
   const fetchCategories = useCallback(async () => {
     try {
       const response = await apiClient.listKBCategories({
-        include_children: true,
         include_article_count: true,
       });
-      setCategories(response.data.categories);
-
-      // Also fetch flat list for selects
-      const flatResponse = await apiClient.listKBCategories({
-        include_article_count: true,
-      });
-      setFlatCategories(flatResponse.data.categories);
+      setFlatCategories(response.data.categories);
       setStats((prev) => ({
         ...prev,
-        totalCategories: flatResponse.data.categories.length,
+        totalCategories: response.data.categories.length,
       }));
     } catch (err) {
       console.error('Failed to fetch categories:', err);
@@ -256,12 +254,6 @@ export default function KnowledgeBasePage() {
     }, 300);
     return () => clearTimeout(timer);
   }, [searchQuery]);
-
-  // Handle category selection
-  const handleCategorySelect = (categoryId: string) => {
-    setSelectedCategory(categoryId === selectedCategory ? '' : categoryId);
-    setCurrentPage(1);
-  };
 
   // Handle tab change
   const handleTabChange = (tab: TabType) => {
@@ -552,48 +544,9 @@ export default function KnowledgeBasePage() {
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Categories Sidebar */}
-          <Card className="lg:col-span-1">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Categories</CardTitle>
-                {isAdmin && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => openCategoryEditor()}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div
-                className={`px-2 py-1.5 text-sm rounded-md cursor-pointer mb-2 ${
-                  !selectedCategory
-                    ? 'bg-primary text-primary-foreground'
-                    : 'hover:bg-muted text-muted-foreground hover:text-foreground'
-                }`}
-                onClick={() => setSelectedCategory('')}
-              >
-                All Categories
-              </div>
-              {categories.length > 0 ? (
-                <CategoryTree
-                  categories={categories}
-                  selectedId={selectedCategory}
-                  onSelect={handleCategorySelect}
-                />
-              ) : (
-                <p className="text-sm text-muted-foreground">No categories yet</p>
-              )}
-            </CardContent>
-          </Card>
-
+        <div className="space-y-6">
           {/* Articles List */}
-          <Card className="lg:col-span-3">
+          <Card>
             <CardHeader className="pb-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <CardTitle className="text-lg">Articles</CardTitle>
@@ -1101,5 +1054,19 @@ export default function KnowledgeBasePage() {
         </AlertDialogContent>
       </AlertDialog>
     </DashboardLayout>
+  );
+}
+
+export default function KnowledgeBasePage() {
+  return (
+    <Suspense fallback={
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </DashboardLayout>
+    }>
+      <KnowledgeBaseContent />
+    </Suspense>
   );
 }
