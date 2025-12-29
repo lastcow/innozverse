@@ -64,34 +64,34 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-[#0D1117] p-4">
+      <Card className="w-full max-w-md bg-[#161B22] border-[#30363D]">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] bg-clip-text text-transparent">
             innozverse
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-[#8B949E]">
             Sign in to your account or create a new one
           </CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
-            <Alert variant="destructive" className="mb-4">
+            <Alert variant="destructive" className="mb-4 bg-[#F85149]/10 border-[#F85149]/30 text-[#F85149]">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="register">Register</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-[#21262D]">
+              <TabsTrigger value="login" className="data-[state=active]:bg-[#00D9FF] data-[state=active]:text-[#0D1117]">Login</TabsTrigger>
+              <TabsTrigger value="register" className="data-[state=active]:bg-[#00D9FF] data-[state=active]:text-[#0D1117]">Register</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login" className="space-y-4">
               <form onSubmit={(e) => handleSubmit(e, 'login')} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
+                  <Label htmlFor="login-email" className="text-[#8B949E]">Email</Label>
                   <Input
                     id="login-email"
                     type="email"
@@ -100,10 +100,11 @@ function LoginForm() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={loading}
+                    className="bg-[#21262D] border-[#30363D] text-white placeholder:text-[#484F58] focus:border-[#00D9FF] focus:ring-[#00D9FF]/20"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
+                  <Label htmlFor="login-password" className="text-[#8B949E]">Password</Label>
                   <Input
                     id="login-password"
                     type="password"
@@ -113,9 +114,10 @@ function LoginForm() {
                     minLength={8}
                     required
                     disabled={loading}
+                    className="bg-[#21262D] border-[#30363D] text-white placeholder:text-[#484F58] focus:border-[#00D9FF] focus:ring-[#00D9FF]/20"
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] hover:from-[#33E1FF] hover:to-[#5FE3AB] text-[#0D1117] font-semibold" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Sign In
                 </Button>
@@ -123,10 +125,10 @@ function LoginForm() {
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+                  <span className="w-full border-t border-[#30363D]" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                  <span className="bg-[#161B22] px-2 text-[#484F58]">Or continue with</span>
                 </div>
               </div>
 
@@ -136,6 +138,7 @@ function LoginForm() {
                   onClick={() => handleOAuthLogin('google')}
                   disabled={loading}
                   type="button"
+                  className="bg-[#21262D] border-[#30363D] text-white hover:bg-[#30363D] hover:text-white"
                 >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                     <path
@@ -162,6 +165,7 @@ function LoginForm() {
                   onClick={() => handleOAuthLogin('github')}
                   disabled={loading}
                   type="button"
+                  className="bg-[#21262D] border-[#30363D] text-white hover:bg-[#30363D] hover:text-white"
                 >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
@@ -174,7 +178,7 @@ function LoginForm() {
             <TabsContent value="register" className="space-y-4">
               <form onSubmit={(e) => handleSubmit(e, 'register')} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-name">Full Name</Label>
+                  <Label htmlFor="register-name" className="text-[#8B949E]">Full Name</Label>
                   <Input
                     id="register-name"
                     type="text"
@@ -183,10 +187,11 @@ function LoginForm() {
                     onChange={(e) => setName(e.target.value)}
                     required
                     disabled={loading}
+                    className="bg-[#21262D] border-[#30363D] text-white placeholder:text-[#484F58] focus:border-[#00D9FF] focus:ring-[#00D9FF]/20"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="register-email">Email</Label>
+                  <Label htmlFor="register-email" className="text-[#8B949E]">Email</Label>
                   <Input
                     id="register-email"
                     type="email"
@@ -195,10 +200,11 @@ function LoginForm() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={loading}
+                    className="bg-[#21262D] border-[#30363D] text-white placeholder:text-[#484F58] focus:border-[#00D9FF] focus:ring-[#00D9FF]/20"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="register-password">Password</Label>
+                  <Label htmlFor="register-password" className="text-[#8B949E]">Password</Label>
                   <Input
                     id="register-password"
                     type="password"
@@ -208,12 +214,13 @@ function LoginForm() {
                     minLength={8}
                     required
                     disabled={loading}
+                    className="bg-[#21262D] border-[#30363D] text-white placeholder:text-[#484F58] focus:border-[#00D9FF] focus:ring-[#00D9FF]/20"
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-[#484F58]">
                     Must be at least 8 characters
                   </p>
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] hover:from-[#33E1FF] hover:to-[#5FE3AB] text-[#0D1117] font-semibold" disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Create Account
                 </Button>
@@ -221,10 +228,10 @@ function LoginForm() {
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+                  <span className="w-full border-t border-[#30363D]" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                  <span className="bg-[#161B22] px-2 text-[#484F58]">Or continue with</span>
                 </div>
               </div>
 
@@ -234,6 +241,7 @@ function LoginForm() {
                   onClick={() => handleOAuthLogin('google')}
                   disabled={loading}
                   type="button"
+                  className="bg-[#21262D] border-[#30363D] text-white hover:bg-[#30363D] hover:text-white"
                 >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                     <path
@@ -260,6 +268,7 @@ function LoginForm() {
                   onClick={() => handleOAuthLogin('github')}
                   disabled={loading}
                   type="button"
+                  className="bg-[#21262D] border-[#30363D] text-white hover:bg-[#30363D] hover:text-white"
                 >
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
@@ -277,7 +286,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#0D1117]"><div className="text-[#8B949E]">Loading...</div></div>}>
       <LoginForm />
     </Suspense>
   );

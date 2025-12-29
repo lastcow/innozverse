@@ -59,8 +59,8 @@ function CategoryTree({
             <div
               className={`flex items-center rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${
                 isSelected
-                  ? 'bg-purple-600/20 text-purple-400 font-medium'
-                  : 'text-white/70 hover:bg-white/10 hover:text-white'
+                  ? 'bg-[#00D9FF]/20 text-[#00D9FF] font-medium'
+                  : 'text-[#8B949E] hover:bg-[#21262D] hover:text-white'
               }`}
               style={{ paddingLeft: `${level * 16 + 12}px` }}
             >
@@ -70,7 +70,7 @@ function CategoryTree({
                     e.stopPropagation();
                     onToggleExpand(category.id);
                   }}
-                  className="p-0.5 mr-2 hover:bg-white/10 rounded"
+                  className="p-0.5 mr-2 hover:bg-[#30363D] rounded"
                 >
                   {isExpanded ? (
                     <ChevronDown className="h-4 w-4" />
@@ -89,7 +89,7 @@ function CategoryTree({
                 <span className="truncate">{category.name}</span>
               </button>
               {category.article_count !== undefined && category.article_count > 0 && (
-                <span className="ml-auto text-xs text-white/50 pl-2">
+                <span className="ml-auto text-xs text-[#484F58] pl-2">
                   {category.article_count}
                 </span>
               )}
@@ -300,22 +300,22 @@ function KnowledgeBaseContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-[#0D1117]">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#161B22]/90 backdrop-blur-md border-b border-[#30363D]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
+              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00D9FF] to-[#3DDC97]">
                 innoZverse
               </div>
             </Link>
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="/#features" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+              <Link href="/#features" className="flex items-center gap-2 text-[#8B949E] hover:text-white transition-colors">
                 <Sparkles className="h-4 w-4" />
                 <span>Features</span>
               </Link>
-              <Link href="/pricing" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+              <Link href="/pricing" className="flex items-center gap-2 text-[#8B949E] hover:text-white transition-colors">
                 <DollarSign className="h-4 w-4" />
                 <span>Pricing</span>
               </Link>
@@ -323,12 +323,12 @@ function KnowledgeBaseContent() {
                 <BookOpen className="h-4 w-4" />
                 <span>Knowledge Base</span>
               </Link>
-              <Link href="/#support" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+              <Link href="/#support" className="flex items-center gap-2 text-[#8B949E] hover:text-white transition-colors">
                 <HeadphonesIcon className="h-4 w-4" />
                 <span>Support</span>
               </Link>
               {user && (
-                <Link href="/dashboard" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                <Link href="/dashboard" className="flex items-center gap-2 text-[#8B949E] hover:text-white transition-colors">
                   <LayoutDashboard className="h-4 w-4" />
                   <span>Dashboard</span>
                 </Link>
@@ -338,17 +338,17 @@ function KnowledgeBaseContent() {
               {user ? (
                 <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                   <span className="hidden sm:inline-block text-white/90">{user.name}</span>
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-sm font-medium">
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#00D9FF] to-[#3DDC97] flex items-center justify-center text-[#0D1117] text-sm font-medium">
                     {user.name.charAt(0).toUpperCase()}
                   </div>
                 </Link>
               ) : (
                 <>
-                  <Link href="/login" className="hidden sm:inline-block text-white/70 hover:text-white transition-colors">
+                  <Link href="/login" className="hidden sm:inline-block text-[#8B949E] hover:text-white transition-colors">
                     Sign In
                   </Link>
                   <Link href="/login">
-                    <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                    <Button className="bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] hover:from-[#33E1FF] hover:to-[#5FE3AB] text-[#0D1117] font-semibold">
                       Get Started
                     </Button>
                   </Link>
@@ -367,7 +367,7 @@ function KnowledgeBaseContent() {
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Knowledge Base
             </h1>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto">
+            <p className="text-xl text-[#8B949E] max-w-2xl mx-auto">
               Explore our comprehensive documentation and tutorials
             </p>
           </div>
@@ -375,14 +375,14 @@ function KnowledgeBaseContent() {
           <div className="flex gap-8">
             {/* Category Sidebar */}
             <aside className="hidden lg:block w-64 flex-shrink-0">
-              <div className="sticky top-24 bg-white/5 border border-white/10 rounded-lg p-4 backdrop-blur-sm">
+              <div className="sticky top-24 bg-[#161B22] border border-[#30363D] rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-white mb-4">Categories</h3>
                 <button
                   onClick={clearFilters}
                   className={`w-full flex items-center rounded-lg px-3 py-2 text-sm transition-colors mb-2 ${
                     !selectedCategory
-                      ? 'bg-purple-600/20 text-purple-400 font-medium'
-                      : 'text-white/70 hover:bg-white/10 hover:text-white'
+                      ? 'bg-[#00D9FF]/20 text-[#00D9FF] font-medium'
+                      : 'text-[#8B949E] hover:bg-[#21262D] hover:text-white'
                   }`}
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
@@ -397,7 +397,7 @@ function KnowledgeBaseContent() {
                     onToggleExpand={toggleExpand}
                   />
                 ) : (
-                  <p className="text-white/50 text-sm">No categories found</p>
+                  <p className="text-[#484F58] text-sm">No categories found</p>
                 )}
               </div>
             </aside>
@@ -407,12 +407,12 @@ function KnowledgeBaseContent() {
               {/* Search Bar */}
               <div className="mb-6">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50" />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#484F58]" />
                   <Input
                     placeholder="Search articles..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 bg-white/5 border-white/10 text-white placeholder:text-white/50 focus:border-purple-500"
+                    className="pl-12 bg-[#21262D] border-[#30363D] text-white placeholder:text-[#484F58] focus:border-[#00D9FF]"
                   />
                 </div>
               </div>
@@ -422,7 +422,7 @@ function KnowledgeBaseContent() {
                 <select
                   value={selectedCategory}
                   onChange={(e) => handleCategorySelect(e.target.value)}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
+                  className="w-full px-4 py-2 bg-[#21262D] border border-[#30363D] rounded-lg text-white"
                 >
                   <option value="">All Categories</option>
                   {flatCategories.map((cat) => (
@@ -436,8 +436,8 @@ function KnowledgeBaseContent() {
               {/* Active Filter Display */}
               {selectedCategory && (
                 <div className="mb-4 flex items-center gap-2">
-                  <span className="text-white/70 text-sm">Filtering by:</span>
-                  <span className="px-3 py-1 bg-purple-600/20 text-purple-400 rounded-full text-sm flex items-center gap-2">
+                  <span className="text-[#8B949E] text-sm">Filtering by:</span>
+                  <span className="px-3 py-1 bg-[#00D9FF]/20 text-[#00D9FF] rounded-full text-sm flex items-center gap-2">
                     {getCategoryName(selectedCategory)}
                     <button
                       onClick={clearFilters}
@@ -452,16 +452,16 @@ function KnowledgeBaseContent() {
               {/* Articles */}
               {loading ? (
                 <div className="flex items-center justify-center py-16">
-                  <Loader2 className="h-8 w-8 animate-spin text-purple-400" />
+                  <Loader2 className="h-8 w-8 animate-spin text-[#00D9FF]" />
                 </div>
               ) : articles.length === 0 ? (
                 <div className="text-center py-16">
-                  <FileText className="h-16 w-16 mx-auto text-white/30 mb-4" />
-                  <p className="text-white/70 text-lg">No articles found</p>
+                  <FileText className="h-16 w-16 mx-auto text-[#30363D] mb-4" />
+                  <p className="text-[#8B949E] text-lg">No articles found</p>
                   {(selectedCategory || searchQuery) && (
                     <Button
                       variant="outline"
-                      className="mt-4 bg-white/5 border-white/20 text-white hover:bg-white/10"
+                      className="mt-4 bg-[#21262D] border-[#30363D] text-white hover:bg-[#30363D]"
                       onClick={clearFilters}
                     >
                       Clear Filters
@@ -473,7 +473,7 @@ function KnowledgeBaseContent() {
                   {articles.map((article) => (
                     <Card
                       key={article.id}
-                      className="bg-white/5 border-white/10 hover:bg-white/10 transition-all cursor-pointer"
+                      className="bg-[#161B22] border-[#30363D] hover:border-[#00D9FF] transition-all cursor-pointer hover:shadow-[0_0_20px_rgba(0,217,255,0.15)]"
                       onClick={() => router.push(`/knowledge-base/${article.id}`)}
                     >
                       <CardContent className="p-6">
@@ -481,11 +481,11 @@ function KnowledgeBaseContent() {
                           {article.title}
                         </h3>
                         {article.summary && (
-                          <p className="text-white/70 mb-4 line-clamp-2">
+                          <p className="text-[#8B949E] mb-4 line-clamp-2">
                             {article.summary}
                           </p>
                         )}
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-white/50">
+                        <div className="flex flex-wrap items-center gap-4 text-sm text-[#484F58]">
                           <span className="flex items-center gap-1">
                             <Folder className="h-4 w-4" />
                             {article.category?.name || 'Uncategorized'}
@@ -506,7 +506,7 @@ function KnowledgeBaseContent() {
                   {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="flex items-center justify-between pt-6">
-                      <p className="text-sm text-white/50">
+                      <p className="text-sm text-[#484F58]">
                         Showing {(currentPage - 1) * limit + 1} to{' '}
                         {Math.min(currentPage * limit, totalArticles)} of {totalArticles} articles
                       </p>
@@ -516,7 +516,7 @@ function KnowledgeBaseContent() {
                           size="sm"
                           onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                           disabled={currentPage === 1}
-                          className="bg-white/5 border-white/20 text-white hover:bg-white/10 disabled:opacity-50"
+                          className="bg-[#21262D] border-[#30363D] text-white hover:bg-[#30363D] disabled:opacity-50"
                         >
                           Previous
                         </Button>
@@ -525,7 +525,7 @@ function KnowledgeBaseContent() {
                           size="sm"
                           onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                           disabled={currentPage === totalPages}
-                          className="bg-white/5 border-white/20 text-white hover:bg-white/10 disabled:opacity-50"
+                          className="bg-[#21262D] border-[#30363D] text-white hover:bg-[#30363D] disabled:opacity-50"
                         >
                           Next
                         </Button>
@@ -540,37 +540,37 @@ function KnowledgeBaseContent() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
+      <footer className="border-t border-[#30363D] py-12 px-4 sm:px-6 lg:px-8 bg-[#161B22]/50">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-2">
-              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-4">
+              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] mb-4">
                 innoZverse
               </div>
-              <p className="text-white/60 text-sm">
+              <p className="text-[#8B949E] text-sm">
                 A comprehensive learning environment with detailed, ever-growing tutorials for individuals and companies.
               </p>
             </div>
             <div>
               <h3 className="text-white font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2">
-                <li><Link href="/#features" className="text-white/60 hover:text-white transition-colors text-sm">Features</Link></li>
-                <li><Link href="/pricing" className="text-white/60 hover:text-white transition-colors text-sm">Pricing</Link></li>
-                <li><Link href="/knowledge-base" className="text-white/60 hover:text-white transition-colors text-sm">Knowledge Base</Link></li>
-                <li><Link href="/#support" className="text-white/60 hover:text-white transition-colors text-sm">Support</Link></li>
+                <li><Link href="/#features" className="text-[#8B949E] hover:text-white transition-colors text-sm">Features</Link></li>
+                <li><Link href="/pricing" className="text-[#8B949E] hover:text-white transition-colors text-sm">Pricing</Link></li>
+                <li><Link href="/knowledge-base" className="text-[#8B949E] hover:text-white transition-colors text-sm">Knowledge Base</Link></li>
+                <li><Link href="/#support" className="text-[#8B949E] hover:text-white transition-colors text-sm">Support</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-white font-semibold mb-4">Legal</h3>
               <ul className="space-y-2">
-                <li><Link href="/about" className="text-white/60 hover:text-white transition-colors text-sm">About Us</Link></li>
-                <li><Link href="/privacy" className="text-white/60 hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
+                <li><Link href="/about" className="text-[#8B949E] hover:text-white transition-colors text-sm">About Us</Link></li>
+                <li><Link href="/privacy" className="text-[#8B949E] hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-white/10 pt-8 text-center text-white/60 text-sm">
+          <div className="border-t border-[#30363D] pt-8 text-center text-[#8B949E] text-sm">
             <p>&copy; {new Date().getFullYear()} innoZverse. All rights reserved.</p>
-            <p className="mt-2">Developed with <a href="https://claude.ai/code" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300">Claude Code</a></p>
+            <p className="mt-2">Developed with <a href="https://claude.ai/code" target="_blank" rel="noopener noreferrer" className="text-[#00D9FF] hover:text-[#33E1FF]">Claude Code</a></p>
           </div>
         </div>
       </footer>
@@ -582,8 +582,8 @@ export default function KnowledgeBasePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-purple-400" />
+        <div className="min-h-screen bg-[#0D1117] flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-[#00D9FF]" />
         </div>
       }
     >
