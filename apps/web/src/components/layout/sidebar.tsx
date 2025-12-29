@@ -73,38 +73,43 @@ const menuItems = [
   },
 ];
 
+// Helper to find ancestor IDs of a category
+function findAncestorIds(
+  categories: KBCategoryWithChildren[],
+  targetId: string,
+  ancestors: string[] = []
+): string[] | null {
+  for (const cat of categories) {
+    if (cat.id === targetId) {
+      return ancestors;
+    }
+    if (cat.children && cat.children.length > 0) {
+      const found = findAncestorIds(cat.children, targetId, [...ancestors, cat.id]);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
 // Recursive component for nested categories
 function CategoryMenuItem({
   categories,
-  pathname,
+  selectedCategoryId,
+  expandedIds,
+  onToggleExpand,
   level,
 }: {
   categories: KBCategoryWithChildren[];
-  pathname: string | null;
+  selectedCategoryId: string | null;
+  expandedIds: Set<string>;
+  onToggleExpand: (id: string) => void;
   level: number;
 }) {
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-
-  const toggleExpand = (id: string) => {
-    setExpandedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
-
   return (
     <>
       {categories.map((category) => {
         const categoryUrl = `/dashboard/knowledge-base?category=${category.id}`;
-        const isCategoryActive =
-          pathname === '/dashboard/knowledge-base' &&
-          typeof window !== 'undefined' &&
-          window.location.search.includes(`category=${category.id}`);
+        const isCategoryActive = selectedCategoryId === category.id;
         const hasChildren = category.children && category.children.length > 0;
         const isExpanded = expandedIds.has(category.id);
 
@@ -114,14 +119,14 @@ function CategoryMenuItem({
               className={cn(
                 'flex items-center rounded-lg px-2 py-1.5 text-sm transition-colors',
                 isCategoryActive
-                  ? 'bg-accent text-accent-foreground'
+                  ? 'bg-primary/20 text-primary font-medium'
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               )}
               style={{ paddingLeft: `${level * 12 + 8}px` }}
             >
               {hasChildren ? (
                 <button
-                  onClick={() => toggleExpand(category.id)}
+                  onClick={() => onToggleExpand(category.id)}
                   className="p-0.5 mr-1 hover:bg-black/10 rounded"
                 >
                   {isExpanded ? (
@@ -146,7 +151,9 @@ function CategoryMenuItem({
             {hasChildren && isExpanded && (
               <CategoryMenuItem
                 categories={category.children!}
-                pathname={pathname}
+                selectedCategoryId={selectedCategoryId}
+                expandedIds={expandedIds}
+                onToggleExpand={onToggleExpand}
                 level={level + 1}
               />
             )}
@@ -164,6 +171,43 @@ export function Sidebar() {
   const [loading, setLoading] = useState(true);
   const [kbCategories, setKbCategories] = useState<KBCategoryWithChildren[]>([]);
   const [kbExpanded, setKbExpanded] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [expandedCategoryIds, setExpandedCategoryIds] = useState<Set<string>>(new Set());
+
+  // Get selected category from URL and auto-expand ancestors
+  useEffect(() => {
+    if (typeof window !== 'undefined' && pathname === '/dashboard/knowledge-base') {
+      const params = new URLSearchParams(window.location.search);
+      const categoryId = params.get('category');
+      setSelectedCategoryId(categoryId);
+
+      // Auto-expand ancestors of selected category
+      if (categoryId && kbCategories.length > 0) {
+        const ancestors = findAncestorIds(kbCategories, categoryId);
+        if (ancestors && ancestors.length > 0) {
+          setExpandedCategoryIds((prev) => {
+            const next = new Set(prev);
+            ancestors.forEach((id) => next.add(id));
+            return next;
+          });
+        }
+      }
+    } else {
+      setSelectedCategoryId(null);
+    }
+  }, [pathname, kbCategories]);
+
+  const toggleCategoryExpand = (id: string) => {
+    setExpandedCategoryIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -295,7 +339,13 @@ export function Sidebar() {
                   {/* KB Categories submenu */}
                   {kbExpanded && kbCategories.length > 0 && (
                     <div className="ml-4 mt-1 space-y-0.5">
-                      <CategoryMenuItem categories={kbCategories} pathname={pathname} level={0} />
+                      <CategoryMenuItem
+                        categories={kbCategories}
+                        selectedCategoryId={selectedCategoryId}
+                        expandedIds={expandedCategoryIds}
+                        onToggleExpand={toggleCategoryExpand}
+                        level={0}
+                      />
                     </div>
                   )}
                 </div>
