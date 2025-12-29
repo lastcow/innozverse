@@ -272,6 +272,7 @@ export default function PublicArticlePage() {
           </div>
           <div className="border-t border-white/10 pt-8 text-center text-white/60 text-sm">
             <p>&copy; {new Date().getFullYear()} innoZverse. All rights reserved.</p>
+            <p className="mt-2">Developed with <a href="https://claude.ai/code" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300">Claude Code</a></p>
           </div>
         </div>
       </footer>
