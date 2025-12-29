@@ -122,9 +122,15 @@ export default function PricingPage() {
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-xl text-white/70 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-white/70 max-w-3xl mx-auto mb-6">
             Choose the perfect plan for your learning journey. From free access to premium features, we have options for everyone.
           </p>
+
+          {/* Free Knowledge Base Highlight */}
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30 rounded-full px-6 py-3 mb-8">
+            <FileText className="h-5 w-5 text-green-400" />
+            <span className="text-green-400 font-medium">All Knowledge Base articles are FREE to access for all learners!</span>
+          </div>
 
           {/* Billing Toggle */}
           <div className="inline-flex items-center gap-4 bg-white/5 backdrop-blur-sm rounded-full p-2 border border-white/10">
