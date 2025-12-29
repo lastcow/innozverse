@@ -127,35 +127,39 @@ export default function PricingPage() {
           </p>
 
           {/* Free Knowledge Base Highlight */}
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30 rounded-full px-6 py-3 mb-8">
-            <FileText className="h-5 w-5 text-green-400" />
-            <span className="text-green-400 font-medium">All Knowledge Base articles are FREE to access for all learners!</span>
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30 rounded-full px-6 py-3">
+              <FileText className="h-5 w-5 text-green-400" />
+              <span className="text-green-400 font-medium">All Knowledge Base articles are FREE to access for all learners!</span>
+            </div>
           </div>
 
           {/* Billing Toggle */}
-          <div className="inline-flex items-center gap-4 bg-white/5 backdrop-blur-sm rounded-full p-2 border border-white/10">
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-6 py-2 rounded-full transition-all ${
-                billingCycle === 'monthly'
-                  ? 'bg-purple-600 text-white'
-                  : 'text-white/70 hover:text-white'
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingCycle('semester')}
-              className={`px-6 py-2 rounded-full transition-all ${
-                billingCycle === 'semester'
-                  ? 'bg-purple-600 text-white'
-                  : 'text-white/70 hover:text-white'
-              }`}
-            >
-              Semester <span className="text-green-400 text-sm ml-1">(~35% off)</span>
-            </button>
+          <div className="flex flex-col items-center gap-2">
+            <div className="inline-flex items-center gap-4 bg-white/5 backdrop-blur-sm rounded-full p-2 border border-white/10">
+              <button
+                onClick={() => setBillingCycle('monthly')}
+                className={`px-6 py-2 rounded-full transition-all ${
+                  billingCycle === 'monthly'
+                    ? 'bg-purple-600 text-white'
+                    : 'text-white/70 hover:text-white'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingCycle('semester')}
+                className={`px-6 py-2 rounded-full transition-all ${
+                  billingCycle === 'semester'
+                    ? 'bg-purple-600 text-white'
+                    : 'text-white/70 hover:text-white'
+                }`}
+              >
+                Semester <span className="text-green-400 text-sm ml-1">(~35% off)</span>
+              </button>
+            </div>
+            <p className="text-sm text-white/50">Semester pricing available for students only</p>
           </div>
-          <p className="text-sm text-white/50 mt-2">Semester pricing available for students only</p>
         </div>
 
         {/* Section 1: VM Learning Environment */}
