@@ -231,7 +231,7 @@ export default function PricingPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-xl">Basic</CardTitle>
                 <div className="text-3xl font-bold text-white">
-                  {billingCycle === 'monthly' ? '$19' : '$65'}
+                  {billingCycle === 'monthly' ? '$19' : '$49'}
                   <span className="text-lg font-normal text-white/60">/{billingCycle === 'monthly' ? 'mo' : 'sem'}</span>
                 </div>
                 <CardDescription className="text-white/60 text-xs">10% equipment discount</CardDescription>
@@ -264,7 +264,7 @@ export default function PricingPage() {
               <CardHeader className="pb-2 pt-6">
                 <CardTitle className="text-white text-xl">Pro</CardTitle>
                 <div className="text-3xl font-bold text-white">
-                  {billingCycle === 'monthly' ? '$30' : '$99'}
+                  {billingCycle === 'monthly' ? '$30' : '$78'}
                   <span className="text-lg font-normal text-white/60">/{billingCycle === 'monthly' ? 'mo' : 'sem'}</span>
                 </div>
                 <CardDescription className="text-white/60 text-xs">15% equipment discount</CardDescription>
@@ -292,7 +292,7 @@ export default function PricingPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-xl">Premium</CardTitle>
                 <div className="text-3xl font-bold text-white">
-                  {billingCycle === 'monthly' ? '$55' : '$179'}
+                  {billingCycle === 'monthly' ? '$55' : '$143'}
                   <span className="text-lg font-normal text-white/60">/{billingCycle === 'monthly' ? 'mo' : 'sem'}</span>
                 </div>
                 <CardDescription className="text-white/60 text-xs">20% equipment discount</CardDescription>
@@ -408,9 +408,9 @@ export default function PricingPage() {
                   <td className="py-3 px-4">Semester Price</td>
                   <td className="py-3 px-4 text-center">-</td>
                   <td className="py-3 px-4 text-center">-</td>
-                  <td className="py-3 px-4 text-center">$65</td>
-                  <td className="py-3 px-4 text-center bg-purple-600/10">$119</td>
-                  <td className="py-3 px-4 text-center">$199</td>
+                  <td className="py-3 px-4 text-center">$49</td>
+                  <td className="py-3 px-4 text-center bg-purple-600/10">$78</td>
+                  <td className="py-3 px-4 text-center">$143</td>
                 </tr>
               </tbody>
             </table>
@@ -745,23 +745,23 @@ export default function PricingPage() {
                   <div className="p-4 bg-white/5 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-white font-medium">Basic</span>
-                      <span className="text-green-400 font-semibold">Save $11 (14%)</span>
+                      <span className="text-green-400 font-semibold">Save $27 (35%)</span>
                     </div>
-                    <div className="text-white/60 text-sm">$76 monthly vs $65 semester</div>
+                    <div className="text-white/60 text-sm">$76 monthly vs $49 semester</div>
                   </div>
                   <div className="p-4 bg-purple-600/20 border border-purple-400/30 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-white font-medium">Pro</span>
-                      <span className="text-green-400 font-semibold">Save $21 (15%)</span>
+                      <span className="text-green-400 font-semibold">Save $42 (35%)</span>
                     </div>
-                    <div className="text-white/60 text-sm">$140 monthly vs $119 semester</div>
+                    <div className="text-white/60 text-sm">$120 monthly vs $78 semester</div>
                   </div>
                   <div className="p-4 bg-white/5 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-white font-medium">Premium</span>
-                      <span className="text-green-400 font-semibold">Save $37 (16%)</span>
+                      <span className="text-green-400 font-semibold">Save $77 (35%)</span>
                     </div>
-                    <div className="text-white/60 text-sm">$236 monthly vs $199 semester</div>
+                    <div className="text-white/60 text-sm">$220 monthly vs $143 semester</div>
                   </div>
                 </div>
               </CardContent>
@@ -786,7 +786,7 @@ export default function PricingPage() {
               </CardHeader>
               <CardContent className="text-white/70 text-sm">
                 <p className="mb-3">Semester VM plans, laptop leasing, equipment discounts</p>
-                <p className="text-white/50">Remote + In-Site | Semester tiers $65-199</p>
+                <p className="text-white/50">Remote + In-Site | Semester tiers $49-143</p>
               </CardContent>
             </Card>
 
@@ -799,7 +799,7 @@ export default function PricingPage() {
               </CardHeader>
               <CardContent className="text-white/70 text-sm">
                 <p className="mb-3">Monthly/semester VM plans for remote learning</p>
-                <p className="text-white/50">Remote only | Monthly $19-59, Semester $65-199</p>
+                <p className="text-white/50">Remote only | Monthly $19-55, Semester $49-143</p>
               </CardContent>
             </Card>
 
