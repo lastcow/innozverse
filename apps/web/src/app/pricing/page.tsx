@@ -351,14 +351,6 @@ export default function PricingPage() {
                   <td className="py-3 px-4 text-center"><CheckCircle2 className="h-5 w-5 text-green-400 mx-auto" /></td>
                 </tr>
                 <tr className="border-b border-white/10">
-                  <td className="py-3 px-4">Printing/Month</td>
-                  <td className="py-3 px-4 text-center">-</td>
-                  <td className="py-3 px-4 text-center">5 pages</td>
-                  <td className="py-3 px-4 text-center">20 pages</td>
-                  <td className="py-3 px-4 text-center bg-purple-600/10">50 pages</td>
-                  <td className="py-3 px-4 text-center">Unlimited</td>
-                </tr>
-                <tr className="border-b border-white/10">
                   <td className="py-3 px-4">Equipment Discount</td>
                   <td className="py-3 px-4 text-center">-</td>
                   <td className="py-3 px-4 text-center">-</td>
@@ -371,8 +363,8 @@ export default function PricingPage() {
                   <td className="py-3 px-4 text-center">Community</td>
                   <td className="py-3 px-4 text-center">Email</td>
                   <td className="py-3 px-4 text-center">Email</td>
-                  <td className="py-3 px-4 text-center bg-purple-600/10">Priority</td>
-                  <td className="py-3 px-4 text-center">24/7</td>
+                  <td className="py-3 px-4 text-center bg-purple-600/10">Email</td>
+                  <td className="py-3 px-4 text-center">Email</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-4">Semester Price</td>
