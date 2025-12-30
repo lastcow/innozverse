@@ -200,14 +200,6 @@ export default function EquipmentPage() {
     return `$${parseFloat(amount).toFixed(2)}`;
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -408,10 +400,10 @@ export default function EquipmentPage() {
                       <tr className="border-b bg-muted/50">
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Equipment</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Category</th>
+                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Specs</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Daily Rate</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Status</th>
                         <th className="text-left p-4 font-medium text-sm text-muted-foreground">Condition</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Added</th>
                         <th className="text-right p-4 font-medium text-sm text-muted-foreground">Actions</th>
                       </tr>
                     </thead>
@@ -450,6 +442,28 @@ export default function EquipmentPage() {
                               <span className="text-sm capitalize">{item.category.replace('_', ' ')}</span>
                             </td>
                             <td className="p-4">
+                              <div className="text-xs text-muted-foreground space-y-0.5">
+                                {item.specs?.color && (
+                                  <div><span className="font-medium">Color:</span> {item.specs.color}</div>
+                                )}
+                                {item.specs?.cpu && (
+                                  <div><span className="font-medium">CPU:</span> {item.specs.cpu}</div>
+                                )}
+                                {item.specs?.ram && (
+                                  <div><span className="font-medium">RAM:</span> {item.specs.ram}</div>
+                                )}
+                                {item.specs?.ssd && (
+                                  <div><span className="font-medium">SSD:</span> {item.specs.ssd}</div>
+                                )}
+                                {item.specs?.screen_size && (
+                                  <div><span className="font-medium">Screen:</span> {item.specs.screen_size}</div>
+                                )}
+                                {!item.specs?.color && !item.specs?.cpu && !item.specs?.ram && !item.specs?.ssd && !item.specs?.screen_size && (
+                                  <span className="text-muted-foreground/50">-</span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-4">
                               <span className="font-medium">{formatCurrency(item.daily_rate)}</span>
                               <span className="text-sm text-muted-foreground">/day</span>
                             </td>
@@ -460,9 +474,6 @@ export default function EquipmentPage() {
                             </td>
                             <td className="p-4">
                               <span className="text-sm capitalize">{item.condition}</span>
-                            </td>
-                            <td className="p-4 text-sm text-muted-foreground">
-                              {formatDate(item.created_at)}
                             </td>
                             <td className="p-4 text-right">
                               <div className="flex items-center justify-end gap-2">

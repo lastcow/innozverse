@@ -43,6 +43,12 @@ export interface EquipmentFormData {
   image_url: string;
   condition: EquipmentCondition;
   notes: string;
+  // Specs fields
+  color: string;
+  cpu: string;
+  ram: string;
+  ssd: string;
+  screen_size: string;
 }
 
 export interface Equipment {
@@ -85,6 +91,11 @@ const initialFormData: EquipmentFormData = {
   image_url: '',
   condition: 'excellent',
   notes: '',
+  color: '',
+  cpu: '',
+  ram: '',
+  ssd: '',
+  screen_size: '',
 };
 
 export function EquipmentDialog({
@@ -103,6 +114,7 @@ export function EquipmentDialog({
   useEffect(() => {
     if (open) {
       if (equipment) {
+        const specs = equipment.specs || {};
         setFormData({
           name: equipment.name,
           description: equipment.description || '',
@@ -115,6 +127,11 @@ export function EquipmentDialog({
           image_url: equipment.image_url || '',
           condition: equipment.condition,
           notes: equipment.notes || '',
+          color: (specs.color as string) || '',
+          cpu: (specs.cpu as string) || '',
+          ram: (specs.ram as string) || '',
+          ssd: (specs.ssd as string) || '',
+          screen_size: (specs.screen_size as string) || '',
         });
       } else {
         setFormData(initialFormData);
@@ -140,6 +157,14 @@ export function EquipmentDialog({
         return;
       }
 
+      // Build specs object with only non-empty values
+      const specs: Record<string, string> = {};
+      if (formData.color) specs.color = formData.color;
+      if (formData.cpu) specs.cpu = formData.cpu;
+      if (formData.ram) specs.ram = formData.ram;
+      if (formData.ssd) specs.ssd = formData.ssd;
+      if (formData.screen_size) specs.screen_size = formData.screen_size;
+
       const payload = {
         name: formData.name,
         description: formData.description || undefined,
@@ -152,6 +177,7 @@ export function EquipmentDialog({
         image_url: formData.image_url || undefined,
         condition: formData.condition,
         notes: formData.notes || undefined,
+        specs: Object.keys(specs).length > 0 ? specs : undefined,
       };
 
       if (isEditing && equipment) {
@@ -268,6 +294,57 @@ export function EquipmentDialog({
               onChange={(e) => setFormData({ ...formData, serial_number: e.target.value })}
               placeholder="ABC123XYZ"
             />
+          </div>
+
+          {/* Specifications Section */}
+          <div className="border-t pt-4 mt-2">
+            <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Specifications</h4>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Color</label>
+                <Input
+                  value={formData.color}
+                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                  placeholder="Space Gray"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Screen Size</label>
+                <Input
+                  value={formData.screen_size}
+                  onChange={(e) => setFormData({ ...formData, screen_size: e.target.value })}
+                  placeholder="16 inch"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4 mt-4">
+              <div>
+                <label className="text-sm font-medium">CPU</label>
+                <Input
+                  value={formData.cpu}
+                  onChange={(e) => setFormData({ ...formData, cpu: e.target.value })}
+                  placeholder="M3 Pro"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">RAM</label>
+                <Input
+                  value={formData.ram}
+                  onChange={(e) => setFormData({ ...formData, ram: e.target.value })}
+                  placeholder="32GB"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">SSD</label>
+                <Input
+                  value={formData.ssd}
+                  onChange={(e) => setFormData({ ...formData, ssd: e.target.value })}
+                  placeholder="512GB"
+                />
+              </div>
+            </div>
           </div>
 
           <div>
