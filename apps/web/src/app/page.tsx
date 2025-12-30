@@ -9,7 +9,7 @@ import { TechBackground } from '@/components/TechBackground';
 import { ApiClient } from '@innozverse/api-client';
 
 const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
 );
 
 export default function Home() {
