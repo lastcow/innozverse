@@ -42,6 +42,7 @@ import {
   Trash2,
   Upload,
   BookOpen,
+  List,
 } from 'lucide-react';
 
 const apiClient = new ApiClient(
@@ -549,15 +550,65 @@ function KnowledgeBaseContent() {
           <Card>
             <CardHeader className="pb-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <CardTitle className="text-lg">Articles</CardTitle>
-                <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search articles..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9"
-                  />
+                <div>
+                  <CardTitle className="text-lg">Articles</CardTitle>
+                  {selectedCategory && (
+                    <CardDescription className="mt-1">
+                      Showing articles in: {flatCategories.find(c => c.id === selectedCategory)?.name || 'Selected category'}
+                    </CardDescription>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  {/* Category Dropdown */}
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => {
+                      setSelectedCategory(e.target.value);
+                      setCurrentPage(1);
+                      // Update URL
+                      const params = new URLSearchParams(searchParams.toString());
+                      if (e.target.value) {
+                        params.set('category', e.target.value);
+                      } else {
+                        params.delete('category');
+                      }
+                      router.push(`/dashboard/knowledge-base?${params.toString()}`);
+                    }}
+                    className="px-3 py-2 border rounded-md text-sm bg-background min-w-[160px]"
+                  >
+                    <option value="">All Categories</option>
+                    {flatCategories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* View All in Category Button */}
+                  {selectedCategory && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setActiveTab('all');
+                        setCurrentPage(1);
+                      }}
+                      title="Show all articles in selected category (all statuses)"
+                    >
+                      <List className="h-4 w-4 mr-2" />
+                      View All
+                    </Button>
+                  )}
+
+                  <div className="relative w-full sm:w-64">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search articles..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
                 </div>
               </div>
 
