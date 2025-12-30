@@ -13,10 +13,9 @@ import {
 } from '@/components/ui/dialog';
 import { ApiClient, EquipmentCategory, EquipmentCondition } from '@innozverse/api-client';
 import { Loader2 } from 'lucide-react';
+import { config } from '@/lib/config';
 
-const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
-);
+const apiClient = new ApiClient(config.apiBaseUrl);
 
 const CATEGORIES: EquipmentCategory[] = [
   'laptop',

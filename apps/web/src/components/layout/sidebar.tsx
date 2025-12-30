@@ -20,10 +20,9 @@ import {
   Folder,
 } from 'lucide-react';
 import { ApiClient, KBCategoryWithChildren } from '@innozverse/api-client';
+import { config } from '@/lib/config';
 
-const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
-);
+const apiClient = new ApiClient(config.apiBaseUrl);
 
 const menuItems = [
   {

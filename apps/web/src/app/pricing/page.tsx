@@ -24,10 +24,9 @@ import {
   LayoutDashboard,
 } from 'lucide-react';
 import { ApiClient } from '@innozverse/api-client';
+import { config } from '@/lib/config';
 
-const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
-);
+const apiClient = new ApiClient(config.apiBaseUrl);
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'semester'>('monthly');

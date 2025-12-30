@@ -7,10 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ArrowRight, Shield, Code, Brain, Rocket, Users, CheckCircle2, BookOpen, Sparkles, DollarSign, HeadphonesIcon, LayoutDashboard, FileText } from 'lucide-react';
 import { TechBackground } from '@/components/TechBackground';
 import { ApiClient } from '@innozverse/api-client';
+import { config } from '@/lib/config';
 
-const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.innozverse.com'
-);
+const apiClient = new ApiClient(config.apiBaseUrl);
 
 export default function Home() {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
