@@ -172,11 +172,6 @@ export default function PublicArticlePage() {
             </div>
           ) : (
             <div className="flex gap-8">
-              {/* Table of Contents - Left Sidebar */}
-              <aside className="hidden lg:block w-64 flex-shrink-0">
-                <TableOfContents content={article.content} />
-              </aside>
-
               {/* Main Article Content */}
               <div className="flex-1 min-w-0 max-w-4xl space-y-6">
                 {/* Back Button */}
@@ -241,6 +236,11 @@ export default function PublicArticlePage() {
                   </Button>
                 </div>
               </div>
+
+              {/* Table of Contents - Right Sidebar */}
+              <aside className="hidden lg:block w-64 flex-shrink-0">
+                <TableOfContents content={article.content} />
+              </aside>
             </div>
           )}
         </div>
