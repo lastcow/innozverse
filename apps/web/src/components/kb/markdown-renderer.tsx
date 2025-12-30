@@ -19,73 +19,80 @@ function slugify(text?: string): string {
 
 export function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   return (
-    <div className={cn('prose prose-neutral max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground', className)}>
+    <div className={cn('prose prose-lg max-w-none', className)}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
           code(props) {
             const { children: codeChildren, className: codeClassName, node, ...rest } = props;
-            // All code rendered as simple monospace text, no backgrounds
+            const isInline = !codeClassName;
+            if (isInline) {
+              return (
+                <code className="font-mono text-[#F0883E] bg-[#21262D] px-1.5 py-0.5 rounded text-sm" {...rest}>
+                  {codeChildren}
+                </code>
+              );
+            }
             return (
-              <code className="font-mono text-foreground" {...rest}>
+              <code className="font-mono text-[#C9D1D9]" {...rest}>
                 {codeChildren}
               </code>
             );
           },
           pre: ({ children: preChildren }) => (
-            <pre className="font-mono text-foreground whitespace-pre-wrap my-4 text-sm">
+            <pre className="font-mono bg-[#0D1117] border border-[#30363D] rounded-lg p-4 my-4 text-sm overflow-x-auto">
               {preChildren}
             </pre>
           ),
           h1: ({ children: h1Children }) => (
-            <h1 className="scroll-mt-20 text-3xl font-bold mt-8 mb-4 text-foreground" id={slugify(String(h1Children))}>
+            <h1 className="scroll-mt-20 text-3xl font-bold mt-8 mb-4 text-white" id={slugify(String(h1Children))}>
               {h1Children}
             </h1>
           ),
           h2: ({ children: h2Children }) => (
-            <h2 className="scroll-mt-20 text-2xl font-semibold mt-6 mb-3 border-b pb-2 text-foreground" id={slugify(String(h2Children))}>
+            <h2 className="scroll-mt-20 text-2xl font-semibold mt-8 mb-4 pb-2 border-b border-[#30363D] text-white" id={slugify(String(h2Children))}>
               {h2Children}
             </h2>
           ),
           h3: ({ children: h3Children }) => (
-            <h3 className="scroll-mt-20 text-xl font-semibold mt-5 mb-2 text-foreground" id={slugify(String(h3Children))}>
+            <h3 className="scroll-mt-20 text-xl font-semibold mt-6 mb-3 text-white" id={slugify(String(h3Children))}>
               {h3Children}
             </h3>
           ),
           h4: ({ children: h4Children }) => (
-            <h4 className="scroll-mt-20 text-lg font-semibold mt-4 mb-2 text-foreground" id={slugify(String(h4Children))}>
+            <h4 className="scroll-mt-20 text-lg font-semibold mt-5 mb-2 text-white" id={slugify(String(h4Children))}>
               {h4Children}
             </h4>
           ),
           p: ({ children: pChildren }) => (
-            <p className="leading-7 mb-4 text-foreground">
+            <p className="leading-8 mb-5 text-[#C9D1D9] text-base">
               {pChildren}
             </p>
           ),
           ul: ({ children: ulChildren }) => (
-            <ul className="list-disc list-inside mb-4 space-y-1 text-foreground">
+            <ul className="list-disc pl-6 mb-5 space-y-2 text-[#C9D1D9]">
               {ulChildren}
             </ul>
           ),
           ol: ({ children: olChildren }) => (
-            <ol className="list-decimal list-inside mb-4 space-y-1 text-foreground">
+            <ol className="list-decimal pl-6 mb-5 space-y-2 text-[#C9D1D9]">
               {olChildren}
             </ol>
           ),
           li: ({ children: liChildren }) => (
-            <li className="leading-7 text-foreground">
+            <li className="leading-7 text-[#C9D1D9]">
               {liChildren}
             </li>
           ),
           blockquote: ({ children: bqChildren }) => (
-            <blockquote className="border-l-4 border-primary pl-4 italic my-4 text-muted-foreground">
+            <blockquote className="border-l-4 border-[#00D9FF] pl-4 py-2 my-5 bg-[#21262D] rounded-r-lg text-[#8B949E] italic">
               {bqChildren}
             </blockquote>
           ),
           a: ({ href, children: aChildren }) => (
             <a
               href={href}
-              className="text-primary underline underline-offset-4 hover:text-primary/80"
+              className="text-[#00D9FF] underline underline-offset-4 hover:text-[#33E1FF] transition-colors"
               target={href?.startsWith('http') ? '_blank' : undefined}
               rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
             >
@@ -93,24 +100,24 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
             </a>
           ),
           table: ({ children: tableChildren }) => (
-            <div className="overflow-x-auto my-4">
-              <table className="w-full border-collapse border border-border">
+            <div className="overflow-x-auto my-6">
+              <table className="w-full border-collapse border border-[#30363D]">
                 {tableChildren}
               </table>
             </div>
           ),
           thead: ({ children: theadChildren }) => (
-            <thead className="bg-muted">
+            <thead className="bg-[#21262D]">
               {theadChildren}
             </thead>
           ),
           th: ({ children: thChildren }) => (
-            <th className="border border-border px-4 py-2 text-left font-semibold">
+            <th className="border border-[#30363D] px-4 py-3 text-left font-semibold text-white">
               {thChildren}
             </th>
           ),
           td: ({ children: tdChildren }) => (
-            <td className="border border-border px-4 py-2">
+            <td className="border border-[#30363D] px-4 py-3 text-[#C9D1D9]">
               {tdChildren}
             </td>
           ),
@@ -119,11 +126,21 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
             <img
               src={src}
               alt={alt || ''}
-              className="rounded-lg max-w-full h-auto my-4"
+              className="rounded-lg max-w-full h-auto my-6 border border-[#30363D]"
             />
           ),
           hr: () => (
-            <hr className="my-8 border-border" />
+            <hr className="my-8 border-[#30363D]" />
+          ),
+          strong: ({ children: strongChildren }) => (
+            <strong className="font-semibold text-white">
+              {strongChildren}
+            </strong>
+          ),
+          em: ({ children: emChildren }) => (
+            <em className="italic text-[#C9D1D9]">
+              {emChildren}
+            </em>
           ),
         }}
       >
