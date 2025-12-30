@@ -46,8 +46,8 @@ function LoginForm() {
         await apiClient.register({ email, password, name });
       }
 
-      // Redirect to dashboard on success
-      router.push('/dashboard');
+      // Redirect to home on success
+      router.push('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
     } finally {
