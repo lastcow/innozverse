@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, FormEvent, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { ApiClient } from '@innozverse/api-client';
 import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,6 @@ const apiClient = new ApiClient(
 );
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState('login');
   const [email, setEmail] = useState('');
@@ -46,8 +45,8 @@ function LoginForm() {
         await apiClient.register({ email, password, name });
       }
 
-      // Redirect to home on success
-      router.push('/');
+      // Redirect to home on success (full reload to update auth state)
+      window.location.href = '/';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
     } finally {

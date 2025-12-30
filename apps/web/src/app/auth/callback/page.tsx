@@ -34,9 +34,9 @@ export default function OAuthCallbackPage() {
         // Tokens are already stored by handleOAuthCallback
         console.log('OAuth login successful', { isNewUser });
 
-        // Redirect to home
+        // Redirect to home (full reload to update auth state)
         setTimeout(() => {
-          router.push('/');
+          window.location.href = '/';
         }, 1000);
       } catch (err) {
         console.error('OAuth callback error:', err);
