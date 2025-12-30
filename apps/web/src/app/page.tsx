@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Shield, Code, Brain, Rocket, Users, CheckCircle2, BookOpen, Sparkles, DollarSign, HeadphonesIcon, LayoutDashboard, FileText } from 'lucide-react';
 import { TechBackground } from '@/components/TechBackground';
+import { UserMenu } from '@/components/layout/user-menu';
 import { ApiClient } from '@innozverse/api-client';
 import { config } from '@/lib/config';
 
@@ -86,12 +87,7 @@ export default function Home() {
               {isLoading ? (
                 <div className="h-8 w-8 rounded-full bg-[#21262D] animate-pulse" />
               ) : user ? (
-                <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                  <span className="hidden sm:inline-block text-white/90">{user.name}</span>
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#00D9FF] to-[#3DDC97] flex items-center justify-center text-[#0D1117] text-sm font-medium">
-                    {user.name.charAt(0).toUpperCase()}
-                  </div>
-                </Link>
+                <UserMenu userName={user.name} />
               ) : (
                 <>
                   <Link href="/login" className="hidden sm:inline-block text-[#8B949E] hover:text-white transition-colors">

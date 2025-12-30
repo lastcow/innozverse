@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, DollarSign, HeadphonesIcon, Shield, FileText, LayoutDashboard } from 'lucide-react';
 import { ApiClient } from '@innozverse/api-client';
+import { UserMenu } from '@/components/layout/user-menu';
 import { config } from '@/lib/config';
 
 const apiClient = new ApiClient(config.apiBaseUrl);
@@ -78,12 +79,7 @@ export default function PrivacyPage() {
               {isLoading ? (
                 <div className="h-8 w-8 rounded-full bg-[#21262D] animate-pulse" />
               ) : user ? (
-                <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                  <span className="hidden sm:inline-block text-white/90">{user.name}</span>
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#00D9FF] to-[#3DDC97] flex items-center justify-center text-[#0D1117] text-sm font-medium">
-                    {user.name.charAt(0).toUpperCase()}
-                  </div>
-                </Link>
+                <UserMenu userName={user.name} />
               ) : (
                 <>
                   <Link href="/login" className="hidden sm:inline-block text-[#8B949E] hover:text-white transition-colors">
