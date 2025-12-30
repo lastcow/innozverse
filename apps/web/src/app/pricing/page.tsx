@@ -150,7 +150,7 @@ export default function PricingPage() {
                     : 'text-[#8B949E] hover:text-white'
                 }`}
               >
-                Semester <span className="text-[#3DDC97] text-sm ml-1">(~35% off)</span>
+                Semester <span className={`text-sm ml-1 ${billingCycle === 'semester' ? 'text-[#0D1117]/70' : 'text-[#3DDC97]'}`}>(~35% off)</span>
               </button>
             </div>
             <p className="text-sm text-[#484F58]">Semester pricing available for students only</p>
