@@ -11,8 +11,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ApiClient, EquipmentCategory, EquipmentCondition } from '@innozverse/api-client';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Info, Cpu, FileText } from 'lucide-react';
 import { config } from '@/lib/config';
 
 const apiClient = new ApiClient(config.apiBaseUrl);
@@ -205,101 +206,118 @@ export function EquipmentDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <div>
-            <label className="text-sm font-medium">Name *</label>
-            <Input
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="MacBook Pro 16-inch"
-            />
-          </div>
+        <Tabs defaultValue="basic" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="basic" className="flex items-center gap-2">
+              <Info className="h-4 w-4" />
+              Basic Info
+            </TabsTrigger>
+            <TabsTrigger value="specs" className="flex items-center gap-2">
+              <Cpu className="h-4 w-4" />
+              Specs
+            </TabsTrigger>
+            <TabsTrigger value="details" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Details
+            </TabsTrigger>
+          </TabsList>
 
-          <div>
-            <label className="text-sm font-medium">Category *</label>
-            <select
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value as EquipmentCategory })}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {CATEGORIES.map((category) => (
-                <option key={category} value={category}>
-                  {category.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+          {/* Basic Info Tab */}
+          <TabsContent value="basic" className="space-y-4 mt-4">
             <div>
-              <label className="text-sm font-medium">Brand</label>
+              <label className="text-sm font-medium">Name *</label>
               <Input
-                value={formData.brand}
-                onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                placeholder="Apple"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="MacBook Pro 16-inch"
               />
             </div>
+
             <div>
-              <label className="text-sm font-medium">Model</label>
-              <Input
-                value={formData.model}
-                onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                placeholder="M3 Pro"
-              />
+              <label className="text-sm font-medium">Category *</label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value as EquipmentCategory })}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {CATEGORIES.map((category) => (
+                  <option key={category} value={category}>
+                    {category.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                  </option>
+                ))}
+              </select>
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium">Daily Rate *</label>
-              <Input
-                type="number"
-                step="0.01"
-                value={formData.daily_rate}
-                onChange={(e) => setFormData({ ...formData, daily_rate: e.target.value })}
-                placeholder="50.00"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Brand</label>
+                <Input
+                  value={formData.brand}
+                  onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                  placeholder="Apple"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Model</label>
+                <Input
+                  value={formData.model}
+                  onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                  placeholder="M3 Pro"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Retail Price</label>
-              <Input
-                type="number"
-                step="0.01"
-                value={formData.retail_price}
-                onChange={(e) => setFormData({ ...formData, retail_price: e.target.value })}
-                placeholder="1999.00"
-              />
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Daily Rate *</label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={formData.daily_rate}
+                  onChange={(e) => setFormData({ ...formData, daily_rate: e.target.value })}
+                  placeholder="50.00"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Retail Price</label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={formData.retail_price}
+                  onChange={(e) => setFormData({ ...formData, retail_price: e.target.value })}
+                  placeholder="1999.00"
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label className="text-sm font-medium">Condition</label>
-            <select
-              value={formData.condition}
-              onChange={(e) => setFormData({ ...formData, condition: e.target.value as EquipmentCondition })}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {CONDITION_OPTIONS.map((condition) => (
-                <option key={condition} value={condition}>
-                  {condition.charAt(0).toUpperCase() + condition.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Condition</label>
+                <select
+                  value={formData.condition}
+                  onChange={(e) => setFormData({ ...formData, condition: e.target.value as EquipmentCondition })}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {CONDITION_OPTIONS.map((condition) => (
+                    <option key={condition} value={condition}>
+                      {condition.charAt(0).toUpperCase() + condition.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Serial Number</label>
+                <Input
+                  value={formData.serial_number}
+                  onChange={(e) => setFormData({ ...formData, serial_number: e.target.value })}
+                  placeholder="ABC123XYZ"
+                />
+              </div>
+            </div>
+          </TabsContent>
 
-          <div>
-            <label className="text-sm font-medium">Serial Number</label>
-            <Input
-              value={formData.serial_number}
-              onChange={(e) => setFormData({ ...formData, serial_number: e.target.value })}
-              placeholder="ABC123XYZ"
-            />
-          </div>
-
-          {/* Specifications Section */}
-          <div className="border-t pt-4 mt-2">
-            <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Specifications</h4>
-
+          {/* Specifications Tab */}
+          <TabsContent value="specs" className="space-y-4 mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium">Color</label>
@@ -319,7 +337,7 @@ export function EquipmentDialog({
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mt-4">
+            <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="text-sm font-medium">CPU</label>
                 <Input
@@ -345,37 +363,40 @@ export function EquipmentDialog({
                 />
               </div>
             </div>
-          </div>
+          </TabsContent>
 
-          <div>
-            <label className="text-sm font-medium">Description</label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Equipment description..."
-              className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-          </div>
+          {/* Details Tab */}
+          <TabsContent value="details" className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium">Description</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Equipment description..."
+                className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
 
-          <div>
-            <label className="text-sm font-medium">Image URL</label>
-            <Input
-              value={formData.image_url}
-              onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
+            <div>
+              <label className="text-sm font-medium">Image URL</label>
+              <Input
+                value={formData.image_url}
+                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
 
-          <div>
-            <label className="text-sm font-medium">Notes</label>
-            <textarea
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Internal notes..."
-              className="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-          </div>
-        </div>
+            <div>
+              <label className="text-sm font-medium">Notes</label>
+              <textarea
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                placeholder="Internal notes..."
+                className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
