@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MarkdownRenderer } from '@/components/kb/markdown-renderer';
+import { TableOfContents } from '@/components/kb/table-of-contents';
 import { ApiClient, KBArticleWithDetails } from '@innozverse/api-client';
 import {
   ArrowLeft,
@@ -151,7 +152,7 @@ export default function PublicArticlePage() {
 
       {/* Main Content */}
       <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {loading ? (
             <div className="flex items-center justify-center min-h-[400px]">
               <Loader2 className="h-8 w-8 animate-spin text-[#00D9FF]" />
@@ -170,67 +171,75 @@ export default function PublicArticlePage() {
               </Button>
             </div>
           ) : (
-            <div className="space-y-6">
-              {/* Back Button */}
-              <Button
-                variant="ghost"
-                onClick={() => router.push('/knowledge-base')}
-                className="text-[#8B949E] hover:text-white hover:bg-[#21262D]"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Knowledge Base
-              </Button>
+            <div className="flex gap-8">
+              {/* Table of Contents - Left Sidebar */}
+              <aside className="hidden lg:block w-64 flex-shrink-0">
+                <TableOfContents content={article.content} />
+              </aside>
 
-              {/* Article Header */}
-              <Card className="bg-[#161B22] border-[#30363D]">
-                <CardContent className="p-6 md:p-8">
-                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                    {article.title}
-                  </h1>
-                  {article.summary && (
-                    <p className="text-lg text-[#8B949E] mb-6">
-                      {article.summary}
-                    </p>
-                  )}
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-[#484F58]">
-                    <span className="flex items-center gap-2">
-                      <Folder className="h-4 w-4" />
-                      {article.category?.name || 'Uncategorized'}
-                    </span>
-                    <span className="flex items-center gap-2">
-                      <Eye className="h-4 w-4" />
-                      {article.view_count} views
-                    </span>
-                    {article.author && (
-                      <span className="flex items-center gap-2">
-                        <User className="h-4 w-4" />
-                        {article.author.name}
-                      </span>
-                    )}
-                    <span className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      {formatDate(article.published_at || article.created_at)}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Article Content */}
-              <Card className="bg-[#161B22] border-[#30363D]">
-                <CardContent className="p-6 md:p-8">
-                  <MarkdownRenderer content={article.content} />
-                </CardContent>
-              </Card>
-
-              {/* Bottom Navigation */}
-              <div className="flex justify-center pt-6">
+              {/* Main Article Content */}
+              <div className="flex-1 min-w-0 max-w-4xl space-y-6">
+                {/* Back Button */}
                 <Button
+                  variant="ghost"
                   onClick={() => router.push('/knowledge-base')}
-                  className="bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] hover:from-[#33E1FF] hover:to-[#5FE3AB] text-[#0D1117] font-semibold"
+                  className="text-[#8B949E] hover:text-white hover:bg-[#21262D]"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Knowledge Base
                 </Button>
+
+                {/* Article Header */}
+                <Card className="bg-[#161B22] border-[#30363D]">
+                  <CardContent className="p-6 md:p-8">
+                    <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                      {article.title}
+                    </h1>
+                    {article.summary && (
+                      <p className="text-lg text-[#8B949E] mb-6">
+                        {article.summary}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-[#484F58]">
+                      <span className="flex items-center gap-2">
+                        <Folder className="h-4 w-4" />
+                        {article.category?.name || 'Uncategorized'}
+                      </span>
+                      <span className="flex items-center gap-2">
+                        <Eye className="h-4 w-4" />
+                        {article.view_count} views
+                      </span>
+                      {article.author && (
+                        <span className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          {article.author.name}
+                        </span>
+                      )}
+                      <span className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        {formatDate(article.published_at || article.created_at)}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Article Content */}
+                <Card className="bg-[#161B22] border-[#30363D]">
+                  <CardContent className="p-6 md:p-8">
+                    <MarkdownRenderer content={article.content} />
+                  </CardContent>
+                </Card>
+
+                {/* Bottom Navigation */}
+                <div className="flex justify-center pt-6">
+                  <Button
+                    onClick={() => router.push('/knowledge-base')}
+                    className="bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] hover:from-[#33E1FF] hover:to-[#5FE3AB] text-[#0D1117] font-semibold"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Knowledge Base
+                  </Button>
+                </div>
               </div>
             </div>
           )}
