@@ -22,6 +22,7 @@ import {
   Zap,
   FileText,
   LayoutDashboard,
+  Cpu,
 } from 'lucide-react';
 import { ApiClient } from '@innozverse/api-client';
 import { UserMenu } from '@/components/layout/user-menu';
@@ -73,6 +74,10 @@ export default function PricingPage() {
               <Link href="/pricing" className="flex items-center gap-2 text-white hover:text-white transition-colors">
                 <DollarSign className="h-4 w-4" />
                 <span>Pricing</span>
+              </Link>
+              <Link href="/subscription" className="flex items-center gap-2 text-[#8B949E] hover:text-white transition-colors">
+                <Cpu className="h-4 w-4" />
+                <span>Rent a PC</span>
               </Link>
               <Link href="/knowledge-base" className="flex items-center gap-2 text-[#8B949E] hover:text-white transition-colors">
                 <FileText className="h-4 w-4" />
