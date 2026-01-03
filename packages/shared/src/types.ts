@@ -644,3 +644,686 @@ export interface SearchKBArticlesResponse {
     };
   };
 }
+
+// ==================== Product Catalog Types ====================
+
+export type PricingPeriod = 'weekly' | 'monthly';
+export type DepositStatus = 'held' | 'released' | 'forfeited' | 'partial_refund';
+export type ModifierType = 'discount' | 'fee';
+
+// Product Category
+export interface ProductCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  icon: string | null;
+  color: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProductCategoryWithProducts extends ProductCategory {
+  products: ProductTemplate[];
+  product_count?: number;
+}
+
+// Product Color
+export interface ProductColor {
+  id: string;
+  product_template_id: string;
+  color_name: string;
+  hex_code: string | null;
+  text_color: string | null;
+  border_color: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+// Product Template (Variant)
+export interface ProductTemplate {
+  id: string;
+  category_id: string;
+  name: string;
+  subtitle: string | null;
+  description: string | null;
+  weekly_rate: string;
+  monthly_rate: string;
+  deposit_amount: string;
+  specs: Record<string, string | number | boolean> | null;
+  screen_size: string | null;
+  highlights: string | null;
+  includes: string[] | null;
+  image_url: string | null;
+  is_popular: boolean;
+  has_accessories: boolean;
+  is_new: boolean;
+  is_active: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProductTemplateWithDetails extends ProductTemplate {
+  category: ProductCategory;
+  colors: ProductColor[];
+  available_count: number;
+}
+
+// Accessory
+export interface Accessory {
+  id: string;
+  name: string;
+  description: string | null;
+  weekly_rate: string;
+  monthly_rate: string;
+  deposit_amount: string;
+  image_url: string | null;
+  is_active: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AccessoryColor {
+  id: string;
+  accessory_id: string;
+  color_name: string;
+  hex_code: string | null;
+  text_color: string | null;
+  border_color: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface AccessoryWithDetails extends Accessory {
+  colors: AccessoryColor[];
+  screen_size_filter: string | null;
+}
+
+// Product-Accessory Link
+export interface ProductAccessoryLink {
+  id: string;
+  product_template_id: string | null;
+  category_id: string | null;
+  accessory_id: string;
+  screen_size_filter: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+// Inventory Item (Physical Unit)
+export interface InventoryItem {
+  id: string;
+  product_template_id: string | null;
+  accessory_id: string | null;
+  serial_number: string | null;
+  color: string | null;
+  status: EquipmentStatus;
+  condition: EquipmentCondition;
+  purchase_date: string | null;
+  purchase_price: string | null;
+  retail_price: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface InventoryItemWithDetails extends InventoryItem {
+  product_template?: ProductTemplate;
+  accessory?: Accessory;
+}
+
+// Rental Accessory (Junction)
+export interface RentalAccessory {
+  id: string;
+  rental_id: string;
+  accessory_id: string;
+  inventory_item_id: string | null;
+  selected_color: string | null;
+  weekly_rate: string;
+  monthly_rate: string;
+  deposit_amount: string;
+  deposit_status: DepositStatus;
+  created_at: string;
+  accessory?: Accessory;
+  inventory_item?: InventoryItem;
+}
+
+// Enhanced Rental (extends base Rental)
+export interface EnhancedRental extends Rental {
+  product_template_id: string | null;
+  inventory_item_id: string | null;
+  selected_color: string | null;
+  pricing_period: PricingPeriod | null;
+  weekly_rate: string | null;
+  monthly_rate: string | null;
+  deposit_amount: string | null;
+  deposit_status: DepositStatus;
+  deposit_released_at: string | null;
+  deposit_notes: string | null;
+  student_discount_applied: boolean;
+  new_equipment_fee_applied: boolean;
+  discount_amount: string;
+  fee_amount: string;
+  final_total: string | null;
+}
+
+export interface EnhancedRentalWithDetails extends EnhancedRental {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  product_template?: ProductTemplateWithDetails;
+  inventory_item?: InventoryItem;
+  accessories: RentalAccessory[];
+}
+
+// Pricing Modifier
+export interface PricingModifier {
+  id: string;
+  name: string;
+  display_name: string;
+  type: ModifierType;
+  percentage: string;
+  applies_to: string;
+  requires_verification: boolean;
+  is_active: boolean;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// ==================== Product Catalog Request/Response Types ====================
+
+// Category CRUD
+export interface CreateProductCategoryRequest {
+  name: string;
+  slug?: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  display_order?: number;
+  is_active?: boolean;
+}
+
+export interface UpdateProductCategoryRequest {
+  name?: string;
+  slug?: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  display_order?: number;
+  is_active?: boolean;
+}
+
+export interface ListProductCategoriesRequest {
+  include_products?: boolean;
+  is_active?: boolean;
+}
+
+export interface ListProductCategoriesResponse {
+  status: 'ok';
+  data: {
+    categories: ProductCategoryWithProducts[];
+  };
+}
+
+export interface GetProductCategoryResponse {
+  status: 'ok';
+  data: {
+    category: ProductCategoryWithProducts;
+  };
+}
+
+export interface CreateProductCategoryResponse {
+  status: 'created';
+  data: {
+    category: ProductCategory;
+  };
+}
+
+export interface UpdateProductCategoryResponse {
+  status: 'ok';
+  data: {
+    category: ProductCategory;
+  };
+}
+
+export interface DeleteProductCategoryResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+// Product Template CRUD
+export interface CreateProductTemplateRequest {
+  category_id: string;
+  name: string;
+  subtitle?: string;
+  description?: string;
+  weekly_rate: number;
+  monthly_rate: number;
+  deposit_amount: number;
+  specs?: Record<string, string | number | boolean>;
+  screen_size?: string;
+  highlights?: string;
+  includes?: string[];
+  image_url?: string;
+  is_popular?: boolean;
+  has_accessories?: boolean;
+  is_new?: boolean;
+  is_active?: boolean;
+  display_order?: number;
+  colors?: Array<{
+    color_name: string;
+    hex_code?: string;
+    text_color?: string;
+    border_color?: string;
+  }>;
+}
+
+export interface UpdateProductTemplateRequest {
+  category_id?: string;
+  name?: string;
+  subtitle?: string;
+  description?: string;
+  weekly_rate?: number;
+  monthly_rate?: number;
+  deposit_amount?: number;
+  specs?: Record<string, string | number | boolean>;
+  screen_size?: string;
+  highlights?: string;
+  includes?: string[];
+  image_url?: string;
+  is_popular?: boolean;
+  has_accessories?: boolean;
+  is_new?: boolean;
+  is_active?: boolean;
+  display_order?: number;
+}
+
+export interface ListProductTemplatesRequest {
+  page?: number;
+  limit?: number;
+  category_id?: string;
+  screen_size?: string;
+  is_popular?: boolean;
+  is_active?: boolean;
+  search?: string;
+}
+
+export interface ListProductTemplatesResponse {
+  status: 'ok';
+  data: {
+    products: ProductTemplateWithDetails[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+export interface GetProductTemplateResponse {
+  status: 'ok';
+  data: {
+    product: ProductTemplateWithDetails;
+    compatible_accessories: AccessoryWithDetails[];
+  };
+}
+
+export interface CreateProductTemplateResponse {
+  status: 'created';
+  data: {
+    product: ProductTemplate;
+  };
+}
+
+export interface UpdateProductTemplateResponse {
+  status: 'ok';
+  data: {
+    product: ProductTemplate;
+  };
+}
+
+export interface DeleteProductTemplateResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+// Product Color CRUD
+export interface AddProductColorRequest {
+  color_name: string;
+  hex_code?: string;
+  text_color?: string;
+  border_color?: string;
+  display_order?: number;
+}
+
+export interface AddProductColorResponse {
+  status: 'created';
+  data: {
+    color: ProductColor;
+  };
+}
+
+export interface DeleteProductColorResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+// Accessory CRUD
+export interface CreateAccessoryRequest {
+  name: string;
+  description?: string;
+  weekly_rate: number;
+  monthly_rate: number;
+  deposit_amount: number;
+  image_url?: string;
+  is_active?: boolean;
+  display_order?: number;
+  colors?: Array<{
+    color_name: string;
+    hex_code?: string;
+    text_color?: string;
+    border_color?: string;
+  }>;
+}
+
+export interface UpdateAccessoryRequest {
+  name?: string;
+  description?: string;
+  weekly_rate?: number;
+  monthly_rate?: number;
+  deposit_amount?: number;
+  image_url?: string;
+  is_active?: boolean;
+  display_order?: number;
+}
+
+export interface ListAccessoriesRequest {
+  page?: number;
+  limit?: number;
+  is_active?: boolean;
+  search?: string;
+}
+
+export interface ListAccessoriesResponse {
+  status: 'ok';
+  data: {
+    accessories: AccessoryWithDetails[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+export interface GetAccessoryResponse {
+  status: 'ok';
+  data: {
+    accessory: AccessoryWithDetails;
+  };
+}
+
+export interface CreateAccessoryResponse {
+  status: 'created';
+  data: {
+    accessory: Accessory;
+  };
+}
+
+export interface UpdateAccessoryResponse {
+  status: 'ok';
+  data: {
+    accessory: Accessory;
+  };
+}
+
+export interface DeleteAccessoryResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+// Accessory Link CRUD
+export interface CreateAccessoryLinkRequest {
+  product_template_id?: string;
+  category_id?: string;
+  accessory_id: string;
+  screen_size_filter?: string;
+}
+
+export interface CreateAccessoryLinkResponse {
+  status: 'created';
+  data: {
+    link: ProductAccessoryLink;
+  };
+}
+
+export interface DeleteAccessoryLinkResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+// Inventory CRUD
+export interface CreateInventoryItemRequest {
+  product_template_id?: string;
+  accessory_id?: string;
+  serial_number?: string;
+  color?: string;
+  status?: EquipmentStatus;
+  condition?: EquipmentCondition;
+  purchase_date?: string;
+  purchase_price?: number;
+  retail_price?: number;
+  notes?: string;
+}
+
+export interface UpdateInventoryItemRequest {
+  product_template_id?: string;
+  accessory_id?: string;
+  serial_number?: string;
+  color?: string;
+  status?: EquipmentStatus;
+  condition?: EquipmentCondition;
+  purchase_date?: string;
+  purchase_price?: number;
+  retail_price?: number;
+  notes?: string;
+}
+
+export interface ListInventoryItemsRequest {
+  page?: number;
+  limit?: number;
+  product_template_id?: string;
+  accessory_id?: string;
+  status?: EquipmentStatus;
+  color?: string;
+  search?: string;
+}
+
+export interface ListInventoryItemsResponse {
+  status: 'ok';
+  data: {
+    items: InventoryItemWithDetails[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+export interface GetInventoryItemResponse {
+  status: 'ok';
+  data: {
+    item: InventoryItemWithDetails;
+  };
+}
+
+export interface CreateInventoryItemResponse {
+  status: 'created';
+  data: {
+    item: InventoryItem;
+  };
+}
+
+export interface UpdateInventoryItemResponse {
+  status: 'ok';
+  data: {
+    item: InventoryItem;
+  };
+}
+
+export interface DeleteInventoryItemResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+// Enhanced Rental Request/Response
+export interface CreateEnhancedRentalRequest {
+  product_template_id: string;
+  user_id?: string;
+  selected_color: string;
+  pricing_period: PricingPeriod;
+  start_date: string;
+  end_date: string;
+  accessories?: Array<{
+    accessory_id: string;
+    selected_color?: string;
+  }>;
+  notes?: string;
+}
+
+export interface RentalPricingRequest {
+  product_template_id: string;
+  pricing_period: PricingPeriod;
+  start_date: string;
+  end_date: string;
+  accessories?: Array<{
+    accessory_id: string;
+  }>;
+  apply_student_discount?: boolean;
+}
+
+export interface RentalPricingResponse {
+  status: 'ok';
+  data: {
+    product: {
+      id: string;
+      name: string;
+      rate: string;
+      deposit: string;
+      is_new: boolean;
+    };
+    accessories: Array<{
+      id: string;
+      name: string;
+      rate: string;
+      deposit: string;
+    }>;
+    subtotal: string;
+    total_deposit: string;
+    duration_days: number;
+    pricing_period: PricingPeriod;
+    periods: number;
+    base_rental_total: string;
+    student_discount?: {
+      percentage: string;
+      amount: string;
+    };
+    new_equipment_fee?: {
+      percentage: string;
+      amount: string;
+    };
+    final_rental_total: string;
+    grand_total: string;
+  };
+}
+
+export interface CreateEnhancedRentalResponse {
+  status: 'created';
+  data: {
+    rental: EnhancedRentalWithDetails;
+  };
+}
+
+export interface GetEnhancedRentalResponse {
+  status: 'ok';
+  data: {
+    rental: EnhancedRentalWithDetails;
+  };
+}
+
+export interface AddRentalAccessoryRequest {
+  accessory_id: string;
+  selected_color?: string;
+}
+
+export interface AddRentalAccessoryResponse {
+  status: 'ok';
+  data: {
+    rental_accessory: RentalAccessory;
+  };
+}
+
+export interface RemoveRentalAccessoryResponse {
+  status: 'ok';
+  data: {
+    message: string;
+  };
+}
+
+export interface AssignInventoryRequest {
+  inventory_item_id: string;
+  accessory_inventory_assignments?: Array<{
+    rental_accessory_id: string;
+    inventory_item_id: string;
+  }>;
+}
+
+export interface AssignInventoryResponse {
+  status: 'ok';
+  data: {
+    rental: EnhancedRentalWithDetails;
+    message: string;
+  };
+}
+
+// Product Availability Check
+export interface CheckProductAvailabilityRequest {
+  product_template_id: string;
+  color?: string;
+  start_date: string;
+  end_date: string;
+}
+
+export interface CheckProductAvailabilityResponse {
+  status: 'ok';
+  data: {
+    available: boolean;
+    available_count: number;
+    available_colors: string[];
+  };
+}
