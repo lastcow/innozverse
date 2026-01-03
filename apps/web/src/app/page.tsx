@@ -68,7 +68,7 @@ export default function Home() {
               </Link>
               <Link href="/subscription" className="flex items-center gap-2 text-[#8B949E] hover:text-white transition-colors">
                 <Cpu className="h-4 w-4" />
-                <span>Rent a PC</span>
+                <span>Rent Equipment</span>
               </Link>
               <Link href="/knowledge-base" className="flex items-center gap-2 text-[#8B949E] hover:text-white transition-colors">
                 <FileText className="h-4 w-4" />
