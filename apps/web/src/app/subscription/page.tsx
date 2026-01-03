@@ -36,6 +36,28 @@ import { config } from '@/lib/config';
 
 const apiClient = new ApiClient(config.apiBaseUrl);
 
+// Xbox accessories
+const xboxAccessories = [
+  {
+    id: 'extra-standard-controller',
+    name: 'Extra Standard Wireless Controller',
+    description: 'Additional wireless controller for multiplayer gaming',
+    weeklyPrice: 8,
+    monthlyPrice: 22,
+    deposit: 50,
+    colors: ['Carbon Black', 'Robot White', 'Shock Blue', 'Pulse Red'],
+  },
+  {
+    id: 'extra-elite-controller',
+    name: 'Extra Elite Wireless Controller Series 2',
+    description: 'Premium controller with customizable components',
+    weeklyPrice: 15,
+    monthlyPrice: 40,
+    deposit: 100,
+    colors: ['Black', 'Core White'],
+  },
+];
+
 // Surface Pro accessories - organized by screen size
 const surfaceProAccessories = {
   '13': [
@@ -104,7 +126,6 @@ const productCategories = [
           '16GB RAM, 512GB SSD storage',
           'LCD touchscreen display',
           'Power adapter & cables',
-          'Protective sleeve',
         ],
         colors: ['Black', 'Platinum', 'Sapphire', 'Dune'],
         highlights: 'AI-powered productivity with Copilot+',
@@ -126,7 +147,6 @@ const productCategories = [
           '16GB RAM, 256GB SSD storage',
           'LCD touchscreen display',
           'Power adapter & cables',
-          'Protective sleeve',
         ],
         colors: ['Platinum'],
         highlights: 'Compact AI-powered productivity with Copilot+',
@@ -147,7 +167,6 @@ const productCategories = [
           '16GB RAM, 512GB SSD storage',
           'OLED touchscreen display',
           'Power adapter & cables',
-          'Protective sleeve',
         ],
         colors: ['Black', 'Platinum', 'Sapphire', 'Dune'],
         highlights: 'Premium OLED display with top-tier performance',
@@ -186,26 +205,29 @@ const productCategories = [
     variants: [
       {
         id: 'xbox-series-x-standard',
-        name: 'Xbox Series X + Standard Controller',
+        name: 'Xbox Series X',
+        subtitle: '4K Gaming • 1TB SSD • Standard Controller',
         weeklyPrice: 30,
         monthlyPrice: 90,
         deposit: 225,
         includes: [
-          'Xbox Series X Console',
+          'Xbox Series X Console (1TB)',
           'Standard Wireless Controller',
           'HDMI cable',
           'Power cable',
         ],
         highlights: 'True 4K gaming at 120fps',
+        hasAccessories: true,
       },
       {
         id: 'xbox-series-x-elite',
         name: 'Xbox Series X + Elite Controller',
+        subtitle: '4K Gaming • 1TB SSD • Elite Controller',
         weeklyPrice: 40,
         monthlyPrice: 120,
         deposit: 275,
         includes: [
-          'Xbox Series X Console',
+          'Xbox Series X Console (1TB)',
           'Elite Wireless Controller Series 2',
           'HDMI cable',
           'Power cable',
@@ -213,6 +235,23 @@ const productCategories = [
         ],
         highlights: 'Pro-level gaming setup',
         popular: true,
+        hasAccessories: true,
+      },
+      {
+        id: 'xbox-series-s',
+        name: 'Xbox Series S',
+        subtitle: '1440p Gaming • 512GB SSD • Standard Controller',
+        weeklyPrice: 20,
+        monthlyPrice: 60,
+        deposit: 150,
+        includes: [
+          'Xbox Series S Console (512GB)',
+          'Standard Wireless Controller',
+          'HDMI cable',
+          'Power cable',
+        ],
+        highlights: 'Compact next-gen gaming',
+        hasAccessories: true,
       },
     ],
   },
@@ -488,15 +527,19 @@ export default function SubscriptionPage() {
             </p>
           </div>
 
-          <div className="space-y-16">
-            {productCategories.map((category) => (
-              <div key={category.id} className="space-y-6">
+          <div className="space-y-12">
+            {productCategories.map((category, index) => (
+              <div key={category.id} className={`space-y-6 ${index > 0 ? 'pt-12 border-t border-[#30363D]' : ''}`}>
                 {/* Category Header */}
-                <div className="flex items-center gap-4">
+                <div className={`flex items-center gap-4 p-4 rounded-xl ${
+                  category.color === 'cyan' ? 'bg-gradient-to-r from-[#00D9FF]/10 to-transparent border-l-4 border-[#00D9FF]' :
+                  category.color === 'green' ? 'bg-gradient-to-r from-[#3DDC97]/10 to-transparent border-l-4 border-[#3DDC97]' :
+                  'bg-gradient-to-r from-[#FF9F1C]/10 to-transparent border-l-4 border-[#FF9F1C]'
+                }`}>
                   <div className={`p-3 rounded-lg ${
-                    category.color === 'cyan' ? 'bg-[#00D9FF]/10' :
-                    category.color === 'green' ? 'bg-[#3DDC97]/10' :
-                    'bg-[#FF9F1C]/10'
+                    category.color === 'cyan' ? 'bg-[#00D9FF]/20' :
+                    category.color === 'green' ? 'bg-[#3DDC97]/20' :
+                    'bg-[#FF9F1C]/20'
                   }`}>
                     <category.icon className={`h-8 w-8 ${
                       category.color === 'cyan' ? 'text-[#00D9FF]' :
@@ -511,17 +554,17 @@ export default function SubscriptionPage() {
                 </div>
 
                 {/* Variants Grid */}
-                <div className={`grid gap-6 ${category.variants.length === 1 ? 'md:grid-cols-1 max-w-xl' : 'md:grid-cols-2'}`}>
+                <div className={`grid gap-6 ${category.variants.length === 1 ? 'md:grid-cols-1 max-w-xl' : category.variants.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
                   {category.variants.map((variant) => (
                     <Card
                       key={variant.id}
                       className={`relative ${
-                        variant.popular
+                        'popular' in variant && variant.popular
                           ? 'bg-[#21262D] border-[#3DDC97] shadow-[0_0_30px_rgba(61,220,151,0.2)]'
                           : 'bg-[#161B22] border-[#30363D] hover:border-[#484F58]'
                       } transition-all`}
                     >
-                      {variant.popular && (
+                      {'popular' in variant && variant.popular && (
                         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                           <span className="bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] text-[#0D1117] text-xs font-bold px-4 py-1 rounded-full">
                             RECOMMENDED
@@ -529,7 +572,7 @@ export default function SubscriptionPage() {
                         </div>
                       )}
 
-                      <CardHeader className={variant.popular ? 'pt-8' : ''}>
+                      <CardHeader className={'popular' in variant && variant.popular ? 'pt-8' : ''}>
                         <CardTitle className="text-white text-xl">{variant.name}</CardTitle>
                         {'subtitle' in variant && (
                           <div className="text-[#00D9FF] text-sm font-medium">{variant.subtitle}</div>
@@ -588,7 +631,7 @@ export default function SubscriptionPage() {
 
                         <Link href="/login" className="block">
                           <Button className={`w-full ${
-                            variant.popular
+                            'popular' in variant && variant.popular
                               ? 'bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] hover:from-[#33E1FF] hover:to-[#5FE3AB] text-[#0D1117] font-semibold shadow-[0_0_20px_rgba(0,217,255,0.3)]'
                               : 'bg-[#21262D] text-white hover:bg-[#30363D] border border-[#30363D]'
                           }`}>
@@ -707,6 +750,61 @@ export default function SubscriptionPage() {
                           </Card>
                         ))}
                       </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Accessories Section for Xbox */}
+                {category.id === 'xbox' && (
+                  <div className="mt-8">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Gamepad2 className="h-6 w-6 text-[#FF9F1C]" />
+                      <h4 className="text-xl font-semibold text-white">Extra Controller</h4>
+                      <span className="text-xs bg-[#FF9F1C]/20 text-[#FF9F1C] px-2 py-0.5 rounded-full">Optional</span>
+                    </div>
+                    <p className="text-[#8B949E] mb-6">Add an extra controller for multiplayer gaming.</p>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {xboxAccessories.map((accessory) => (
+                        <Card key={accessory.id} className="bg-[#161B22] border-[#30363D] hover:border-[#484F58] transition-all">
+                          <CardHeader>
+                            <CardTitle className="text-white text-lg flex items-center gap-2">
+                              <Gamepad2 className="h-5 w-5 text-[#FF9F1C]" />
+                              {accessory.name}
+                            </CardTitle>
+                            <CardDescription className="text-[#8B949E]">{accessory.description}</CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            {/* Pricing */}
+                            <div className="grid grid-cols-3 gap-3 text-center">
+                              <div className="bg-[#21262D] rounded-lg p-2">
+                                <div className="text-lg font-bold text-white">+${accessory.weeklyPrice}</div>
+                                <div className="text-[#484F58] text-xs">per week</div>
+                              </div>
+                              <div className="bg-[#21262D] rounded-lg p-2">
+                                <div className="text-lg font-bold text-[#3DDC97]">+${accessory.monthlyPrice}</div>
+                                <div className="text-[#484F58] text-xs">per month</div>
+                              </div>
+                              <div className="bg-[#21262D] rounded-lg p-2">
+                                <div className="text-lg font-bold text-[#8B949E]">+${accessory.deposit}</div>
+                                <div className="text-[#484F58] text-xs">deposit</div>
+                              </div>
+                            </div>
+
+                            {/* Colors */}
+                            <div>
+                              <div className="text-white font-medium text-sm mb-2">Available Colors:</div>
+                              <div className="flex flex-wrap gap-2">
+                                {accessory.colors.map((color, idx) => (
+                                  <span key={idx} className="px-3 py-1 bg-[#21262D] border border-[#30363D] rounded-full text-[#8B949E] text-xs">
+                                    {color}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -865,18 +963,24 @@ export default function SubscriptionPage() {
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <Gamepad2 className="h-5 w-5 text-[#FF9F1C]" />
-                      <span className="text-white">Xbox Series X + Standard Controller</span>
+                      <div>
+                        <span className="text-white">Xbox Series X</span>
+                        <div className="text-xs text-[#8B949E]">4K Gaming • 1TB SSD</div>
+                      </div>
                     </div>
                   </td>
                   <td className="py-4 px-6 text-center">$30</td>
                   <td className="py-4 px-6 text-center text-[#3DDC97]">$90</td>
                   <td className="py-4 px-6 text-center">$225</td>
                 </tr>
-                <tr className="bg-[#FF9F1C]/5">
+                <tr className="border-b border-[#30363D] bg-[#FF9F1C]/5">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <Gamepad2 className="h-5 w-5 text-[#FF9F1C]" />
-                      <span className="text-white">Xbox Series X + Elite Controller</span>
+                      <div>
+                        <span className="text-white">Xbox Series X + Elite Controller</span>
+                        <div className="text-xs text-[#8B949E]">4K Gaming • 1TB SSD • Elite Controller</div>
+                      </div>
                       <span className="text-xs bg-[#3DDC97]/20 text-[#3DDC97] px-2 py-0.5 rounded-full">Popular</span>
                     </div>
                   </td>
@@ -884,16 +988,54 @@ export default function SubscriptionPage() {
                   <td className="py-4 px-6 text-center text-[#3DDC97]">$120</td>
                   <td className="py-4 px-6 text-center">$275</td>
                 </tr>
+                <tr className="border-b border-[#30363D]">
+                  <td className="py-4 px-6">
+                    <div className="flex items-center gap-3">
+                      <Gamepad2 className="h-5 w-5 text-[#FF9F1C]" />
+                      <div>
+                        <span className="text-white">Xbox Series S</span>
+                        <div className="text-xs text-[#8B949E]">1440p Gaming • 512GB SSD</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-center">$20</td>
+                  <td className="py-4 px-6 text-center text-[#3DDC97]">$60</td>
+                  <td className="py-4 px-6 text-center">$150</td>
+                </tr>
+                {/* Xbox Accessories */}
+                <tr className="border-b border-[#30363D]">
+                  <td className="py-4 px-6 pl-12">
+                    <div className="flex items-center gap-3">
+                      <Gamepad2 className="h-5 w-5 text-[#FF9F1C]/60" />
+                      <div>
+                        <span className="text-[#C9D1D9]">+ Extra Standard Controller</span>
+                        <span className="text-xs text-[#8B949E] ml-2">(Accessory)</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-center">+$8</td>
+                  <td className="py-4 px-6 text-center text-[#3DDC97]">+$22</td>
+                  <td className="py-4 px-6 text-center">+$50</td>
+                </tr>
+                <tr className="border-b border-[#30363D]">
+                  <td className="py-4 px-6 pl-12">
+                    <div className="flex items-center gap-3">
+                      <Gamepad2 className="h-5 w-5 text-[#FF9F1C]/60" />
+                      <div>
+                        <span className="text-[#C9D1D9]">+ Extra Elite Controller</span>
+                        <span className="text-xs text-[#8B949E] ml-2">(Accessory)</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-center">+$15</td>
+                  <td className="py-4 px-6 text-center text-[#3DDC97]">+$40</td>
+                  <td className="py-4 px-6 text-center">+$100</td>
+                </tr>
               </tbody>
             </table>
           </div>
 
-          <div className="mt-8 grid md:grid-cols-3 gap-4">
-            <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-4 text-center">
-              <Keyboard className="h-6 w-6 text-[#00D9FF] mx-auto mb-2" />
-              <div className="text-white font-medium">Add-on: Extra Controller</div>
-              <div className="text-[#8B949E] text-sm">+$15/week or +$30/month</div>
-            </div>
+          <div className="mt-8 grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
             <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-4 text-center">
               <Shield className="h-6 w-6 text-[#3DDC97] mx-auto mb-2" />
               <div className="text-white font-medium">Damage Protection</div>
