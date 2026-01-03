@@ -659,7 +659,14 @@ export default function SubscriptionPage() {
                       )}
 
                       <CardHeader className={'popular' in variant && variant.popular ? 'pt-8' : ''}>
-                        <CardTitle className="text-white text-xl">{variant.name}</CardTitle>
+                        <CardTitle className="text-white text-xl flex items-center gap-2">
+                          <category.icon className={`h-5 w-5 ${
+                            category.color === 'cyan' ? 'text-[#00D9FF]' :
+                            category.color === 'green' ? 'text-[#3DDC97]' :
+                            'text-[#FF9F1C]'
+                          }`} />
+                          {variant.name}
+                        </CardTitle>
                         {'subtitle' in variant && (
                           <div className="text-[#00D9FF] text-sm font-medium">{variant.subtitle}</div>
                         )}
