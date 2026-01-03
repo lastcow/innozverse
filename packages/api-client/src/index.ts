@@ -1054,7 +1054,7 @@ export class ApiClient {
   async createEnhancedRental(data: {
     product_template_id: string;
     user_id?: string;
-    selected_color: string;
+    selected_color?: string;
     pricing_period: 'weekly' | 'monthly';
     start_date: string;
     end_date: string;
