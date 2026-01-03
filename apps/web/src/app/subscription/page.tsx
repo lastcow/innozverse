@@ -36,44 +36,57 @@ import { config } from '@/lib/config';
 
 const apiClient = new ApiClient(config.apiBaseUrl);
 
+// Surface Pro accessories
+const surfaceProAccessories = [
+  {
+    id: 'flex-keyboard-slim-pen',
+    name: 'Surface Pro Flex Keyboard with Slim Pen',
+    description: 'Detachable keyboard with integrated Slim Pen storage and charging',
+    weeklyPrice: 15,
+    monthlyPrice: 40,
+    deposit: 100,
+    colors: ['Black', 'Platinum', 'Sapphire', 'Dune'],
+  },
+  {
+    id: 'flex-keyboard-pen-storage',
+    name: 'Surface Pro Flex Keyboard with Pen Storage',
+    description: 'Detachable keyboard with pen storage compartment',
+    weeklyPrice: 12,
+    monthlyPrice: 35,
+    deposit: 80,
+    colors: ['Black', 'Platinum', 'Sapphire', 'Dune'],
+  },
+];
+
 // Product categories
 const productCategories = [
   {
     id: 'surface-pro',
     name: 'Surface Pro',
     icon: Tablet,
-    description: 'Versatile 2-in-1 tablet for productivity on the go',
+    description: 'Copilot+ PC with AI-powered productivity features',
     color: 'cyan',
     variants: [
       {
-        id: 'surface-pro-keyboard',
-        name: 'Surface Pro + Keyboard',
+        id: 'surface-pro-copilot',
+        name: 'Surface Pro Copilot+ PC',
+        subtitle: '13" Snapdragon X Plus (10 Core) • LCD • WiFi',
+        specs: '16GB RAM • 512GB SSD',
         weeklyPrice: 75,
         monthlyPrice: 220,
         deposit: 350,
         includes: [
-          'Surface Pro (latest gen)',
-          'Type Cover Keyboard',
+          'Surface Pro 13-inch Copilot+ PC',
+          'Snapdragon X Plus 10-core processor',
+          '16GB RAM, 512GB SSD storage',
+          'LCD touchscreen display',
           'Power adapter & cables',
           'Protective sleeve',
         ],
-        highlights: 'Perfect for note-taking and productivity',
-      },
-      {
-        id: 'surface-pro-keyboard-pen',
-        name: 'Surface Pro + Keyboard + Pen',
-        weeklyPrice: 85,
-        monthlyPrice: 250,
-        deposit: 400,
-        includes: [
-          'Surface Pro (latest gen)',
-          'Type Cover Keyboard',
-          'Surface Pen',
-          'Power adapter & cables',
-          'Protective sleeve',
-        ],
-        highlights: 'Complete creative & note-taking setup',
+        colors: ['Black', 'Platinum', 'Sapphire', 'Dune'],
+        highlights: 'AI-powered productivity with Copilot+',
         popular: true,
+        hasAccessories: true,
       },
     ],
   },
@@ -453,7 +466,13 @@ export default function SubscriptionPage() {
 
                       <CardHeader className={variant.popular ? 'pt-8' : ''}>
                         <CardTitle className="text-white text-xl">{variant.name}</CardTitle>
-                        <CardDescription className="text-[#8B949E]">{variant.highlights}</CardDescription>
+                        {'subtitle' in variant && (
+                          <div className="text-[#00D9FF] text-sm font-medium">{variant.subtitle}</div>
+                        )}
+                        {'specs' in variant && (
+                          <div className="text-[#8B949E] text-sm">{variant.specs}</div>
+                        )}
+                        <CardDescription className="text-[#8B949E] mt-2">{variant.highlights}</CardDescription>
                       </CardHeader>
 
                       <CardContent className="space-y-6">
@@ -488,6 +507,20 @@ export default function SubscriptionPage() {
                           </ul>
                         </div>
 
+                        {/* Colors */}
+                        {'colors' in variant && variant.colors && (
+                          <div>
+                            <div className="text-white font-medium text-sm mb-3">Available Colors:</div>
+                            <div className="flex flex-wrap gap-2">
+                              {variant.colors.map((color: string, idx: number) => (
+                                <span key={idx} className="px-3 py-1 bg-[#21262D] border border-[#30363D] rounded-full text-[#8B949E] text-xs">
+                                  {color}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
                         <Link href="/login" className="block">
                           <Button className={`w-full ${
                             variant.popular
@@ -501,6 +534,61 @@ export default function SubscriptionPage() {
                     </Card>
                   ))}
                 </div>
+
+                {/* Accessories Section for Surface Pro */}
+                {category.id === 'surface-pro' && (
+                  <div className="mt-8">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Keyboard className="h-6 w-6 text-[#00D9FF]" />
+                      <h4 className="text-xl font-semibold text-white">Add a Keyboard Accessory</h4>
+                      <span className="text-xs bg-[#FF9F1C]/20 text-[#FF9F1C] px-2 py-0.5 rounded-full">Optional</span>
+                    </div>
+                    <p className="text-[#8B949E] mb-6">Enhance your Surface Pro with a keyboard. Available in multiple colors.</p>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {surfaceProAccessories.map((accessory) => (
+                        <Card key={accessory.id} className="bg-[#161B22] border-[#30363D] hover:border-[#484F58] transition-all">
+                          <CardHeader>
+                            <CardTitle className="text-white text-lg flex items-center gap-2">
+                              <Pen className="h-5 w-5 text-[#00D9FF]" />
+                              {accessory.name}
+                            </CardTitle>
+                            <CardDescription className="text-[#8B949E]">{accessory.description}</CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            {/* Pricing */}
+                            <div className="grid grid-cols-3 gap-3 text-center">
+                              <div className="bg-[#21262D] rounded-lg p-2">
+                                <div className="text-lg font-bold text-white">+${accessory.weeklyPrice}</div>
+                                <div className="text-[#484F58] text-xs">per week</div>
+                              </div>
+                              <div className="bg-[#21262D] rounded-lg p-2">
+                                <div className="text-lg font-bold text-[#3DDC97]">+${accessory.monthlyPrice}</div>
+                                <div className="text-[#484F58] text-xs">per month</div>
+                              </div>
+                              <div className="bg-[#21262D] rounded-lg p-2">
+                                <div className="text-lg font-bold text-[#8B949E]">+${accessory.deposit}</div>
+                                <div className="text-[#484F58] text-xs">deposit</div>
+                              </div>
+                            </div>
+
+                            {/* Colors */}
+                            <div>
+                              <div className="text-white font-medium text-sm mb-2">Available Colors:</div>
+                              <div className="flex flex-wrap gap-2">
+                                {accessory.colors.map((color, idx) => (
+                                  <span key={idx} className="px-3 py-1 bg-[#21262D] border border-[#30363D] rounded-full text-[#8B949E] text-xs">
+                                    {color}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -534,29 +622,52 @@ export default function SubscriptionPage() {
                 </tr>
               </thead>
               <tbody className="text-[#8B949E]">
-                <tr className="border-b border-[#30363D]">
+                {/* Surface Pro Device */}
+                <tr className="border-b border-[#30363D] bg-[#00D9FF]/5">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <Tablet className="h-5 w-5 text-[#00D9FF]" />
-                      <span className="text-white">Surface Pro + Keyboard</span>
+                      <div>
+                        <span className="text-white">Surface Pro Copilot+ PC</span>
+                        <div className="text-xs text-[#8B949E]">13&quot; • Snapdragon X Plus • 16GB • 512GB</div>
+                      </div>
+                      <span className="text-xs bg-[#3DDC97]/20 text-[#3DDC97] px-2 py-0.5 rounded-full">Popular</span>
                     </div>
                   </td>
                   <td className="py-4 px-6 text-center">$75</td>
                   <td className="py-4 px-6 text-center text-[#3DDC97]">$220</td>
                   <td className="py-4 px-6 text-center">$350</td>
                 </tr>
-                <tr className="border-b border-[#30363D] bg-[#00D9FF]/5">
-                  <td className="py-4 px-6">
+                {/* Surface Pro Accessories */}
+                <tr className="border-b border-[#30363D]">
+                  <td className="py-4 px-6 pl-12">
                     <div className="flex items-center gap-3">
-                      <Pen className="h-5 w-5 text-[#00D9FF]" />
-                      <span className="text-white">Surface Pro + Keyboard + Pen</span>
-                      <span className="text-xs bg-[#3DDC97]/20 text-[#3DDC97] px-2 py-0.5 rounded-full">Popular</span>
+                      <Keyboard className="h-5 w-5 text-[#00D9FF]/60" />
+                      <div>
+                        <span className="text-[#C9D1D9]">+ Flex Keyboard with Slim Pen</span>
+                        <span className="text-xs text-[#8B949E] ml-2">(Accessory)</span>
+                      </div>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-center">$85</td>
-                  <td className="py-4 px-6 text-center text-[#3DDC97]">$250</td>
-                  <td className="py-4 px-6 text-center">$400</td>
+                  <td className="py-4 px-6 text-center">+$15</td>
+                  <td className="py-4 px-6 text-center text-[#3DDC97]">+$40</td>
+                  <td className="py-4 px-6 text-center">+$100</td>
                 </tr>
+                <tr className="border-b border-[#30363D]">
+                  <td className="py-4 px-6 pl-12">
+                    <div className="flex items-center gap-3">
+                      <Keyboard className="h-5 w-5 text-[#00D9FF]/60" />
+                      <div>
+                        <span className="text-[#C9D1D9]">+ Flex Keyboard with Pen Storage</span>
+                        <span className="text-xs text-[#8B949E] ml-2">(Accessory)</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-center">+$12</td>
+                  <td className="py-4 px-6 text-center text-[#3DDC97]">+$35</td>
+                  <td className="py-4 px-6 text-center">+$80</td>
+                </tr>
+                {/* Surface Laptop */}
                 <tr className="border-b border-[#30363D]">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
@@ -568,6 +679,7 @@ export default function SubscriptionPage() {
                   <td className="py-4 px-6 text-center text-[#3DDC97]">$190</td>
                   <td className="py-4 px-6 text-center">$300</td>
                 </tr>
+                {/* Xbox Options */}
                 <tr className="border-b border-[#30363D]">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
