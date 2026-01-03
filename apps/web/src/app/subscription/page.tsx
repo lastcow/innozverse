@@ -178,21 +178,63 @@ const productCategories = [
     id: 'surface-laptop',
     name: 'Surface Laptop',
     icon: Laptop,
-    description: 'Premium laptop with stunning display and all-day battery',
+    description: 'Copilot+ PC laptops with stunning display and all-day battery',
     color: 'green',
     variants: [
       {
-        id: 'surface-laptop-standard',
-        name: 'Surface Laptop',
-        weeklyPrice: 65,
-        monthlyPrice: 190,
-        deposit: 300,
+        id: 'surface-laptop-13',
+        name: 'Surface Laptop Copilot+ PC',
+        subtitle: '13" Snapdragon X Plus (8 Core) • WiFi',
+        specs: '16GB RAM • 256GB SSD',
+        weeklyPrice: 60,
+        monthlyPrice: 175,
+        deposit: 280,
         includes: [
-          'Surface Laptop (latest gen)',
+          'Surface Laptop 13-inch Copilot+ PC',
+          'Snapdragon X Plus 8-core processor',
+          '16GB RAM, 256GB SSD storage',
+          'Touchscreen display',
           'Power adapter & cables',
-          'Protective sleeve',
         ],
-        highlights: 'Sleek design with exceptional performance',
+        colors: ['Platinum'],
+        highlights: 'Compact AI-powered productivity',
+      },
+      {
+        id: 'surface-laptop-13-8-plus',
+        name: 'Surface Laptop Copilot+ PC',
+        subtitle: '13.8" Snapdragon X Plus (10 Core) • WiFi',
+        specs: '16GB RAM • 512GB SSD',
+        weeklyPrice: 70,
+        monthlyPrice: 205,
+        deposit: 330,
+        includes: [
+          'Surface Laptop 13.8-inch Copilot+ PC',
+          'Snapdragon X Plus 10-core processor',
+          '16GB RAM, 512GB SSD storage',
+          'Touchscreen display',
+          'Power adapter & cables',
+        ],
+        colors: ['Black', 'Platinum', 'Sapphire', 'Dune'],
+        highlights: 'Balanced performance and portability',
+        popular: true,
+      },
+      {
+        id: 'surface-laptop-13-8-elite',
+        name: 'Surface Laptop Copilot+ PC',
+        subtitle: '13.8" Snapdragon X Elite (12 Core) • WiFi',
+        specs: '16GB RAM • 512GB SSD',
+        weeklyPrice: 85,
+        monthlyPrice: 250,
+        deposit: 400,
+        includes: [
+          'Surface Laptop 13.8-inch Copilot+ PC',
+          'Snapdragon X Elite 12-core processor',
+          '16GB RAM, 512GB SSD storage',
+          'Touchscreen display',
+          'Power adapter & cables',
+        ],
+        colors: ['Black', 'Platinum', 'Sapphire', 'Dune'],
+        highlights: 'Premium performance with top-tier processor',
       },
     ],
   },
@@ -951,12 +993,44 @@ export default function SubscriptionPage() {
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <Laptop className="h-5 w-5 text-[#3DDC97]" />
-                      <span className="text-white">Surface Laptop</span>
+                      <div>
+                        <span className="text-white">Surface Laptop Copilot+ PC</span>
+                        <div className="text-xs text-[#8B949E]">13&quot; • Snapdragon X Plus (8 Core) • 16GB • 256GB</div>
+                      </div>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-center">$65</td>
-                  <td className="py-4 px-6 text-center text-[#3DDC97]">$190</td>
-                  <td className="py-4 px-6 text-center">$300</td>
+                  <td className="py-4 px-6 text-center">$60</td>
+                  <td className="py-4 px-6 text-center text-[#3DDC97]">$175</td>
+                  <td className="py-4 px-6 text-center">$280</td>
+                </tr>
+                <tr className="border-b border-[#30363D] bg-[#3DDC97]/5">
+                  <td className="py-4 px-6">
+                    <div className="flex items-center gap-3">
+                      <Laptop className="h-5 w-5 text-[#3DDC97]" />
+                      <div>
+                        <span className="text-white">Surface Laptop Copilot+ PC</span>
+                        <div className="text-xs text-[#8B949E]">13.8&quot; • Snapdragon X Plus (10 Core) • 16GB • 512GB</div>
+                      </div>
+                      <span className="text-xs bg-[#3DDC97]/20 text-[#3DDC97] px-2 py-0.5 rounded-full">Popular</span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-center">$70</td>
+                  <td className="py-4 px-6 text-center text-[#3DDC97]">$205</td>
+                  <td className="py-4 px-6 text-center">$330</td>
+                </tr>
+                <tr className="border-b border-[#30363D]">
+                  <td className="py-4 px-6">
+                    <div className="flex items-center gap-3">
+                      <Laptop className="h-5 w-5 text-[#3DDC97]" />
+                      <div>
+                        <span className="text-white">Surface Laptop Copilot+ PC</span>
+                        <div className="text-xs text-[#8B949E]">13.8&quot; • Snapdragon X Elite (12 Core) • 16GB • 512GB</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-center">$85</td>
+                  <td className="py-4 px-6 text-center text-[#3DDC97]">$250</td>
+                  <td className="py-4 px-6 text-center">$400</td>
                 </tr>
                 {/* Xbox Options */}
                 <tr className="border-b border-[#30363D]">
