@@ -132,6 +132,27 @@ const productCategories = [
         highlights: 'Compact AI-powered productivity with Copilot+',
         hasAccessories: true,
       },
+      {
+        id: 'surface-pro-copilot-oled',
+        name: 'Surface Pro Copilot+ PC',
+        subtitle: '13" Snapdragon X Elite (12 Core) • OLED • WiFi',
+        specs: '16GB RAM • 512GB SSD',
+        screenSize: '13',
+        weeklyPrice: 95,
+        monthlyPrice: 280,
+        deposit: 450,
+        includes: [
+          'Surface Pro 13-inch Copilot+ PC',
+          'Snapdragon X Elite 12-core processor',
+          '16GB RAM, 512GB SSD storage',
+          'OLED touchscreen display',
+          'Power adapter & cables',
+          'Protective sleeve',
+        ],
+        colors: ['Black', 'Platinum', 'Sapphire', 'Dune'],
+        highlights: 'Premium OLED display with top-tier performance',
+        hasAccessories: true,
+      },
     ],
   },
   {
@@ -810,6 +831,22 @@ export default function SubscriptionPage() {
                   <td className="py-4 px-6 text-center">+$10</td>
                   <td className="py-4 px-6 text-center text-[#3DDC97]">+$28</td>
                   <td className="py-4 px-6 text-center">+$70</td>
+                </tr>
+                {/* Surface Pro OLED Device */}
+                <tr className="border-b border-[#30363D] bg-[#00D9FF]/5">
+                  <td className="py-4 px-6">
+                    <div className="flex items-center gap-3">
+                      <Tablet className="h-5 w-5 text-[#00D9FF]" />
+                      <div>
+                        <span className="text-white">Surface Pro Copilot+ PC</span>
+                        <div className="text-xs text-[#8B949E]">13&quot; • Snapdragon X Elite (12 Core) • OLED • 16GB • 512GB</div>
+                      </div>
+                      <span className="text-xs bg-[#00D9FF]/20 text-[#00D9FF] px-2 py-0.5 rounded-full">Premium</span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-center">$95</td>
+                  <td className="py-4 px-6 text-center text-[#3DDC97]">$280</td>
+                  <td className="py-4 px-6 text-center">$450</td>
                 </tr>
                 {/* Surface Laptop */}
                 <tr className="border-b border-[#30363D]">
