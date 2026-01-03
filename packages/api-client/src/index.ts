@@ -597,6 +597,516 @@ export class ApiClient {
       method: 'POST'
     });
   }
+
+  // ==================== Product Catalog - Categories ====================
+
+  async listProductCategories(): Promise<any> {
+    return this.request('/v1/catalog/categories');
+  }
+
+  async getProductCategoryBySlug(slug: string): Promise<any> {
+    return this.request(`/v1/catalog/categories/${slug}`);
+  }
+
+  async listAdminCategories(params?: {
+    page?: number;
+    limit?: number;
+    is_active?: boolean;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.is_active !== undefined) queryParams.set('is_active', params.is_active.toString());
+
+    const query = queryParams.toString();
+    return this.request(`/v1/admin/categories${query ? `?${query}` : ''}`);
+  }
+
+  async createProductCategory(data: {
+    name: string;
+    slug?: string;
+    description?: string;
+    icon?: string;
+    color?: string;
+    display_order?: number;
+    is_active?: boolean;
+  }): Promise<any> {
+    return this.request('/v1/admin/categories', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async updateProductCategory(id: string, data: {
+    name?: string;
+    slug?: string;
+    description?: string;
+    icon?: string;
+    color?: string;
+    display_order?: number;
+    is_active?: boolean;
+  }): Promise<any> {
+    return this.request(`/v1/admin/categories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteProductCategory(id: string): Promise<any> {
+    return this.request(`/v1/admin/categories/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // ==================== Product Catalog - Products ====================
+
+  async listProducts(params?: {
+    page?: number;
+    limit?: number;
+    category_id?: string;
+    search?: string;
+    include_colors?: boolean;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.category_id) queryParams.set('category_id', params.category_id);
+    if (params?.search) queryParams.set('search', params.search);
+    if (params?.include_colors) queryParams.set('include_colors', 'true');
+
+    const query = queryParams.toString();
+    return this.request(`/v1/catalog/products${query ? `?${query}` : ''}`);
+  }
+
+  async getProduct(id: string): Promise<any> {
+    return this.request(`/v1/catalog/products/${id}`);
+  }
+
+  async listAdminProducts(params?: {
+    page?: number;
+    limit?: number;
+    category_id?: string;
+    is_active?: boolean;
+    search?: string;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.category_id) queryParams.set('category_id', params.category_id);
+    if (params?.is_active !== undefined) queryParams.set('is_active', params.is_active.toString());
+    if (params?.search) queryParams.set('search', params.search);
+
+    const query = queryParams.toString();
+    return this.request(`/v1/admin/products${query ? `?${query}` : ''}`);
+  }
+
+  async getAdminProduct(id: string): Promise<any> {
+    return this.request(`/v1/admin/products/${id}`);
+  }
+
+  async createProduct(data: {
+    category_id: string;
+    name: string;
+    subtitle?: string;
+    description?: string;
+    weekly_rate: number;
+    monthly_rate: number;
+    deposit_amount: number;
+    specs?: Record<string, string | number | boolean>;
+    screen_size?: string;
+    highlights?: string;
+    includes?: string[];
+    image_url?: string;
+    is_popular?: boolean;
+    has_accessories?: boolean;
+    is_new?: boolean;
+    is_active?: boolean;
+    display_order?: number;
+    colors?: Array<{
+      color_name: string;
+      hex_code?: string;
+      text_color?: string;
+      border_color?: string;
+      display_order?: number;
+    }>;
+  }): Promise<any> {
+    return this.request('/v1/admin/products', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async updateProduct(id: string, data: {
+    category_id?: string;
+    name?: string;
+    subtitle?: string;
+    description?: string;
+    weekly_rate?: number;
+    monthly_rate?: number;
+    deposit_amount?: number;
+    specs?: Record<string, string | number | boolean>;
+    screen_size?: string;
+    highlights?: string;
+    includes?: string[];
+    image_url?: string;
+    is_popular?: boolean;
+    has_accessories?: boolean;
+    is_new?: boolean;
+    is_active?: boolean;
+    display_order?: number;
+  }): Promise<any> {
+    return this.request(`/v1/admin/products/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteProduct(id: string): Promise<any> {
+    return this.request(`/v1/admin/products/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async addProductColor(productId: string, data: {
+    color_name: string;
+    hex_code?: string;
+    text_color?: string;
+    border_color?: string;
+    display_order?: number;
+  }): Promise<any> {
+    return this.request(`/v1/admin/products/${productId}/colors`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteProductColor(productId: string, colorId: string): Promise<any> {
+    return this.request(`/v1/admin/products/${productId}/colors/${colorId}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // ==================== Accessories ====================
+
+  async listAccessories(): Promise<any> {
+    return this.request('/v1/catalog/accessories');
+  }
+
+  async getAccessory(id: string): Promise<any> {
+    return this.request(`/v1/catalog/accessories/${id}`);
+  }
+
+  async listAdminAccessories(params?: {
+    page?: number;
+    limit?: number;
+    is_active?: boolean;
+    search?: string;
+    include_colors?: boolean;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.is_active !== undefined) queryParams.set('is_active', params.is_active.toString());
+    if (params?.search) queryParams.set('search', params.search);
+    if (params?.include_colors) queryParams.set('include_colors', 'true');
+
+    const query = queryParams.toString();
+    return this.request(`/v1/admin/accessories${query ? `?${query}` : ''}`);
+  }
+
+  async getAdminAccessory(id: string): Promise<any> {
+    return this.request(`/v1/admin/accessories/${id}`);
+  }
+
+  async createAccessory(data: {
+    name: string;
+    description?: string;
+    weekly_rate: number;
+    monthly_rate: number;
+    deposit_amount: number;
+    image_url?: string;
+    is_active?: boolean;
+    display_order?: number;
+    colors?: Array<{
+      color_name: string;
+      hex_code?: string;
+      text_color?: string;
+      border_color?: string;
+      display_order?: number;
+    }>;
+  }): Promise<any> {
+    return this.request('/v1/admin/accessories', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async updateAccessory(id: string, data: {
+    name?: string;
+    description?: string;
+    weekly_rate?: number;
+    monthly_rate?: number;
+    deposit_amount?: number;
+    image_url?: string;
+    is_active?: boolean;
+    display_order?: number;
+  }): Promise<any> {
+    return this.request(`/v1/admin/accessories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteAccessory(id: string): Promise<any> {
+    return this.request(`/v1/admin/accessories/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async addAccessoryColor(accessoryId: string, data: {
+    color_name: string;
+    hex_code?: string;
+    text_color?: string;
+    border_color?: string;
+    display_order?: number;
+  }): Promise<any> {
+    return this.request(`/v1/admin/accessories/${accessoryId}/colors`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteAccessoryColor(accessoryId: string, colorId: string): Promise<any> {
+    return this.request(`/v1/admin/accessories/${accessoryId}/colors/${colorId}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // Accessory Links
+  async listAccessoryLinks(params?: {
+    accessory_id?: string;
+    product_template_id?: string;
+    category_id?: string;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.accessory_id) queryParams.set('accessory_id', params.accessory_id);
+    if (params?.product_template_id) queryParams.set('product_template_id', params.product_template_id);
+    if (params?.category_id) queryParams.set('category_id', params.category_id);
+
+    const query = queryParams.toString();
+    return this.request(`/v1/admin/accessory-links${query ? `?${query}` : ''}`);
+  }
+
+  async createAccessoryLink(data: {
+    product_template_id?: string;
+    category_id?: string;
+    accessory_id: string;
+    screen_size_filter?: string;
+  }): Promise<any> {
+    return this.request('/v1/admin/accessory-links', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteAccessoryLink(linkId: string): Promise<any> {
+    return this.request(`/v1/admin/accessory-links/${linkId}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async getAccessoryLinks(accessoryId: string): Promise<any> {
+    return this.listAccessoryLinks({ accessory_id: accessoryId });
+  }
+
+  // ==================== Inventory ====================
+
+  async listInventory(params?: {
+    page?: number;
+    limit?: number;
+    product_template_id?: string;
+    accessory_id?: string;
+    status?: string;
+    condition?: string;
+    color?: string;
+    search?: string;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.set('page', params.page.toString());
+    if (params?.limit) queryParams.set('limit', params.limit.toString());
+    if (params?.product_template_id) queryParams.set('product_template_id', params.product_template_id);
+    if (params?.accessory_id) queryParams.set('accessory_id', params.accessory_id);
+    if (params?.status) queryParams.set('status', params.status);
+    if (params?.condition) queryParams.set('condition', params.condition);
+    if (params?.color) queryParams.set('color', params.color);
+    if (params?.search) queryParams.set('search', params.search);
+
+    const query = queryParams.toString();
+    return this.request(`/v1/admin/inventory${query ? `?${query}` : ''}`);
+  }
+
+  async getInventoryItem(id: string): Promise<any> {
+    return this.request(`/v1/admin/inventory/${id}`);
+  }
+
+  async getInventorySummary(): Promise<any> {
+    return this.request('/v1/admin/inventory/summary');
+  }
+
+  async createInventoryItem(data: {
+    product_template_id?: string;
+    accessory_id?: string;
+    serial_number?: string;
+    color?: string;
+    status?: string;
+    condition?: string;
+    purchase_date?: string;
+    purchase_price?: number;
+    retail_price?: number;
+    notes?: string;
+  }): Promise<any> {
+    return this.request('/v1/admin/inventory', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async updateInventoryItem(id: string, data: {
+    product_template_id?: string | null;
+    accessory_id?: string | null;
+    serial_number?: string;
+    color?: string;
+    status?: string;
+    condition?: string;
+    purchase_date?: string;
+    purchase_price?: number;
+    retail_price?: number;
+    notes?: string;
+  }): Promise<any> {
+    return this.request(`/v1/admin/inventory/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async deleteInventoryItem(id: string): Promise<any> {
+    return this.request(`/v1/admin/inventory/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async bulkCreateInventory(items: Array<{
+    product_template_id?: string;
+    accessory_id?: string;
+    serial_number?: string;
+    color?: string;
+    status?: string;
+    condition?: string;
+    purchase_date?: string;
+    purchase_price?: number;
+    retail_price?: number;
+    notes?: string;
+  }>): Promise<any> {
+    return this.request('/v1/admin/inventory/bulk', {
+      method: 'POST',
+      body: JSON.stringify({ items })
+    });
+  }
+
+  async checkInventoryAvailability(params: {
+    product_template_id?: string;
+    accessory_id?: string;
+    color?: string;
+    start_date: string;
+    end_date: string;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    if (params.product_template_id) queryParams.set('product_template_id', params.product_template_id);
+    if (params.accessory_id) queryParams.set('accessory_id', params.accessory_id);
+    if (params.color) queryParams.set('color', params.color);
+    queryParams.set('start_date', params.start_date);
+    queryParams.set('end_date', params.end_date);
+
+    return this.request(`/v1/inventory/availability?${queryParams.toString()}`);
+  }
+
+  // ==================== Enhanced Rentals ====================
+
+  async calculateRentalPricing(params: {
+    product_template_id: string;
+    pricing_period: 'weekly' | 'monthly';
+    start_date: string;
+    end_date: string;
+    accessories?: Array<{ accessory_id: string }>;
+    apply_student_discount?: boolean;
+  }): Promise<any> {
+    const queryParams = new URLSearchParams();
+    queryParams.set('product_template_id', params.product_template_id);
+    queryParams.set('pricing_period', params.pricing_period);
+    queryParams.set('start_date', params.start_date);
+    queryParams.set('end_date', params.end_date);
+    if (params.accessories) queryParams.set('accessories', JSON.stringify(params.accessories));
+    if (params.apply_student_discount) queryParams.set('apply_student_discount', 'true');
+
+    return this.request(`/v1/rentals/calculate-pricing?${queryParams.toString()}`);
+  }
+
+  async createEnhancedRental(data: {
+    product_template_id: string;
+    user_id?: string;
+    selected_color: string;
+    pricing_period: 'weekly' | 'monthly';
+    start_date: string;
+    end_date: string;
+    accessories?: Array<{
+      accessory_id: string;
+      selected_color?: string;
+    }>;
+    notes?: string;
+  }): Promise<any> {
+    return this.request('/v1/rentals/enhanced', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async getRentalDetails(id: string): Promise<any> {
+    return this.request(`/v1/rentals/${id}/details`);
+  }
+
+  async addRentalAccessory(rentalId: string, data: {
+    accessory_id: string;
+    selected_color?: string;
+  }): Promise<any> {
+    return this.request(`/v1/rentals/${rentalId}/accessories`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async assignRentalInventory(rentalId: string, data: {
+    inventory_item_id: string;
+    accessory_inventory_assignments?: Array<{
+      rental_accessory_id: string;
+      inventory_item_id: string;
+    }>;
+  }): Promise<any> {
+    return this.request(`/v1/rentals/${rentalId}/assign-inventory`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  async releaseRentalDeposit(rentalId: string, notes?: string): Promise<any> {
+    return this.request(`/v1/rentals/${rentalId}/release-deposit`, {
+      method: 'POST',
+      body: JSON.stringify({ notes })
+    });
+  }
+
+  async getPricingModifiers(): Promise<any> {
+    return this.request('/v1/pricing-modifiers');
+  }
 }
 
 export * from '@innozverse/shared';

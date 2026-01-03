@@ -18,6 +18,9 @@ import {
   ChevronDown,
   ChevronRight,
   Folder,
+  ShoppingBag,
+  Layers,
+  Boxes,
 } from 'lucide-react';
 import { ApiClient, KBCategoryWithChildren } from '@innozverse/api-client';
 import { config } from '@/lib/config';
@@ -44,6 +47,21 @@ const menuItems = [
     title: 'Equipment',
     href: '/dashboard/equipment',
     icon: Monitor,
+  },
+  {
+    title: 'Product Catalog',
+    href: '/dashboard/catalog',
+    icon: ShoppingBag,
+  },
+  {
+    title: 'Accessories',
+    href: '/dashboard/accessories',
+    icon: Layers,
+  },
+  {
+    title: 'Inventory',
+    href: '/dashboard/inventory',
+    icon: Boxes,
   },
   {
     title: 'Rentals',
