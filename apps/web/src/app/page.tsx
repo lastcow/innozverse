@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Shield, Code, Brain, Rocket, Users, CheckCircle2, BookOpen, Sparkles, DollarSign, HeadphonesIcon, LayoutDashboard, FileText } from 'lucide-react';
+import { ArrowRight, Monitor, Laptop, Gamepad2, FileText, Users, CheckCircle2, XCircle, Sparkles, DollarSign, HeadphonesIcon, LayoutDashboard, Package } from 'lucide-react';
 import { TechBackground } from '@/components/TechBackground';
 import { UserMenu } from '@/components/layout/user-menu';
 import { ApiClient } from '@innozverse/api-client';
@@ -120,11 +120,18 @@ export default function Home() {
             innoZverse
           </h1>
           <p className="text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto">
-            Your Gateway to Cutting-Edge Technology Learning
+            VM Learning Environment & Equipment Leasing
           </p>
-          <p className="text-lg text-[#8B949E] mb-10 max-w-2xl mx-auto">
-            A comprehensive learning environment with detailed, ever-growing tutorials for individuals and companies mastering security, programming, AI, and emerging technologies.
+          <p className="text-lg text-[#8B949E] mb-6 max-w-2xl mx-auto">
+            Access Proxmox-based labs, lease laptops and gaming equipment, and explore our free Knowledge Base for security, programming, and emerging technology tutorials.
           </p>
+          {/* Free Knowledge Base Highlight */}
+          <div className="flex justify-center mb-10">
+            <div className="inline-flex items-center gap-3 bg-[#3DDC97]/10 border border-[#3DDC97]/30 rounded-full px-6 py-3">
+              <FileText className="h-5 w-5 text-[#3DDC97]" />
+              <span className="text-[#3DDC97] font-medium">All Knowledge Base articles are FREE to access!</span>
+            </div>
+          </div>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link href="/login">
               <Button size="lg" className="text-lg bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] hover:from-[#33E1FF] hover:to-[#5FE3AB] text-[#0D1117] font-semibold shadow-[0_0_20px_rgba(0,217,255,0.3)] hover:shadow-[0_0_30px_rgba(0,217,255,0.5)] transition-all">
@@ -146,42 +153,42 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">What We Offer</h2>
-            <p className="text-xl text-[#8B949E]">Comprehensive learning paths across critical technology domains</p>
+            <p className="text-xl text-[#8B949E]">VM labs, equipment leasing, and free learning resources</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="bg-[#161B22] border-[#30363D] hover:border-[#00D9FF] transition-all hover:shadow-[0_0_20px_rgba(0,217,255,0.15)]">
               <CardHeader>
-                <Shield className="h-12 w-12 text-[#00D9FF] mb-4" />
-                <CardTitle className="text-white">Security</CardTitle>
+                <Monitor className="h-12 w-12 text-[#00D9FF] mb-4" />
+                <CardTitle className="text-white">VM Learning Labs</CardTitle>
                 <CardDescription className="text-[#8B949E]">
-                  Master cybersecurity fundamentals, ethical hacking, and advanced defense strategies
+                  Proxmox-based virtual machines with 8 Core, 2GB RAM, 32GB SSD specs. Remote and in-site access available.
                 </CardDescription>
               </CardHeader>
             </Card>
             <Card className="bg-[#161B22] border-[#30363D] hover:border-[#3DDC97] transition-all hover:shadow-[0_0_20px_rgba(61,220,151,0.15)]">
               <CardHeader>
-                <Code className="h-12 w-12 text-[#3DDC97] mb-4" />
-                <CardTitle className="text-white">Programming</CardTitle>
+                <Laptop className="h-12 w-12 text-[#3DDC97] mb-4" />
+                <CardTitle className="text-white">Laptop Leasing</CardTitle>
                 <CardDescription className="text-[#8B949E]">
-                  Learn modern programming languages, frameworks, and software development best practices
+                  Rent refurbished laptops, new devices, or Surface Pro/Laptop for weekly or monthly terms.
                 </CardDescription>
               </CardHeader>
             </Card>
             <Card className="bg-[#161B22] border-[#30363D] hover:border-[#00D9FF] transition-all hover:shadow-[0_0_20px_rgba(0,217,255,0.15)]">
               <CardHeader>
-                <Brain className="h-12 w-12 text-[#00D9FF] mb-4" />
-                <CardTitle className="text-white">Artificial Intelligence</CardTitle>
+                <Gamepad2 className="h-12 w-12 text-[#00D9FF] mb-4" />
+                <CardTitle className="text-white">Gaming Equipment</CardTitle>
                 <CardDescription className="text-[#8B949E]">
-                  Explore machine learning, deep learning, and practical AI implementation techniques
+                  Xbox Series S/X consoles and controllers available for rent with flexible leasing terms.
                 </CardDescription>
               </CardHeader>
             </Card>
             <Card className="bg-[#161B22] border-[#30363D] hover:border-[#3DDC97] transition-all hover:shadow-[0_0_20px_rgba(61,220,151,0.15)]">
               <CardHeader>
-                <Rocket className="h-12 w-12 text-[#3DDC97] mb-4" />
-                <CardTitle className="text-white">Emerging Tech</CardTitle>
+                <FileText className="h-12 w-12 text-[#3DDC97] mb-4" />
+                <CardTitle className="text-white">Free Knowledge Base</CardTitle>
                 <CardDescription className="text-[#8B949E]">
-                  Stay ahead with blockchain, quantum computing, and next-generation technologies
+                  Access detailed tutorials on security, programming, AI, and emerging tech at no cost.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -193,110 +200,145 @@ export default function Home() {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-[#161B22]/50 to-transparent">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Choose Your Learning Path</h2>
-            <p className="text-xl text-[#8B949E]">Flexible subscription plans tailored to your learning journey</p>
+            <h2 className="text-4xl font-bold text-white mb-4">VM Learning Environment Plans</h2>
+            <p className="text-xl text-[#8B949E] mb-4">Flexible pricing for every learner - from free to premium</p>
+            <p className="text-sm text-[#484F58]">Specs per VM: 8 Core, 2GB RAM, 32GB SSD</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Free Tier */}
             <Card className="bg-[#161B22] border-[#30363D] hover:border-[#484F58] transition-all">
-              <CardHeader>
-                <CardTitle className="text-white text-2xl">Beginner</CardTitle>
-                <CardDescription className="text-[#8B949E] text-lg">
-                  Start your tech journey
-                </CardDescription>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-2xl">Free</CardTitle>
+                <div className="text-3xl font-bold text-white">$0</div>
+                <CardDescription className="text-[#484F58] text-sm">Remote access only</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3 text-[#8B949E]">
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Access to foundational tutorials</span>
+                <ul className="space-y-2 text-[#8B949E] text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>1 VM (2 Core, 1GB RAM)</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Community forum access</span>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>20 hours/month max</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Monthly live Q&A sessions</span>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>Community support</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Certificate of completion</span>
+                  <li className="flex items-center gap-2">
+                    <XCircle className="h-4 w-4 text-[#F85149] flex-shrink-0" />
+                    <span>No in-site access</span>
                   </li>
                 </ul>
               </CardContent>
             </Card>
-            <Card className="bg-[#21262D] border-[#00D9FF] shadow-[0_0_20px_rgba(0,217,255,0.3)] transform md:scale-105">
-              <CardHeader>
-                <div className="inline-block px-3 py-1 bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] text-[#0D1117] text-xs font-bold rounded-full mb-2">
-                  MOST POPULAR
-                </div>
-                <CardTitle className="text-white text-2xl">Professional</CardTitle>
-                <CardDescription className="text-white/80 text-lg">
-                  Accelerate your expertise
-                </CardDescription>
+
+            {/* Basic Tier */}
+            <Card className="bg-[#161B22] border-[#30363D] hover:border-[#484F58] transition-all">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-2xl">Basic</CardTitle>
+                <div className="text-3xl font-bold text-white">$19<span className="text-lg font-normal text-[#484F58]">/mo</span></div>
+                <CardDescription className="text-[#484F58] text-sm">10% equipment discount</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3 text-white/80">
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Everything in Beginner</span>
+                <ul className="space-y-2 text-[#8B949E] text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>2 VMs included</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Advanced tutorials and projects</span>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>Interconnected lab</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>1-on-1 mentorship sessions</span>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>Email support</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Hands-on lab environments</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Priority support</span>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>In-site access</span>
                   </li>
                 </ul>
               </CardContent>
             </Card>
-            <Card className="bg-[#161B22] border-[#30363D] hover:border-[#484F58] transition-all">
-              <CardHeader>
-                <CardTitle className="text-white text-2xl">Enterprise</CardTitle>
-                <CardDescription className="text-[#8B949E] text-lg">
-                  For teams and organizations
-                </CardDescription>
+
+            {/* Pro Tier - Most Popular */}
+            <Card className="bg-[#21262D] border-[#00D9FF] shadow-[0_0_20px_rgba(0,217,255,0.3)] relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <span className="bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] text-[#0D1117] text-xs font-bold px-3 py-1 rounded-full">
+                  POPULAR
+                </span>
+              </div>
+              <CardHeader className="pb-2 pt-6">
+                <CardTitle className="text-white text-2xl">Pro</CardTitle>
+                <div className="text-3xl font-bold text-white">$30<span className="text-lg font-normal text-[#484F58]">/mo</span></div>
+                <CardDescription className="text-[#484F58] text-sm">15% equipment discount</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3 text-[#8B949E]">
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Everything in Professional</span>
+                <ul className="space-y-2 text-white/80 text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>3 VMs included</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Custom learning paths</span>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>Email support</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Dedicated account manager</span>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>Custom configs</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>Team analytics dashboard</span>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>In-site access</span>
                   </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-[#3DDC97] mr-2 mt-0.5 flex-shrink-0" />
-                    <span>On-site training options</span>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Premium Tier */}
+            <Card className="bg-[#161B22] border-[#30363D] hover:border-[#484F58] transition-all">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-2xl">Premium</CardTitle>
+                <div className="text-3xl font-bold text-white">$55<span className="text-lg font-normal text-[#484F58]">/mo</span></div>
+                <CardDescription className="text-[#484F58] text-sm">20% equipment discount</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-[#8B949E] text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>5 VMs included</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>Email support</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>Custom configs</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#3DDC97] flex-shrink-0" />
+                    <span>In-site access</span>
                   </li>
                 </ul>
               </CardContent>
             </Card>
           </div>
-          <div className="text-center mt-12">
+
+          {/* Semester Discount Note */}
+          <div className="text-center mt-8 mb-12">
+            <div className="inline-flex items-center gap-2 bg-[#3DDC97]/10 border border-[#3DDC97]/30 rounded-lg px-4 py-2">
+              <Package className="h-5 w-5 text-[#3DDC97]" />
+              <span className="text-[#3DDC97] font-medium">Students save ~35% with semester pricing!</span>
+            </div>
+          </div>
+
+          <div className="text-center">
             <Link href="/pricing">
               <Button size="lg" className="text-lg bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] hover:from-[#33E1FF] hover:to-[#5FE3AB] text-[#0D1117] font-semibold shadow-[0_0_20px_rgba(0,217,255,0.3)] hover:shadow-[0_0_30px_rgba(0,217,255,0.5)] transition-all">
-                View All Pricing Options
+                View Full Pricing & Equipment Leasing
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -311,43 +353,43 @@ export default function Home() {
             <div>
               <h2 className="text-4xl font-bold text-white mb-6">We&apos;re Here to Help</h2>
               <p className="text-lg text-[#8B949E] mb-6">
-                Our expert support team is dedicated to ensuring your success. Whether you&apos;re stuck on a concept, need guidance on your learning path, or require technical assistance, we&apos;re here for you.
+                Whether you need help with your VM setup, have questions about equipment leasing, or want to explore our Knowledge Base, our support team is ready to assist.
               </p>
               <div className="space-y-4">
                 <div className="flex items-start">
                   <Users className="h-6 w-6 text-[#00D9FF] mr-3 mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="text-white font-semibold mb-1">Expert Mentorship</h3>
-                    <p className="text-[#8B949E]">Connect with industry professionals who guide your learning journey</p>
+                    <h3 className="text-white font-semibold mb-1">Community Support</h3>
+                    <p className="text-[#8B949E]">Free tier users get access to our community forums for peer support</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <BookOpen className="h-6 w-6 text-[#3DDC97] mr-3 mt-1 flex-shrink-0" />
+                  <HeadphonesIcon className="h-6 w-6 text-[#3DDC97] mr-3 mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="text-white font-semibold mb-1">Comprehensive Resources</h3>
-                    <p className="text-[#8B949E]">Access detailed documentation, video tutorials, and practical examples</p>
+                    <h3 className="text-white font-semibold mb-1">Email Support</h3>
+                    <p className="text-[#8B949E]">Paid members get dedicated email support for technical issues</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle2 className="h-6 w-6 text-[#3DDC97] mr-3 mt-1 flex-shrink-0" />
+                  <FileText className="h-6 w-6 text-[#3DDC97] mr-3 mt-1 flex-shrink-0" />
                   <div>
-                    <h3 className="text-white font-semibold mb-1">24/7 Community Support</h3>
-                    <p className="text-[#8B949E]">Join a vibrant community of learners helping each other succeed</p>
+                    <h3 className="text-white font-semibold mb-1">Free Knowledge Base</h3>
+                    <p className="text-[#8B949E]">Self-service tutorials and guides available to everyone at no cost</p>
                   </div>
                 </div>
               </div>
             </div>
             <Card className="bg-[#161B22] border-[#30363D]">
               <CardHeader>
-                <CardTitle className="text-white text-2xl">Ready to Transform Your Skills?</CardTitle>
+                <CardTitle className="text-white text-2xl">Ready to Get Started?</CardTitle>
                 <CardDescription className="text-[#8B949E] text-base">
-                  Join thousands of learners advancing their careers with innozverse
+                  Join learners and professionals using our VM labs and equipment
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Link href="/login">
                   <Button size="lg" className="w-full text-lg bg-gradient-to-r from-[#00D9FF] to-[#3DDC97] hover:from-[#33E1FF] hover:to-[#5FE3AB] text-[#0D1117] font-semibold shadow-[0_0_20px_rgba(0,217,255,0.3)] hover:shadow-[0_0_30px_rgba(0,217,255,0.5)] transition-all">
-                    Start Learning Today
+                    Get Started Free
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -373,7 +415,7 @@ export default function Home() {
                 innoZverse
               </div>
               <p className="text-[#8B949E] text-sm">
-                A comprehensive learning environment with detailed, ever-growing tutorials for individuals and companies.
+                VM learning environment, equipment leasing, and free Knowledge Base for students, professionals, and enthusiasts.
               </p>
             </div>
 
