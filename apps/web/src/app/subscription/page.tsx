@@ -36,6 +36,35 @@ import { config } from '@/lib/config';
 
 const apiClient = new ApiClient(config.apiBaseUrl);
 
+// Color mapping for product badges
+const colorMap: Record<string, { bg: string; text: string; border: string }> = {
+  'Black': { bg: '#1a1a1a', text: '#ffffff', border: '#333333' },
+  'Platinum': { bg: '#E5E4E2', text: '#1a1a1a', border: '#C0C0C0' },
+  'Sapphire': { bg: '#0F52BA', text: '#ffffff', border: '#0D47A1' },
+  'Dune': { bg: '#C2B280', text: '#1a1a1a', border: '#A89968' },
+  'Carbon Black': { bg: '#1a1a1a', text: '#ffffff', border: '#333333' },
+  'Robot White': { bg: '#F5F5F5', text: '#1a1a1a', border: '#E0E0E0' },
+  'Shock Blue': { bg: '#0078D7', text: '#ffffff', border: '#005A9E' },
+  'Pulse Red': { bg: '#E81123', text: '#ffffff', border: '#C10E1A' },
+  'Core White': { bg: '#FAFAFA', text: '#1a1a1a', border: '#E0E0E0' },
+};
+
+const getColorStyle = (colorName: string) => {
+  const color = colorMap[colorName];
+  if (color) {
+    return {
+      backgroundColor: color.bg,
+      color: color.text,
+      borderColor: color.border,
+    };
+  }
+  return {
+    backgroundColor: '#21262D',
+    color: '#8B949E',
+    borderColor: '#30363D',
+  };
+};
+
 // Xbox accessories
 const xboxAccessories = [
   {
@@ -318,8 +347,8 @@ const valueProps = [
   },
   {
     icon: Package,
-    title: 'Local Pickup',
-    description: 'Pick up your equipment in-store and start using it the same day.',
+    title: 'Fast Delivery',
+    description: 'Get your equipment shipped to you or pick up in-store. Start using it right away.',
   },
   {
     icon: Wrench,
@@ -520,7 +549,7 @@ export default function SubscriptionPage() {
           </div>
 
           <p className="text-[#484F58] mt-6 text-sm">
-            Starting at $30/week • Local pickup • Refundable deposit
+            Starting at $20/week • Free shipping available • Refundable deposit
           </p>
         </div>
       </section>
@@ -528,6 +557,21 @@ export default function SubscriptionPage() {
       {/* Value Propositions */}
       <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#161B22]/30">
         <div className="max-w-7xl mx-auto">
+          {/* Pricing Notice */}
+          <div className="flex items-center justify-center gap-6 mb-8 p-4 bg-[#161B22] border border-[#30363D] rounded-lg">
+            <div className="flex items-center gap-2 text-sm">
+              <Sparkles className="h-4 w-4 text-[#FF9F1C]" />
+              <span className="text-[#8B949E]">New equipment:</span>
+              <span className="text-white font-medium">+5% fee</span>
+            </div>
+            <div className="w-px h-4 bg-[#30363D]" />
+            <div className="flex items-center gap-2 text-sm">
+              <Star className="h-4 w-4 text-[#3DDC97]" />
+              <span className="text-[#8B949E]">Student discount:</span>
+              <span className="text-[#3DDC97] font-medium">15% off all prices</span>
+            </div>
+          </div>
+
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-white mb-4">
               Equipment Rental, <span className="text-[#00D9FF]">Made Simple</span>
@@ -663,7 +707,11 @@ export default function SubscriptionPage() {
                             <div className="text-white font-medium text-sm mb-3">Available Colors:</div>
                             <div className="flex flex-wrap gap-2">
                               {variant.colors.map((color: string, idx: number) => (
-                                <span key={idx} className="px-3 py-1 bg-[#21262D] border border-[#30363D] rounded-full text-[#8B949E] text-xs">
+                                <span
+                                  key={idx}
+                                  className="px-3 py-1 border rounded-full text-xs font-medium"
+                                  style={getColorStyle(color)}
+                                >
                                   {color}
                                 </span>
                               ))}
@@ -729,7 +777,11 @@ export default function SubscriptionPage() {
                                 <div className="text-white font-medium text-sm mb-2">Available Colors:</div>
                                 <div className="flex flex-wrap gap-2">
                                   {accessory.colors.map((color, idx) => (
-                                    <span key={idx} className="px-3 py-1 bg-[#21262D] border border-[#30363D] rounded-full text-[#8B949E] text-xs">
+                                    <span
+                                      key={idx}
+                                      className="px-3 py-1 border rounded-full text-xs font-medium"
+                                      style={getColorStyle(color)}
+                                    >
                                       {color}
                                     </span>
                                   ))}
@@ -782,7 +834,11 @@ export default function SubscriptionPage() {
                                 <div className="text-white font-medium text-sm mb-2">Available Colors:</div>
                                 <div className="flex flex-wrap gap-2">
                                   {accessory.colors.map((color, idx) => (
-                                    <span key={idx} className="px-3 py-1 bg-[#21262D] border border-[#30363D] rounded-full text-[#8B949E] text-xs">
+                                    <span
+                                      key={idx}
+                                      className="px-3 py-1 border rounded-full text-xs font-medium"
+                                      style={getColorStyle(color)}
+                                    >
                                       {color}
                                     </span>
                                   ))}
@@ -838,7 +894,11 @@ export default function SubscriptionPage() {
                               <div className="text-white font-medium text-sm mb-2">Available Colors:</div>
                               <div className="flex flex-wrap gap-2">
                                 {accessory.colors.map((color, idx) => (
-                                  <span key={idx} className="px-3 py-1 bg-[#21262D] border border-[#30363D] rounded-full text-[#8B949E] text-xs">
+                                  <span
+                                    key={idx}
+                                    className="px-3 py-1 border rounded-full text-xs font-medium"
+                                    style={getColorStyle(color)}
+                                  >
                                     {color}
                                   </span>
                                 ))}
@@ -1225,7 +1285,7 @@ export default function SubscriptionPage() {
               </Link>
             </div>
             <p className="text-[#484F58] mt-6 text-sm">
-              Local pickup only • Refundable deposit • Full warranty coverage
+              Free shipping available • Refundable deposit • Full warranty coverage
             </p>
           </div>
         </div>
