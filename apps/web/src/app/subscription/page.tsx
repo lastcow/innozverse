@@ -1269,7 +1269,7 @@ export default function SubscriptionPage() {
               Ready to Rent?
             </h2>
             <p className="text-[#8B949E] text-lg mb-8 max-w-2xl mx-auto">
-              Reserve your equipment today and pick it up at our location. No hassle, no commitment.
+              Reserve your equipment today—we&apos;ll ship it to you or you can pick it up locally. No hassle, no commitment.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link href="/login">
