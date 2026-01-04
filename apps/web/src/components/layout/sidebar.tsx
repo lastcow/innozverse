@@ -50,8 +50,9 @@ const menuSections: MenuSection[] = [
     items: [
       { title: 'Products', href: '/dashboard/products', icon: ShoppingBag },
       { title: 'Accessories', href: '/dashboard/products/accessories', icon: Puzzle },
-      { title: 'Categories', href: '/dashboard/products/categories', icon: Tags },
       { title: 'Inventory', href: '/dashboard/inventory', icon: Boxes },
+      { title: 'divider', href: '', icon: Tags }, // Divider placeholder
+      { title: 'Categories', href: '/dashboard/products/categories', icon: Tags },
     ],
   },
   {
@@ -338,6 +339,13 @@ export function Sidebar() {
               {/* Section Items */}
               <div className="space-y-1">
                 {section.items.map((item) => {
+                  // Render divider
+                  if (item.title === 'divider') {
+                    return (
+                      <div key="divider" className="my-2 mx-3 border-t border-border" />
+                    );
+                  }
+
                   const isActive = pathname === item.href;
                   const isKbItem = item.href === '/dashboard/knowledge-base';
                   const isKbPage = pathname?.startsWith('/dashboard/knowledge-base');
