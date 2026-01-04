@@ -12,14 +12,12 @@ import {
   BarChart3,
   Package,
   LogOut,
-  Monitor,
   Calendar,
   BookOpen,
   ChevronDown,
   ChevronRight,
   Folder,
   ShoppingBag,
-  Layers,
   Boxes,
 } from 'lucide-react';
 import { ApiClient, KBCategoryWithChildren } from '@innozverse/api-client';
@@ -27,7 +25,19 @@ import { config } from '@/lib/config';
 
 const apiClient = new ApiClient(config.apiBaseUrl);
 
-const menuItems = [
+interface SubMenuItem {
+  title: string;
+  href: string;
+}
+
+interface MenuItem {
+  title: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  subItems?: SubMenuItem[];
+}
+
+const menuItems: MenuItem[] = [
   {
     title: 'Dashboard',
     href: '/dashboard',
@@ -44,19 +54,23 @@ const menuItems = [
     icon: Package,
   },
   {
-    title: 'Equipment',
-    href: '/dashboard/equipment',
-    icon: Monitor,
-  },
-  {
-    title: 'Product Catalog',
-    href: '/dashboard/catalog',
+    title: 'Products',
+    href: '/dashboard/products',
     icon: ShoppingBag,
-  },
-  {
-    title: 'Accessories',
-    href: '/dashboard/accessories',
-    icon: Layers,
+    subItems: [
+      {
+        title: 'Product Templates',
+        href: '/dashboard/products',
+      },
+      {
+        title: 'Accessories',
+        href: '/dashboard/products/accessories',
+      },
+      {
+        title: 'Categories',
+        href: '/dashboard/products/categories',
+      },
+    ],
   },
   {
     title: 'Inventory',
@@ -188,6 +202,7 @@ export function Sidebar() {
   const [loading, setLoading] = useState(true);
   const [kbCategories, setKbCategories] = useState<KBCategoryWithChildren[]>([]);
   const [kbExpanded, setKbExpanded] = useState(false);
+  const [productsExpanded, setProductsExpanded] = useState(false);
   const [expandedCategoryIds, setExpandedCategoryIds] = useState<Set<string>>(new Set());
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
@@ -312,6 +327,13 @@ export function Sidebar() {
     }
   }, [pathname]);
 
+  // Auto-expand Products menu if on Products page
+  useEffect(() => {
+    if (pathname?.startsWith('/dashboard/products')) {
+      setProductsExpanded(true);
+    }
+  }, [pathname]);
+
   const handleLogout = async () => {
     try {
       await apiClient.logout();
@@ -343,6 +365,70 @@ export function Sidebar() {
             const isActive = pathname === item.href;
             const isKbItem = item.href === '/dashboard/knowledge-base';
             const isKbPage = pathname?.startsWith('/dashboard/knowledge-base');
+            const isProductsItem = item.href === '/dashboard/products';
+            const isProductsPage = pathname?.startsWith('/dashboard/products');
+
+            // Special rendering for Products with sub-items
+            if (isProductsItem && item.subItems) {
+              return (
+                <div key={item.href}>
+                  <div
+                    className={cn(
+                      'flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer',
+                      isProductsPage
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                    )}
+                    onClick={() => setProductsExpanded(!productsExpanded)}
+                  >
+                    <Link
+                      href={item.href}
+                      className="flex items-center space-x-3 flex-1"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.title}</span>
+                    </Link>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setProductsExpanded(!productsExpanded);
+                      }}
+                      className="p-0.5"
+                    >
+                      {productsExpanded ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                  {/* Products submenu */}
+                  {productsExpanded && (
+                    <div className="ml-4 mt-1 space-y-0.5">
+                      {item.subItems.map((subItem) => {
+                        const isSubActive = pathname === subItem.href;
+                        return (
+                          <Link
+                            key={subItem.href}
+                            href={subItem.href}
+                            className={cn(
+                              'flex items-center rounded-lg px-3 py-1.5 text-sm transition-colors',
+                              isSubActive
+                                ? 'bg-primary/20 text-primary font-medium'
+                                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                            )}
+                          >
+                            <span>{subItem.title}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
 
             // Special rendering for Knowledge Base with categories
             if (isKbItem) {

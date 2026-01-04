@@ -31,10 +31,7 @@ import {
   Trash2,
   Edit2,
   Plus,
-  Laptop,
-  Gamepad2,
   Package,
-  FolderOpen,
   DollarSign,
   Tag,
   Star,
@@ -92,17 +89,6 @@ interface ProductTemplate {
   colors?: ProductColor[];
 }
 
-const getCategoryIcon = (icon: string | null) => {
-  switch (icon) {
-    case 'laptop':
-      return Laptop;
-    case 'gamepad':
-      return Gamepad2;
-    default:
-      return Package;
-  }
-};
-
 const getCategoryColorClass = (color: string | null) => {
   switch (color) {
     case 'cyan':
@@ -118,25 +104,11 @@ const getCategoryColorClass = (color: string | null) => {
   }
 };
 
-export default function CatalogPage() {
+export default function ProductsPage() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [products, setProducts] = useState<ProductTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'categories' | 'products'>('products');
-
-  // Category dialog state
-  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<ProductCategory | null>(null);
-  const [categoryForm, setCategoryForm] = useState({
-    name: '',
-    slug: '',
-    description: '',
-    icon: '',
-    color: '',
-    display_order: 0,
-    is_active: true,
-  });
 
   // Product dialog state
   const [productDialogOpen, setProductDialogOpen] = useState(false);
@@ -168,12 +140,10 @@ export default function CatalogPage() {
   const [newColorHex, setNewColorHex] = useState('#000000');
 
   // Delete state
-  const [categoryToDelete, setCategoryToDelete] = useState<ProductCategory | null>(null);
   const [productToDelete, setProductToDelete] = useState<ProductTemplate | null>(null);
 
   // Stats
   const [stats, setStats] = useState({
-    totalCategories: 0,
     totalProducts: 0,
     activeProducts: 0,
     popularProducts: 0,
@@ -196,7 +166,6 @@ export default function CatalogPage() {
       setProducts(prods);
 
       setStats({
-        totalCategories: cats.length,
         totalProducts: prods.length,
         activeProducts: prods.filter((p: ProductTemplate) => p.is_active).length,
         popularProducts: prods.filter((p: ProductTemplate) => p.is_popular).length,
@@ -222,61 +191,6 @@ export default function CatalogPage() {
       setLoading(false);
     }
   }, [fetchData]);
-
-  // Category handlers
-  const handleAddCategory = () => {
-    setEditingCategory(null);
-    setCategoryForm({
-      name: '',
-      slug: '',
-      description: '',
-      icon: '',
-      color: '',
-      display_order: categories.length,
-      is_active: true,
-    });
-    setCategoryDialogOpen(true);
-  };
-
-  const handleEditCategory = (category: ProductCategory) => {
-    setEditingCategory(category);
-    setCategoryForm({
-      name: category.name,
-      slug: category.slug,
-      description: category.description || '',
-      icon: category.icon || '',
-      color: category.color || '',
-      display_order: category.display_order,
-      is_active: category.is_active,
-    });
-    setCategoryDialogOpen(true);
-  };
-
-  const handleSaveCategory = async () => {
-    try {
-      if (editingCategory) {
-        await apiClient.updateProductCategory(editingCategory.id, categoryForm);
-      } else {
-        await apiClient.createProductCategory(categoryForm);
-      }
-      setCategoryDialogOpen(false);
-      fetchData();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save category');
-    }
-  };
-
-  const handleDeleteCategory = async () => {
-    if (!categoryToDelete) return;
-    try {
-      await apiClient.deleteProductCategory(categoryToDelete.id);
-      setCategoryToDelete(null);
-      fetchData();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete category');
-      setCategoryToDelete(null);
-    }
-  };
 
   // Product handlers
   const handleAddProduct = () => {
@@ -419,36 +333,22 @@ export default function CatalogPage() {
         {/* Page Header */}
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Product Catalog</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Products</h1>
             <p className="text-muted-foreground mt-1">
-              Manage product categories and templates for rentals.
+              Manage product templates for rentals.
             </p>
           </div>
           <Button
-            onClick={activeTab === 'categories' ? handleAddCategory : handleAddProduct}
+            onClick={handleAddProduct}
             className="rounded-lg bg-blue-600 hover:bg-blue-700"
           >
             <Plus className="mr-2 h-4 w-4" />
-            Add {activeTab === 'categories' ? 'Category' : 'Product'}
+            Add Product
           </Button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card className="rounded-lg border shadow-sm">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Categories</p>
-                  <p className="text-2xl font-bold mt-1">{stats.totalCategories}</p>
-                </div>
-                <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center">
-                  <FolderOpen className="h-6 w-6 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
+        <div className="grid gap-4 md:grid-cols-3">
           <Card className="rounded-lg border shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -499,359 +399,139 @@ export default function CatalogPage() {
           </Alert>
         )}
 
-        {/* Main Content Card */}
+        {/* Products Table */}
         <Card className="rounded-lg border shadow-sm">
           <CardContent className="p-0">
-            {/* Tabs */}
-            <div className="flex items-center justify-between p-4 border-b">
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setActiveTab('products')}
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${
-                    activeTab === 'products'
-                      ? 'text-blue-600 border-b-2 border-blue-600'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  Products
-                  <span className="ml-2 px-2 py-0.5 text-xs bg-gray-100 text-gray-700 rounded-full">
-                    {stats.totalProducts}
-                  </span>
-                </button>
-                <button
-                  onClick={() => setActiveTab('categories')}
-                  className={`px-4 py-2 text-sm font-medium transition-colors ${
-                    activeTab === 'categories'
-                      ? 'text-blue-600 border-b-2 border-blue-600'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  Categories
-                  <span className="ml-2 px-2 py-0.5 text-xs bg-gray-100 text-gray-700 rounded-full">
-                    {stats.totalCategories}
-                  </span>
-                </button>
-              </div>
-            </div>
-
             {loading ? (
               <div className="flex justify-center py-16">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
-            ) : activeTab === 'categories' ? (
-              /* Categories Table */
-              categories.length === 0 ? (
-                <div className="text-center py-16 text-muted-foreground">
-                  No categories found. Add your first category to get started.
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Category</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Slug</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Icon</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Color</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Order</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Status</th>
-                        <th className="text-right p-4 font-medium text-sm text-muted-foreground">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {categories.map((category) => {
-                        const CategoryIcon = getCategoryIcon(category.icon);
-                        return (
-                          <tr key={category.id} className="border-b hover:bg-muted/50 transition-colors">
-                            <td className="p-4">
-                              <div className="flex items-center gap-3">
-                                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${getCategoryColorClass(category.color)}`}>
-                                  <CategoryIcon className="h-5 w-5" />
-                                </div>
-                                <div>
-                                  <div className="font-medium">{category.name}</div>
-                                  {category.description && (
-                                    <div className="text-sm text-muted-foreground truncate max-w-[200px]">
-                                      {category.description}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </td>
-                            <td className="p-4">
-                              <code className="text-sm bg-muted px-2 py-1 rounded">{category.slug}</code>
-                            </td>
-                            <td className="p-4 text-sm">{category.icon || '-'}</td>
-                            <td className="p-4">
-                              {category.color ? (
-                                <span className={`px-2 py-1 rounded text-xs ${getCategoryColorClass(category.color)}`}>
-                                  {category.color}
-                                </span>
-                              ) : '-'}
-                            </td>
-                            <td className="p-4 text-sm">{category.display_order}</td>
-                            <td className="p-4">
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                                category.is_active
-                                  ? 'bg-green-100 text-green-700 border-green-200'
-                                  : 'bg-gray-100 text-gray-700 border-gray-200'
-                              }`}>
-                                {category.is_active ? 'Active' : 'Inactive'}
-                              </span>
-                            </td>
-                            <td className="p-4 text-right">
-                              <div className="flex items-center justify-end gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleEditCategory(category)}
-                                  className="h-8 w-8"
-                                >
-                                  <Edit2 className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => setCategoryToDelete(category)}
-                                  className="h-8 w-8 text-destructive hover:text-destructive"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              )
+            ) : products.length === 0 ? (
+              <div className="text-center py-16 text-muted-foreground">
+                No products found. Add your first product to get started.
+              </div>
             ) : (
-              /* Products Table */
-              products.length === 0 ? (
-                <div className="text-center py-16 text-muted-foreground">
-                  No products found. Add your first product to get started.
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Product</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Category</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Pricing</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Colors</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Flags</th>
-                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">Status</th>
-                        <th className="text-right p-4 font-medium text-sm text-muted-foreground">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {products.map((product) => {
-                        const category = categories.find(c => c.id === product.category_id);
-                        return (
-                          <tr key={product.id} className="border-b hover:bg-muted/50 transition-colors">
-                            <td className="p-4">
-                              <div className="flex items-center gap-3">
-                                {product.image_url ? (
-                                  <img
-                                    src={product.image_url}
-                                    alt={product.name}
-                                    className="h-10 w-10 rounded-lg object-cover flex-shrink-0"
-                                  />
-                                ) : (
-                                  <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white flex-shrink-0">
-                                    <Package className="h-5 w-5" />
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b bg-muted/50">
+                      <th className="text-left p-4 font-medium text-sm text-muted-foreground">Product</th>
+                      <th className="text-left p-4 font-medium text-sm text-muted-foreground">Category</th>
+                      <th className="text-left p-4 font-medium text-sm text-muted-foreground">Pricing</th>
+                      <th className="text-left p-4 font-medium text-sm text-muted-foreground">Colors</th>
+                      <th className="text-left p-4 font-medium text-sm text-muted-foreground">Flags</th>
+                      <th className="text-left p-4 font-medium text-sm text-muted-foreground">Status</th>
+                      <th className="text-right p-4 font-medium text-sm text-muted-foreground">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product) => {
+                      const category = categories.find(c => c.id === product.category_id);
+                      return (
+                        <tr key={product.id} className="border-b hover:bg-muted/50 transition-colors">
+                          <td className="p-4">
+                            <div className="flex items-center gap-3">
+                              {product.image_url ? (
+                                <img
+                                  src={product.image_url}
+                                  alt={product.name}
+                                  className="h-10 w-10 rounded-lg object-cover flex-shrink-0"
+                                />
+                              ) : (
+                                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white flex-shrink-0">
+                                  <Package className="h-5 w-5" />
+                                </div>
+                              )}
+                              <div>
+                                <div className="font-medium">{product.name}</div>
+                                {product.subtitle && (
+                                  <div className="text-sm text-muted-foreground truncate max-w-[200px]">
+                                    {product.subtitle}
                                   </div>
                                 )}
-                                <div>
-                                  <div className="font-medium">{product.name}</div>
-                                  {product.subtitle && (
-                                    <div className="text-sm text-muted-foreground truncate max-w-[200px]">
-                                      {product.subtitle}
-                                    </div>
-                                  )}
-                                </div>
                               </div>
-                            </td>
-                            <td className="p-4">
-                              {category ? (
-                                <span className={`px-2 py-1 rounded text-xs ${getCategoryColorClass(category.color)}`}>
-                                  {category.name}
-                                </span>
-                              ) : '-'}
-                            </td>
-                            <td className="p-4">
-                              <div className="text-xs space-y-0.5">
-                                <div><span className="font-medium">{formatCurrency(product.weekly_rate)}</span>/wk</div>
-                                <div><span className="font-medium">{formatCurrency(product.monthly_rate)}</span>/mo</div>
-                                <div className="text-muted-foreground">{formatCurrency(product.deposit_amount)} deposit</div>
-                              </div>
-                            </td>
-                            <td className="p-4">
-                              <button
-                                onClick={() => handleManageColors(product)}
-                                className="text-sm text-blue-600 hover:underline flex items-center gap-1"
-                              >
-                                {product.colors?.length || 0} colors
-                                <Edit2 className="h-3 w-3" />
-                              </button>
-                            </td>
-                            <td className="p-4">
-                              <div className="flex gap-1">
-                                {product.is_popular && (
-                                  <span className="px-2 py-0.5 rounded text-xs bg-yellow-100 text-yellow-700" title="Popular">
-                                    <Star className="h-3 w-3" />
-                                  </span>
-                                )}
-                                {product.is_new && (
-                                  <span className="px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-700" title="New">
-                                    <Sparkles className="h-3 w-3" />
-                                  </span>
-                                )}
-                                {product.has_accessories && (
-                                  <span className="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700" title="Has Accessories">
-                                    +
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="p-4">
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                                product.is_active
-                                  ? 'bg-green-100 text-green-700 border-green-200'
-                                  : 'bg-gray-100 text-gray-700 border-gray-200'
-                              }`}>
-                                {product.is_active ? 'Active' : 'Inactive'}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            {category ? (
+                              <span className={`px-2 py-1 rounded text-xs ${getCategoryColorClass(category.color)}`}>
+                                {category.name}
                               </span>
-                            </td>
-                            <td className="p-4 text-right">
-                              <div className="flex items-center justify-end gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleEditProduct(product)}
-                                  className="h-8 w-8"
-                                >
-                                  <Edit2 className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => setProductToDelete(product)}
-                                  className="h-8 w-8 text-destructive hover:text-destructive"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              )
+                            ) : '-'}
+                          </td>
+                          <td className="p-4">
+                            <div className="text-xs space-y-0.5">
+                              <div><span className="font-medium">{formatCurrency(product.weekly_rate)}</span>/wk</div>
+                              <div><span className="font-medium">{formatCurrency(product.monthly_rate)}</span>/mo</div>
+                              <div className="text-muted-foreground">{formatCurrency(product.deposit_amount)} deposit</div>
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <button
+                              onClick={() => handleManageColors(product)}
+                              className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+                            >
+                              {product.colors?.length || 0} colors
+                              <Edit2 className="h-3 w-3" />
+                            </button>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex gap-1">
+                              {product.is_popular && (
+                                <span className="px-2 py-0.5 rounded text-xs bg-yellow-100 text-yellow-700" title="Popular">
+                                  <Star className="h-3 w-3" />
+                                </span>
+                              )}
+                              {product.is_new && (
+                                <span className="px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-700" title="New">
+                                  <Sparkles className="h-3 w-3" />
+                                </span>
+                              )}
+                              {product.has_accessories && (
+                                <span className="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700" title="Has Accessories">
+                                  +
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                              product.is_active
+                                ? 'bg-green-100 text-green-700 border-green-200'
+                                : 'bg-gray-100 text-gray-700 border-gray-200'
+                            }`}>
+                              {product.is_active ? 'Active' : 'Inactive'}
+                            </span>
+                          </td>
+                          <td className="p-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleEditProduct(product)}
+                                className="h-8 w-8"
+                              >
+                                <Edit2 className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setProductToDelete(product)}
+                                className="h-8 w-8 text-destructive hover:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </CardContent>
         </Card>
-
-        {/* Category Dialog */}
-        <Dialog open={categoryDialogOpen} onOpenChange={setCategoryDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>{editingCategory ? 'Edit Category' : 'Add Category'}</DialogTitle>
-              <DialogDescription>
-                {editingCategory ? 'Update the category details.' : 'Create a new product category.'}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">Name *</label>
-                <Input
-                  value={categoryForm.name}
-                  onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
-                  placeholder="Surface Pro"
-                />
-              </div>
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">Slug *</label>
-                <Input
-                  value={categoryForm.slug}
-                  onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })}
-                  placeholder="surface-pro"
-                />
-              </div>
-              <div className="grid gap-2">
-                <label className="text-sm font-medium">Description</label>
-                <textarea
-                  value={categoryForm.description}
-                  onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
-                  placeholder="Category description..."
-                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">Icon</label>
-                  <select
-                    value={categoryForm.icon}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, icon: e.target.value })}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="">Select icon...</option>
-                    <option value="laptop">Laptop</option>
-                    <option value="gamepad">Gamepad</option>
-                    <option value="package">Package</option>
-                  </select>
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">Color</label>
-                  <select
-                    value={categoryForm.color}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, color: e.target.value })}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="">Select color...</option>
-                    <option value="cyan">Cyan</option>
-                    <option value="green">Green</option>
-                    <option value="orange">Orange</option>
-                    <option value="purple">Purple</option>
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">Display Order</label>
-                  <Input
-                    type="number"
-                    value={categoryForm.display_order}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, display_order: parseInt(e.target.value) || 0 })}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium">Status</label>
-                  <select
-                    value={categoryForm.is_active ? 'active' : 'inactive'}
-                    onChange={(e) => setCategoryForm({ ...categoryForm, is_active: e.target.value === 'active' })}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setCategoryDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleSaveCategory} disabled={!categoryForm.name || !categoryForm.slug}>
-                {editingCategory ? 'Save Changes' : 'Create Category'}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
 
         {/* Product Dialog */}
         <Dialog open={productDialogOpen} onOpenChange={setProductDialogOpen}>
@@ -1114,28 +794,6 @@ export default function CatalogPage() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        {/* Delete Category Confirmation */}
-        <AlertDialog open={!!categoryToDelete} onOpenChange={(open) => !open && setCategoryToDelete(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete Category</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to delete <span className="font-semibold">{categoryToDelete?.name}</span>?
-                This will also affect any products in this category.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDeleteCategory}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                Delete Category
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
 
         {/* Delete Product Confirmation */}
         <AlertDialog open={!!productToDelete} onOpenChange={(open) => !open && setProductToDelete(null)}>
