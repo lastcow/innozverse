@@ -18,7 +18,6 @@ import {
   ChevronRight,
   Folder,
   ShoppingBag,
-  Boxes,
 } from 'lucide-react';
 import { ApiClient, KBCategoryWithChildren } from '@innozverse/api-client';
 import { config } from '@/lib/config';
@@ -54,12 +53,12 @@ const menuItems: MenuItem[] = [
     icon: Package,
   },
   {
-    title: 'Products',
+    title: 'Product',
     href: '/dashboard/products',
     icon: ShoppingBag,
     subItems: [
       {
-        title: 'Product Templates',
+        title: 'Products',
         href: '/dashboard/products',
       },
       {
@@ -70,12 +69,11 @@ const menuItems: MenuItem[] = [
         title: 'Categories',
         href: '/dashboard/products/categories',
       },
+      {
+        title: 'Inventory',
+        href: '/dashboard/inventory',
+      },
     ],
-  },
-  {
-    title: 'Inventory',
-    href: '/dashboard/inventory',
-    icon: Boxes,
   },
   {
     title: 'Rentals',
@@ -327,9 +325,9 @@ export function Sidebar() {
     }
   }, [pathname]);
 
-  // Auto-expand Products menu if on Products page
+  // Auto-expand Products menu if on Products or Inventory page
   useEffect(() => {
-    if (pathname?.startsWith('/dashboard/products')) {
+    if (pathname?.startsWith('/dashboard/products') || pathname?.startsWith('/dashboard/inventory')) {
       setProductsExpanded(true);
     }
   }, [pathname]);
@@ -366,7 +364,7 @@ export function Sidebar() {
             const isKbItem = item.href === '/dashboard/knowledge-base';
             const isKbPage = pathname?.startsWith('/dashboard/knowledge-base');
             const isProductsItem = item.href === '/dashboard/products';
-            const isProductsPage = pathname?.startsWith('/dashboard/products');
+            const isProductsPage = pathname?.startsWith('/dashboard/products') || pathname?.startsWith('/dashboard/inventory');
 
             // Special rendering for Products with sub-items
             if (isProductsItem && item.subItems) {
