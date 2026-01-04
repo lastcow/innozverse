@@ -10,7 +10,6 @@ import {
   Settings,
   FileText,
   BarChart3,
-  Package,
   LogOut,
   Calendar,
   BookOpen,
@@ -18,87 +17,62 @@ import {
   ChevronRight,
   Folder,
   ShoppingBag,
+  Boxes,
+  Puzzle,
+  Tags,
 } from 'lucide-react';
 import { ApiClient, KBCategoryWithChildren } from '@innozverse/api-client';
 import { config } from '@/lib/config';
 
 const apiClient = new ApiClient(config.apiBaseUrl);
 
-interface SubMenuItem {
-  title: string;
-  href: string;
-}
-
 interface MenuItem {
   title: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
-  subItems?: SubMenuItem[];
 }
 
-const menuItems: MenuItem[] = [
+interface MenuSection {
+  title?: string; // Optional section header
+  items: MenuItem[];
+}
+
+const menuSections: MenuSection[] = [
   {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard,
-  },
-  {
-    title: 'Analytics',
-    href: '/dashboard/analytics',
-    icon: BarChart3,
-  },
-  {
-    title: 'Projects',
-    href: '/dashboard/projects',
-    icon: Package,
-  },
-  {
-    title: 'Product',
-    href: '/dashboard/products',
-    icon: ShoppingBag,
-    subItems: [
-      {
-        title: 'Products',
-        href: '/dashboard/products',
-      },
-      {
-        title: 'Accessories',
-        href: '/dashboard/products/accessories',
-      },
-      {
-        title: 'Categories',
-        href: '/dashboard/products/categories',
-      },
-      {
-        title: 'Inventory',
-        href: '/dashboard/inventory',
-      },
+    // Main section - no header
+    items: [
+      { title: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+      { title: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
     ],
   },
   {
-    title: 'Rentals',
-    href: '/dashboard/rentals',
-    icon: Calendar,
+    title: 'PRODUCT',
+    items: [
+      { title: 'Products', href: '/dashboard/products', icon: ShoppingBag },
+      { title: 'Accessories', href: '/dashboard/products/accessories', icon: Puzzle },
+      { title: 'Categories', href: '/dashboard/products/categories', icon: Tags },
+      { title: 'Inventory', href: '/dashboard/inventory', icon: Boxes },
+    ],
   },
   {
-    title: 'Users',
-    href: '/dashboard/users',
-    icon: Users,
+    title: 'OPERATIONS',
+    items: [
+      { title: 'Rentals', href: '/dashboard/rentals', icon: Calendar },
+      { title: 'Users', href: '/dashboard/users', icon: Users },
+    ],
   },
   {
-    title: 'Documents',
-    href: '/dashboard/documents',
-    icon: FileText,
+    title: 'CONTENT',
+    items: [
+      { title: 'Documents', href: '/dashboard/documents', icon: FileText },
+      { title: 'Knowledge Base', href: '/dashboard/knowledge-base', icon: BookOpen },
+    ],
   },
   {
-    title: 'Knowledge Base',
-    href: '/dashboard/knowledge-base',
-    icon: BookOpen,
-  },
-  {
-    title: 'Settings',
-    href: '/dashboard/settings',
-    icon: Settings,
+    // Settings section - no header
+    items: [
+      { title: 'Settings', href: '/dashboard/settings', icon: Settings },
+    ],
   },
 ];
 
@@ -200,7 +174,7 @@ export function Sidebar() {
   const [loading, setLoading] = useState(true);
   const [kbCategories, setKbCategories] = useState<KBCategoryWithChildren[]>([]);
   const [kbExpanded, setKbExpanded] = useState(false);
-  const [productsExpanded, setProductsExpanded] = useState(false);
+  // productsExpanded is no longer needed with section-based layout
   const [expandedCategoryIds, setExpandedCategoryIds] = useState<Set<string>>(new Set());
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
@@ -325,12 +299,6 @@ export function Sidebar() {
     }
   }, [pathname]);
 
-  // Auto-expand Products menu if on Products or Inventory page
-  useEffect(() => {
-    if (pathname?.startsWith('/dashboard/products') || pathname?.startsWith('/dashboard/inventory')) {
-      setProductsExpanded(true);
-    }
-  }, [pathname]);
 
   const handleLogout = async () => {
     try {
@@ -358,146 +326,95 @@ export function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.href;
-            const isKbItem = item.href === '/dashboard/knowledge-base';
-            const isKbPage = pathname?.startsWith('/dashboard/knowledge-base');
-            const isProductsItem = item.href === '/dashboard/products';
-            const isProductsPage = pathname?.startsWith('/dashboard/products') || pathname?.startsWith('/dashboard/inventory');
+        <nav className="flex-1 p-4 overflow-y-auto">
+          {menuSections.map((section, sectionIndex) => (
+            <div key={sectionIndex} className={cn(section.title && 'mt-6 first:mt-0')}>
+              {/* Section Header */}
+              {section.title && (
+                <div className="px-3 py-2 text-xs font-semibold text-muted-foreground tracking-wider">
+                  {section.title}
+                </div>
+              )}
+              {/* Section Items */}
+              <div className="space-y-1">
+                {section.items.map((item) => {
+                  const isActive = pathname === item.href;
+                  const isKbItem = item.href === '/dashboard/knowledge-base';
+                  const isKbPage = pathname?.startsWith('/dashboard/knowledge-base');
 
-            // Special rendering for Products with sub-items
-            if (isProductsItem && item.subItems) {
-              return (
-                <div key={item.href}>
-                  <div
-                    className={cn(
-                      'flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer',
-                      isProductsPage
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                    )}
-                    onClick={() => setProductsExpanded(!productsExpanded)}
-                  >
-                    <Link
-                      href={item.href}
-                      className="flex items-center space-x-3 flex-1"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
-                    </Link>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setProductsExpanded(!productsExpanded);
-                      }}
-                      className="p-0.5"
-                    >
-                      {productsExpanded ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                  {/* Products submenu */}
-                  {productsExpanded && (
-                    <div className="ml-4 mt-1 space-y-0.5">
-                      {item.subItems.map((subItem) => {
-                        const isSubActive = pathname === subItem.href;
-                        return (
+                  // Special rendering for Knowledge Base with categories
+                  if (isKbItem) {
+                    return (
+                      <div key={item.href}>
+                        <div
+                          className={cn(
+                            'flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer',
+                            isKbPage
+                              ? 'bg-primary text-primary-foreground'
+                              : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                          )}
+                          onClick={() => setKbExpanded(!kbExpanded)}
+                        >
                           <Link
-                            key={subItem.href}
-                            href={subItem.href}
-                            className={cn(
-                              'flex items-center rounded-lg px-3 py-1.5 text-sm transition-colors',
-                              isSubActive
-                                ? 'bg-primary/20 text-primary font-medium'
-                                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                            )}
+                            href={item.href}
+                            className="flex items-center space-x-3 flex-1"
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            <span>{subItem.title}</span>
+                            <item.icon className="h-5 w-5" />
+                            <span>{item.title}</span>
                           </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            }
+                          {kbCategories.length > 0 && (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setKbExpanded(!kbExpanded);
+                              }}
+                              className="p-0.5"
+                            >
+                              {kbExpanded ? (
+                                <ChevronDown className="h-4 w-4" />
+                              ) : (
+                                <ChevronRight className="h-4 w-4" />
+                              )}
+                            </button>
+                          )}
+                        </div>
+                        {/* KB Categories submenu */}
+                        {kbExpanded && kbCategories.length > 0 && (
+                          <div className="ml-4 mt-1 space-y-0.5">
+                            <CategoryMenuItem
+                              categories={kbCategories}
+                              selectedCategoryId={selectedCategoryId}
+                              expandedIds={expandedCategoryIds}
+                              onToggleExpand={toggleCategoryExpand}
+                              level={0}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
 
-            // Special rendering for Knowledge Base with categories
-            if (isKbItem) {
-              return (
-                <div key={item.href}>
-                  <div
-                    className={cn(
-                      'flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer',
-                      isKbPage
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                    )}
-                    onClick={() => setKbExpanded(!kbExpanded)}
-                  >
+                  return (
                     <Link
+                      key={item.href}
                       href={item.href}
-                      className="flex items-center space-x-3 flex-1"
-                      onClick={(e) => e.stopPropagation()}
+                      className={cn(
+                        'flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                        isActive
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                      )}
                     >
                       <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
                     </Link>
-                    {kbCategories.length > 0 && (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setKbExpanded(!kbExpanded);
-                        }}
-                        className="p-0.5"
-                      >
-                        {kbExpanded ? (
-                          <ChevronDown className="h-4 w-4" />
-                        ) : (
-                          <ChevronRight className="h-4 w-4" />
-                        )}
-                      </button>
-                    )}
-                  </div>
-                  {/* KB Categories submenu */}
-                  {kbExpanded && kbCategories.length > 0 && (
-                    <div className="ml-4 mt-1 space-y-0.5">
-                      <CategoryMenuItem
-                        categories={kbCategories}
-                        selectedCategoryId={selectedCategoryId}
-                        expandedIds={expandedCategoryIds}
-                        onToggleExpand={toggleCategoryExpand}
-                        level={0}
-                      />
-                    </div>
-                  )}
-                </div>
-              );
-            }
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.title}</span>
-              </Link>
-            );
-          })}
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* User Section */}
