@@ -98,6 +98,8 @@ const getStatusBadge = (status: EquipmentStatus) => {
 
 const getConditionBadge = (condition: EquipmentCondition) => {
   switch (condition) {
+    case 'new':
+      return { label: 'New', className: 'text-purple-600' };
     case 'excellent':
       return { label: 'Excellent', className: 'text-green-600' };
     case 'good':
@@ -226,7 +228,7 @@ export default function InventoryPage() {
       serial_number: '',
       color: '',
       status: 'available',
-      condition: 'excellent',
+      condition: 'new',
       purchase_date: '',
       purchase_price: '',
       notes: '',
@@ -316,7 +318,7 @@ export default function InventoryPage() {
           serial_number: serial,
           color: bulkForm.color || undefined,
           status: 'available' as EquipmentStatus,
-          condition: 'excellent' as EquipmentCondition,
+          condition: 'new' as EquipmentCondition,
         });
       }
 
@@ -754,6 +756,7 @@ export default function InventoryPage() {
                     onChange={(e) => setItemForm({ ...itemForm, condition: e.target.value as EquipmentCondition })}
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                   >
+                    <option value="new">New</option>
                     <option value="excellent">Excellent</option>
                     <option value="good">Good</option>
                     <option value="fair">Fair</option>

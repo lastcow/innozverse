@@ -198,7 +198,7 @@ export type EquipmentCategory =
 
 export type EquipmentStatus = 'available' | 'rented' | 'maintenance' | 'retired';
 
-export type EquipmentCondition = 'excellent' | 'good' | 'fair';
+export type EquipmentCondition = 'new' | 'excellent' | 'good' | 'fair';
 
 export interface EquipmentSpecs {
   [key: string]: string | number | boolean;
