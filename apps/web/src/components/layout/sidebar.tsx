@@ -325,16 +325,33 @@ export function Sidebar() {
       )}
     >
       <div className="flex h-full flex-col">
-        {/* Logo */}
-        <div className={cn('flex h-16 items-center border-b', isCollapsed ? 'px-3 justify-center' : 'px-6')}>
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex-shrink-0" />
-            {!isCollapsed && (
-              <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                innozverse
-              </span>
-            )}
-          </Link>
+        {/* Logo & Toggle */}
+        <div className={cn('flex h-16 items-center border-b', isCollapsed ? 'px-2 justify-center' : 'px-4 justify-between')}>
+          {isCollapsed ? (
+            <button
+              onClick={toggleSidebar}
+              className="p-1.5 rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+              title="Expand sidebar"
+            >
+              <PanelLeft className="h-5 w-5" />
+            </button>
+          ) : (
+            <>
+              <Link href="/" className="flex items-center space-x-2">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex-shrink-0" />
+                <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  innozverse
+                </span>
+              </Link>
+              <button
+                onClick={toggleSidebar}
+                className="p-1.5 rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                title="Collapse sidebar"
+              >
+                <PanelLeftClose className="h-5 w-5" />
+              </button>
+            </>
+          )}
         </div>
 
         {/* Navigation */}
@@ -483,26 +500,6 @@ export function Sidebar() {
           ) : null}
         </div>
 
-        {/* Toggle Button */}
-        <div className={cn('border-t', isCollapsed ? 'p-2' : 'p-4')}>
-          <button
-            onClick={toggleSidebar}
-            className={cn(
-              'w-full flex items-center rounded-lg py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors',
-              isCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'
-            )}
-            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {isCollapsed ? (
-              <PanelLeft className="h-5 w-5" />
-            ) : (
-              <>
-                <PanelLeftClose className="h-5 w-5" />
-                <span>Collapse</span>
-              </>
-            )}
-          </button>
-        </div>
       </div>
     </aside>
   );
