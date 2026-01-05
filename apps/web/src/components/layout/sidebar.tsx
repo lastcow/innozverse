@@ -20,7 +20,10 @@ import {
   Boxes,
   Puzzle,
   Tags,
+  PanelLeftClose,
+  PanelLeft,
 } from 'lucide-react';
+import { useSidebar } from './sidebar-context';
 import { ApiClient, KBCategoryWithChildren } from '@innozverse/api-client';
 import { config } from '@/lib/config';
 
@@ -171,6 +174,7 @@ function CategoryMenuItem({
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { isCollapsed, toggleSidebar } = useSidebar();
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [kbCategories, setKbCategories] = useState<KBCategoryWithChildren[]>([]);
@@ -314,24 +318,31 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r bg-background">
+    <aside
+      className={cn(
+        'fixed left-0 top-0 z-40 h-screen border-r bg-background transition-all duration-300',
+        isCollapsed ? 'w-16' : 'w-64'
+      )}
+    >
       <div className="flex h-full flex-col">
         {/* Logo */}
-        <div className="flex h-16 items-center border-b px-6">
+        <div className={cn('flex h-16 items-center border-b', isCollapsed ? 'px-3 justify-center' : 'px-6')}>
           <Link href="/" className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600" />
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              innozverse
-            </span>
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex-shrink-0" />
+            {!isCollapsed && (
+              <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                innozverse
+              </span>
+            )}
           </Link>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 overflow-y-auto">
+        <nav className={cn('flex-1 overflow-y-auto', isCollapsed ? 'p-2' : 'p-4')}>
           {menuSections.map((section, sectionIndex) => (
-            <div key={sectionIndex} className={cn(section.title && 'mt-6 first:mt-0')}>
+            <div key={sectionIndex} className={cn(section.title && !isCollapsed && 'mt-6 first:mt-0', isCollapsed && 'mt-2 first:mt-0')}>
               {/* Section Header */}
-              {section.title && (
+              {section.title && !isCollapsed && (
                 <div className="px-3 py-2 text-xs font-semibold text-muted-foreground tracking-wider">
                   {section.title}
                 </div>
@@ -342,7 +353,7 @@ export function Sidebar() {
                   // Render divider
                   if (item.title === 'divider') {
                     return (
-                      <div key="divider" className="my-2 mx-3 border-t border-border" />
+                      <div key="divider" className={cn('my-2 border-t border-border', isCollapsed ? 'mx-1' : 'mx-3')} />
                     );
                   }
 
@@ -356,22 +367,24 @@ export function Sidebar() {
                       <div key={item.href}>
                         <div
                           className={cn(
-                            'flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer',
+                            'flex items-center rounded-lg py-2 text-sm font-medium transition-colors cursor-pointer',
+                            isCollapsed ? 'justify-center px-2' : 'justify-between px-3',
                             isKbPage
                               ? 'bg-primary text-primary-foreground'
                               : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                           )}
-                          onClick={() => setKbExpanded(!kbExpanded)}
+                          onClick={() => !isCollapsed && setKbExpanded(!kbExpanded)}
+                          title={isCollapsed ? item.title : undefined}
                         >
                           <Link
                             href={item.href}
-                            className="flex items-center space-x-3 flex-1"
+                            className={cn('flex items-center', isCollapsed ? '' : 'space-x-3 flex-1')}
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <item.icon className="h-5 w-5" />
-                            <span>{item.title}</span>
+                            <item.icon className="h-5 w-5 flex-shrink-0" />
+                            {!isCollapsed && <span>{item.title}</span>}
                           </Link>
-                          {kbCategories.length > 0 && (
+                          {!isCollapsed && kbCategories.length > 0 && (
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
@@ -388,8 +401,8 @@ export function Sidebar() {
                             </button>
                           )}
                         </div>
-                        {/* KB Categories submenu */}
-                        {kbExpanded && kbCategories.length > 0 && (
+                        {/* KB Categories submenu - only show when expanded and sidebar not collapsed */}
+                        {!isCollapsed && kbExpanded && kbCategories.length > 0 && (
                           <div className="ml-4 mt-1 space-y-0.5">
                             <CategoryMenuItem
                               categories={kbCategories}
@@ -409,14 +422,16 @@ export function Sidebar() {
                       key={item.href}
                       href={item.href}
                       className={cn(
-                        'flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                        'flex items-center rounded-lg py-2 text-sm font-medium transition-colors',
+                        isCollapsed ? 'justify-center px-2' : 'space-x-3 px-3',
                         isActive
                           ? 'bg-primary text-primary-foreground'
                           : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                       )}
+                      title={isCollapsed ? item.title : undefined}
                     >
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
+                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      {!isCollapsed && <span>{item.title}</span>}
                     </Link>
                   );
                 })}
@@ -426,35 +441,67 @@ export function Sidebar() {
         </nav>
 
         {/* User Section */}
-        <div className="border-t p-4">
+        <div className={cn('border-t', isCollapsed ? 'p-2' : 'p-4')}>
           {loading ? (
-            <div className="flex items-center space-x-3 rounded-lg px-3 py-2">
-              <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
-              <div className="flex-1 space-y-2">
-                <div className="h-3 w-20 bg-muted rounded animate-pulse" />
-                <div className="h-2 w-32 bg-muted rounded animate-pulse" />
-              </div>
+            <div className={cn('flex items-center rounded-lg', isCollapsed ? 'justify-center px-2 py-2' : 'space-x-3 px-3 py-2')}>
+              <div className="h-8 w-8 rounded-full bg-muted animate-pulse flex-shrink-0" />
+              {!isCollapsed && (
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-20 bg-muted rounded animate-pulse" />
+                  <div className="h-2 w-32 bg-muted rounded animate-pulse" />
+                </div>
+              )}
             </div>
           ) : user ? (
             <div className="space-y-2">
-              <div className="flex items-center space-x-3 rounded-lg px-3 py-2">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-sm font-medium">
+              <div
+                className={cn('flex items-center rounded-lg', isCollapsed ? 'justify-center px-2 py-2' : 'space-x-3 px-3 py-2')}
+                title={isCollapsed ? `${user.name}\n${user.email}` : undefined}
+              >
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
-                <div className="flex-1 text-sm overflow-hidden">
-                  <p className="font-medium truncate">{user.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                </div>
+                {!isCollapsed && (
+                  <div className="flex-1 text-sm overflow-hidden">
+                    <p className="font-medium truncate">{user.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                  </div>
+                )}
               </div>
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                className={cn(
+                  'w-full flex items-center rounded-lg py-2 text-sm text-muted-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors',
+                  isCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'
+                )}
+                title={isCollapsed ? 'Logout' : undefined}
               >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
+                <LogOut className="h-4 w-4 flex-shrink-0" />
+                {!isCollapsed && <span>Logout</span>}
               </button>
             </div>
           ) : null}
+        </div>
+
+        {/* Toggle Button */}
+        <div className={cn('border-t', isCollapsed ? 'p-2' : 'p-4')}>
+          <button
+            onClick={toggleSidebar}
+            className={cn(
+              'w-full flex items-center rounded-lg py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors',
+              isCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'
+            )}
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {isCollapsed ? (
+              <PanelLeft className="h-5 w-5" />
+            ) : (
+              <>
+                <PanelLeftClose className="h-5 w-5" />
+                <span>Collapse</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </aside>

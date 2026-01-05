@@ -3,10 +3,14 @@
 import { Bell, Search, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useSidebar } from './sidebar-context';
+import { cn } from '@/lib/utils';
 
 export function Navbar() {
+  const { isCollapsed } = useSidebar();
+
   return (
-    <header className="fixed left-64 right-0 top-0 z-30 h-16 border-b bg-background">
+    <header className={cn('fixed right-0 top-0 z-30 h-16 border-b bg-background transition-all duration-300', isCollapsed ? 'left-16' : 'left-64')}>
       <div className="flex h-full items-center justify-between px-4">
         {/* Search */}
         <div className="flex items-center space-x-4">
