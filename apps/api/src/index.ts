@@ -1,6 +1,7 @@
 // Load environment variables from .env file in development
 if (process.env.NODE_ENV !== 'production') {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('dotenv').config();
   } catch (err) {
     console.log('dotenv not available, using system environment variables');

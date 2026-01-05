@@ -4,6 +4,10 @@
   "private": true,
   "description": "Shared TypeScript and ESLint configurations",
   "main": "index.js",
+  "exports": {
+    "./eslint-preset": "./eslint-preset.js",
+    "./tsconfig.base.json": "./tsconfig.base.json"
+  },
   "files": [
     "eslint-preset.js",
     "tsconfig.base.json"
