@@ -1,6 +1,5 @@
 'use client';
 
-import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowUpRight, ArrowDownRight, Users, DollarSign, ShoppingCart, Activity } from 'lucide-react';
 
@@ -44,8 +43,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
@@ -183,7 +181,6 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
-    </DashboardLayout>
+    </div>
   );
 }
