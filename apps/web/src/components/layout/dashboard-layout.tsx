@@ -3,7 +3,6 @@
 import { ReactNode } from 'react';
 import { Sidebar } from './sidebar';
 import { Navbar } from './navbar';
-import { Footer } from './footer';
 import { SidebarProvider, useSidebar } from './sidebar-context';
 import { cn } from '@/lib/utils';
 
@@ -25,12 +24,9 @@ function DashboardLayoutContent({ children }: DashboardLayoutProps) {
         <Navbar />
 
         {/* Page Content */}
-        <main className="min-h-[calc(100vh-9rem)] pt-16 py-4 pr-4">
+        <main className="min-h-[calc(100vh-4rem)] pt-16 py-4 pr-4">
           {children}
         </main>
-
-        {/* Footer */}
-        <Footer />
       </div>
     </div>
   );
