@@ -94,7 +94,7 @@ export const equipmentStatusSchema = z.enum([
   'retired'
 ]);
 
-export const equipmentConditionSchema = z.enum(['excellent', 'good', 'fair']);
+export const equipmentConditionSchema = z.enum(['new', 'excellent', 'good', 'fair']);
 
 export const equipmentSpecsSchema = z.record(z.union([z.string(), z.number(), z.boolean()]));
 
