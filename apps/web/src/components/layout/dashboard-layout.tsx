@@ -20,7 +20,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Page Content */}
         <main className="min-h-[calc(100vh-9rem)] pt-16">
-          <div className="w-full px-6 py-6">
+          <div className="w-full px-4 py-4">
             {children}
           </div>
         </main>
