@@ -69,8 +69,11 @@ interface InventoryItem {
   notes: string | null;
   created_at: string;
   updated_at: string;
-  product_template?: ProductTemplate;
-  accessory?: Accessory;
+  // Flat fields from API JOIN
+  product_name?: string | null;
+  accessory_name?: string | null;
+  category_name?: string | null;
+  category_id?: string | null;
 }
 
 interface InventorySummary {
@@ -179,12 +182,40 @@ export default function InventoryPage() {
         apiClient.getInventorySummary(),
       ]);
 
-      setInventory(inventoryRes.data.items || []);
+      setInventory(inventoryRes.data.inventory || []);
       setTotalPages(inventoryRes.data.pagination?.totalPages || 1);
       setTotalItems(inventoryRes.data.pagination?.total || 0);
       setProducts(productsRes.data.products || []);
       setAccessories(accessoriesRes.data.accessories || []);
-      setSummary(summaryRes.data.summary);
+
+      // Compute summary from products and accessories arrays
+      const productsSummary = summaryRes.data.products || [];
+      const accessoriesSummary = summaryRes.data.accessories || [];
+      const computedSummary: InventorySummary = {
+        total: 0,
+        by_status: { available: 0, rented: 0, maintenance: 0, retired: 0 },
+        by_condition: { new: 0, excellent: 0, good: 0, fair: 0 },
+        products: productsSummary.length,
+        accessories: accessoriesSummary.length,
+      };
+
+      // Sum up counts from products
+      for (const p of productsSummary) {
+        computedSummary.total += parseInt(p.total_count) || 0;
+        computedSummary.by_status.available += parseInt(p.available_count) || 0;
+        computedSummary.by_status.rented += parseInt(p.rented_count) || 0;
+        computedSummary.by_status.maintenance += parseInt(p.maintenance_count) || 0;
+      }
+
+      // Sum up counts from accessories
+      for (const a of accessoriesSummary) {
+        computedSummary.total += parseInt(a.total_count) || 0;
+        computedSummary.by_status.available += parseInt(a.available_count) || 0;
+        computedSummary.by_status.rented += parseInt(a.rented_count) || 0;
+        computedSummary.by_status.maintenance += parseInt(a.maintenance_count) || 0;
+      }
+
+      setSummary(computedSummary);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
     } finally {
@@ -557,7 +588,7 @@ export default function InventoryPage() {
                                 </div>
                                 <div>
                                   <div className="font-medium">
-                                    {item.product_template?.name || item.accessory?.name || 'Unknown'}
+                                    {item.product_name || item.accessory_name || 'Unknown'}
                                   </div>
                                   <div className="text-sm text-muted-foreground">
                                     {item.product_template_id ? 'Product' : 'Accessory'}

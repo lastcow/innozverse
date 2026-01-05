@@ -205,34 +205,65 @@ export async function catalogRoutes(fastify: FastifyInstance) {
 
         const product = productResult.rows[0];
 
-        // Get compatible accessories
+        // Debug logging
+        request.log.debug({
+          msg: 'Fetching accessories for product',
+          productId: id,
+          categoryId: product.category_id,
+          screenSize: product.screen_size,
+        });
+
+        // Get compatible accessories - linked either directly to this product
+        // or to the product's category (with optional screen size filtering)
         const accessoriesResult = await pool.query(
-          `SELECT DISTINCT
-            a.id, a.name, a.description, a.weekly_rate, a.monthly_rate, a.deposit_amount, a.image_url,
+          `SELECT
+            a.id, a.name, a.description, a.weekly_rate, a.monthly_rate, a.deposit_amount, a.image_url, a.display_order,
             COALESCE(
               json_agg(
-                DISTINCT jsonb_build_object(
+                jsonb_build_object(
                   'id', ac.id,
                   'color_name', ac.color_name,
                   'hex_code', ac.hex_code,
                   'text_color', ac.text_color,
                   'border_color', ac.border_color
-                )
+                ) ORDER BY ac.display_order
               ) FILTER (WHERE ac.id IS NOT NULL),
-              '[]'
+              '[]'::json
             ) as colors
           FROM accessories a
-          JOIN product_accessory_links pal ON a.id = pal.accessory_id AND pal.is_active = true
+          INNER JOIN product_accessory_links pal ON a.id = pal.accessory_id
           LEFT JOIN accessory_colors ac ON a.id = ac.accessory_id AND ac.is_active = true
           WHERE a.is_active = true
+            AND pal.is_active = true
             AND (
               pal.product_template_id = $1
-              OR (pal.category_id = $2 AND (pal.screen_size_filter IS NULL OR pal.screen_size_filter = $3))
+              OR (
+                pal.category_id = $2
+                AND (pal.screen_size_filter IS NULL OR pal.screen_size_filter = $3)
+              )
             )
-          GROUP BY a.id
+          GROUP BY a.id, a.name, a.description, a.weekly_rate, a.monthly_rate, a.deposit_amount, a.image_url, a.display_order
           ORDER BY a.display_order ASC, a.name ASC`,
           [id, product.category_id, product.screen_size]
         );
+
+        // Debug logging
+        request.log.debug({
+          msg: 'Accessories query result',
+          accessoriesCount: accessoriesResult.rows.length,
+          accessories: accessoriesResult.rows.map((a) => ({ id: a.id, name: a.name })),
+        });
+
+        // Warn if product has_accessories flag is true but no accessories found
+        if (product.has_accessories && accessoriesResult.rows.length === 0) {
+          request.log.warn({
+            msg: 'Product has_accessories flag is true but no accessories found',
+            productId: id,
+            productName: product.name,
+            categoryId: product.category_id,
+            screenSize: product.screen_size,
+          });
+        }
 
         return reply.send({
           status: 'ok',

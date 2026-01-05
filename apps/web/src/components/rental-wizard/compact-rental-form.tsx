@@ -155,10 +155,25 @@ export function CompactRentalForm() {
     // Fetch full product details with accessories
     try {
       const response = await apiClient.getProduct(product.id);
-      setSelectedProduct(response.data.product);
-      setSelectedColor(response.data.product.colors?.[0]?.color_name || null);
+      const fullProduct = response.data.product;
+
+      // Debug logging to verify accessories are returned from API
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[CompactRentalForm] Product details fetched:', {
+          id: fullProduct.id,
+          name: fullProduct.name,
+          category_id: fullProduct.category_id,
+          has_accessories: fullProduct.has_accessories,
+          accessories_count: fullProduct.accessories?.length ?? 0,
+          accessories: fullProduct.accessories,
+        });
+      }
+
+      setSelectedProduct(fullProduct);
+      setSelectedColor(fullProduct.colors?.[0]?.color_name || null);
     } catch (err) {
       console.error('Failed to fetch product details:', err);
+      setError('Failed to load product details. Please try again.');
     }
   };
 
