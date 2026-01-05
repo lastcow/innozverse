@@ -1,12 +1,12 @@
 'use client';
 
 import { Suspense } from 'react';
-import { RentalWizard } from '@/components/rental-wizard';
+import { CompactRentalForm } from '@/components/rental-wizard/compact-rental-form';
 import { Loader2 } from 'lucide-react';
 
-function WizardLoading() {
+function FormLoading() {
   return (
-    <div className="flex items-center justify-center min-h-[400px]">
+    <div className="flex items-center justify-center min-h-[300px]">
       <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
     </div>
   );
@@ -14,16 +14,16 @@ function WizardLoading() {
 
 export default function RentPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h1 className="text-3xl font-bold">Rent Equipment</h1>
-        <p className="text-muted-foreground">
-          Complete the steps below to rent your equipment
+        <h1 className="text-2xl font-bold">Rent Equipment</h1>
+        <p className="text-sm text-muted-foreground">
+          Select your equipment and rental period
         </p>
       </div>
 
-      <Suspense fallback={<WizardLoading />}>
-        <RentalWizard />
+      <Suspense fallback={<FormLoading />}>
+        <CompactRentalForm />
       </Suspense>
     </div>
   );
